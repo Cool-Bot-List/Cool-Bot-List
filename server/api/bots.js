@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Bots = require("../database/models/Bot.js");
 
+//Need a good error codes for all of these. Please help
 router.post("/", async (req, res) => {
   const { ID, NAME, PREFIX, DESCRIPTION, OWNERS, WEBSITE, HELP_COMMAND, SUPPORT_SERVER, LIBRARY } = req.body;
+  if (!ID || NAME || PREFIX || DESCRIPTION || OWNERS || WEBSITE || HELP_COMMAND || SUPPORT_SERVER || LIBRARY) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
   const bot = await Bots.findOne({ ID });
-  //need a good error code
+
   if (bot) return res.status(404).json({ message: "This bot already exists!" });
   const newBot = new Bots({ ID, NAME, PREFIX, DESCRIPTION, OWNERS, WEBSITE, HELP_COMMAND, SUPPORT_SERVER, LIBRARY });
   try {
