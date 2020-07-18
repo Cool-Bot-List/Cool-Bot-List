@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
-const Config = new mongoose.Schema({
-    ID: String,
+const User = new mongoose.Schema({
+    id: String,
 });
 
-module.exports = mongoose.model("USERS", Config);
+module.exports = mongoose.model("users", User);
