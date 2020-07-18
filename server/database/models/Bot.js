@@ -1,16 +1,16 @@
-const mongoose = require('mongoose')
-mongoose.pluralize(null)
+const mongoose = require("mongoose");
+mongoose.pluralize(null);
 
-const Config = new mongoose.Schema({
-	ID: String,
-	NAME: String,
-	PREFIX: String,
-	DESCRIPTION: String,
-	OWNERS: Array,
-	WEBSITE: String,
-	HELP_COMMAND: String,
-	SUPPORT_SERVER: String,
-	LIBRARY: String,
-})
+const Bot = new mongoose.Schema({
+    id: String,
+    name: String,
+    prefix: String,
+    description: String,
+    owners: Array,
+    website: String,
+    helpCommand: String,
+    supportServer: String,
+    library: String,
+});
 
-module.exports = mongoose.model('BOTS', Config)
+module.exports = mongoose.model("bots", Bot);
