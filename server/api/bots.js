@@ -23,9 +23,9 @@ router.post("/", async (req, res) => {
     const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
     if (!id || !name || !prefix || !description || !owners || !website || !helpCommand ||
         !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
-    // const bot = await Bots.findOne({ id });
-    // //need a good error code
-    // if (bot) return res.status(404).send({ message: "This bot already exists!" }); 
+    const bot = await Bots.findOne({ id });
+    //need a good error code
+    if (bot) return res.status(404).send({ message: "This bot already exists!" }); 
     const newBot = new Bots({ id, name, prefix, description, owners, website, helpCommand, supportServer, library });
     try { 
         await newBot.save();
@@ -44,21 +44,19 @@ router.put("/", async (req, res ) => {
     } catch (err) {
         return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
     }
-    return res.json({ message: "Succesfully created a new bot in the database!" });
+    return res.json({ message: "Succesfully updated the bot from the database!" });
 });
 
 router.delete("/:id", async (req, res) => { 
     const { id } = req.params;
-    const foundBot = await Bots.findOneAndDelete({ id });
     try { 
-        await foundBot.save(); 
+        await Bots.findOneAndDelete({ id });
     } catch (err) {
-        return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
+        return res.status(404).json({ message: "Something went wrong and the bot did not delete from the database!" }); 
     }
-    return res.json({ message: "Succesfully created a new bot in the database!" });
+    return res.json({ message: "Succesfully deleted the bot from the database!" });
 }); 
-module.exports = router;
+module.exports = router; 
 
-//https://github.com/Zyleaf/Cool-Bot-List/pull/2 for all the error codes
-// ill look up some status stuff and commit in the mean time
+
 
