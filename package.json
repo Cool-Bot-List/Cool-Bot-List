@@ -4,6 +4,8 @@
   "description": "",
   "main": "server/app.js",
   "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "node server/app.js",
     "server": "nodemon server/app.js",
     "client": "npm start --prefix client",
@@ -17,6 +19,8 @@
     "mongoose": "^5.9.25"
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
+    "eslint": "^7.4.0",
     "nodemon": "^2.0.4"
   }
 }
