@@ -11,11 +11,8 @@
   },
   "rules": {
     "indent": [
-      2,
-      2,
-      {
-        "indentSwitchCase": true
-      }
+      "error",
+      4
     ],
     "quotes": [
       "error",
