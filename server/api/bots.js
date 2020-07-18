@@ -24,7 +24,12 @@ router.post("/", async (req, res) => {
 
 router.get("/:ID", async (req, res) => {
     const { ID } = req.params;
-    if (!ID) return res.status(404).json({ message: "You do not have an ID!" });
+    if (!ID) {
+        //gets all bots if no id
+        const allBots = await Bots.find();
+        return res.json(allBots);
+    }
+    //gets 1 bot if id
     const foundBot = await Bots.findOne({ ID });
     if (!foundBot) return res.status(404).json({ message: "A bot was not found!" });
     return res.json(foundBot);
