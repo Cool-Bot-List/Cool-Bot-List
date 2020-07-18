@@ -13,4 +13,4 @@ const Bot = new mongoose.Schema({
     library: String,
 });
 
-module.exports = mongoose.model("BOTS", Bot);
+module.exports = mongoose.model("bots", Bot);
