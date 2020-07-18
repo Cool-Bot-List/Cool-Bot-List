@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Bots = require("../database/models/Bot.js");
+const Bot = require("../database/models/Bot.js");
 
 //Need a good error codes for all of these. Please help
 
@@ -35,12 +36,30 @@ router.get("/:id", async (req, res) => {
     return res.json(foundBot);
 });
 
-router.delete("/:id", (req, res) => {
-    
+router.put("/", async (req, res ) => { 
+    const foundBot = await Bots.findOneAndUpdate( req.body.id, req.body, { new: true});
+    try { 
+        await foundBot.save();
+    } catch (err) {
+        return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
+    }
+    return res.json({ message: "Succesfully created a new bot in the database!" });
 });
 
-router.put("/", (req, res ) => {
-
-});
-
+router.delete("/:id", async (req, res) => { 
+    const { id } = req.params;
+    const foundBot = await Bots.findOneAndDelete({ id });
+    try { 
+        await foundBot.save(); 
+    } catch (err) {
+        return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
+    }
+    return res.json({ message: "Succesfully created a new bot in the database!" });
+}); 
 module.exports = router;
+
+// Couldn't post
+// get or post make a post with all the feilds ok
+// use localhost:5000/api
+// ill look up some status stuff and commit in the mean time
+
