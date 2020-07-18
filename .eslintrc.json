@@ -10,8 +10,20 @@
     "ecmaVersion": 11
   },
   "rules": {
-    "indent": ["error", "tab"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "never"]
+    "indent": [
+      2,
+      2,
+      {
+        "indentSwitchCase": true
+      }
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "never"
+    ]
   }
 }
