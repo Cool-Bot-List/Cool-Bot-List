@@ -4,15 +4,14 @@ const Bots = require("../database/models/Bot.js");
 
 //Need a good error codes for all of these. Please help
 
+router.get("/", async (req, res) => {
+    // get all bots from db
+    const allBots = await Bots.find();
+    return res.json(allBots);
+});
 
 
 router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    if (!id) { 
-        //gets all bots if no id
-        const allBots = await Bots.find();
-        return res.json(allBots); 
-    }
     //gets 1 bot if id
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "A bot was not found!" });
