@@ -18,4 +18,14 @@ router.post('/', async (req, res) => {
     return res.status(200).json({ message: "Successfully created a new user and added them to the database" })
 });
 
+// get specific user
+router.get('/:id', async (req, res) => {
+
+    const { id } = req.params;
+    const user = await User.findOne({ id });
+    if (!user) return res.status(404).json({ message: "That user doesn't exist!" });
+    res.status(200).json({ user });
+
+});
+
 module.exports = router;
