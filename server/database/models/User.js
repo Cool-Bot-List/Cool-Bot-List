@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
 const Config = new mongoose.Schema({
-  ID: String,
+  id: String, //smh use lowercase
 });
 
 module.exports = mongoose.model("USERS", Config);
