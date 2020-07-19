@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Bots = require("../database/models/Bot.js");
+const Bot = require("../database/models/Bot.js");
 
 //Need a good error codes for all of these. Please help
 
@@ -24,12 +25,12 @@ router.post("/", async (req, res) => {
         !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
     const bot = await Bots.findOne({ id });
     //need a good error code
-    if (bot) return res.status(404).send({ message: "This bot already exists!" }); 
+    if (bot) return res.status(403).send({ message: "This bot already exists!" }); 
     const newBot = new Bots({ id, name, prefix, description, owners, website, helpCommand, supportServer, library });
     try { 
         await newBot.save();
     } catch (err) {
-        return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
+        return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!" });
     }
 
     return res.json({ message: "Succesfully created a new bot in the database!" });
@@ -41,17 +42,21 @@ router.put("/", async (req, res ) => {
     try { 
         await foundBot.save();
     } catch (err) {
-        return res.status(404).json({ message: "Something went wrong and the bot did not save to the database!" });
+        return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!" });
     }
     return res.json({ message: "Succesfully updated the bot from the database!" });
 });
 
 router.delete("/:id", async (req, res) => { 
     const { id } = req.params;
+    const foundBot = await Bot.findOne({ id });
+    if (!foundBot) {
+        return res.status(404).json({ message: "That bot doesn't exist in the database!" })
+    }
     try { 
         await Bots.findOneAndDelete({ id });
     } catch (err) {
-        return res.status(404).json({ message: "Something went wrong and the bot did not delete from the database!" }); 
+        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!" }); 
     }
     return res.json({ message: "Succesfully deleted the bot from the database!" });
 }); 
