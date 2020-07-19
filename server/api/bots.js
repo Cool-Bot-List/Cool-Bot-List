@@ -14,6 +14,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     //gets 1 bot if id
+    const { id } = req.params;
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "A bot was not found!" });
     return res.json(foundBot);
