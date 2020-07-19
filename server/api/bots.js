@@ -52,7 +52,7 @@ router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     const foundBot = await Bot.findOne({ id });
     if (!foundBot) {
-        return res.status(404).json({ message: "That bot doesn't exist in the database!" })
+        return res.status(404).json({ message: "That bot doesn't exist in the database!" });
     }
     try { 
         await Bots.findOneAndDelete({ id });
