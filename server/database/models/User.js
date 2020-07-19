@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
-const Config = new mongoose.Schema({
-  id: String, //smh use lowercase
+const User = new mongoose.Schema({
+    id: String,
+    bio: String,
+    bots: Array,
 });
 
-module.exports = mongoose.model("USERS", Config);
+module.exports = mongoose.model("users", User);
