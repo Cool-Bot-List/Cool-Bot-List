@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 
 // update user
 router.put('/', async (req, res) => {
-    const { id,  }
+    
 });
 
 // delete user
