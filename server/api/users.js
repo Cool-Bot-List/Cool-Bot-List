@@ -28,4 +28,11 @@ router.get('/:id', async (req, res) => {
 
 });
 
+// all users ::
+router.get('/', async (req, res) => {
+    const users = await User.find();
+    if (!users) return res.status(404).json({ message: "There are no users in the database!" });
+    res.status(200).json({ users });
+});
+
 module.exports = router;
