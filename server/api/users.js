@@ -35,4 +35,14 @@ router.get('/', async (req, res) => {
     res.status(200).json(users);
 });
 
+// update user
+router.put('/', async (req, res) => {
+    const { id,  }
+});
+
+// delete user
+router.delete('/:id', async (req, res) => {
+
+});
+
 module.exports = router;
