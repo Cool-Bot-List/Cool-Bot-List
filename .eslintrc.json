@@ -29,7 +29,7 @@
       }
     ],
     "comma-dangle": [
-      "error",
+      "always-multiline",
       {
         "arrays": "always",
         "objects": "always",
