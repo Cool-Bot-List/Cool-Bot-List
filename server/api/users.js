@@ -37,7 +37,15 @@ router.get("/", async (req, res) => {
 
 // update user
 router.put("/", async (req, res) => {
-
+    const { id, bio, bots } = req.body;
+    if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    const foundUser = await User.findOneAndUpdate( req.body.id, req.body, { new: true});
+    try { 
+        await foundUser.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!" });
+    }
+    return res.json({ message: "Succesfully updated the bot from the database!" });
 });
 
 // delete user
