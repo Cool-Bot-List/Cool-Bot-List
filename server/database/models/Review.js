@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 mongoose.pluralize(null);
 
 const Review = new mongoose.Schema({
-    botID: String,
-    userID: String,
+    botId: String,
+    userId: String,
     review: String,
     // reply: String, -- Removed for now
     likes: Number,
