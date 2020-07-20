@@ -54,7 +54,7 @@ router.get("/reviews/:botId/:reviewId", async (req, res) => {
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
     // Check if the review exists
-    const foundReview = await Review.findById({ _id: reviewId });
+    const foundReview = await Review.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
 
     else return res.status(200).json(foundReview);
@@ -69,7 +69,7 @@ router.delete("/reviews/:botId/:reviewId", async (req, res) => {
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
-    const foundReview = await Reviews.findById({ _id: reviewId });
+    const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
 
     else return res.status(200).json({ message: "Successfully deleted the review from the database." });
