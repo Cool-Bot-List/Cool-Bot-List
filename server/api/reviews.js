@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
+const Review = require("../database/models/Review");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/reviews/:id", async (req, res) => {
@@ -41,6 +42,22 @@ router.get("/reviews/:id", async (req, res) => {
 
     if (reviews.length === 0) return res.status(404).json({ message: "This bot has no reviews.", error: "Not Found." });
     else return res.status(200).json(reviews);
+
+});
+
+// Get ONE review for specified bot
+router.get("/reviews/:botID/:reviewID", async (req, res) => {
+    const { botID, reviewID } = req.params;
+
+    // Check if the bot actually exists
+    const foundBot = await Bots.findOne({ id: botID });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+
+    // Check if the review exists
+    const foundReview = await Review.findById({ _id: reviewID });
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+
+    else return res.status(200).json(foundReview);
 
 });
 
