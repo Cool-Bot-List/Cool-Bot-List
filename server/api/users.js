@@ -53,9 +53,10 @@ router.delete("/:id", async (req, res) => {
     const foundUser = await User.findOne({ id });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database!" });
     try {
-        await User.findByIdAndDelete({ id });
+        await User.findOneAndDelete({ id });
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error." }); 
+        return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error."
+        }); 
     }
     return res.json({ message: "Succesfully deleted the user from the database!" });
 });
