@@ -37,6 +37,9 @@
         "exports": "never",
         "functions": "never"
       }
+    ],
+    "camelcase": [
+      "error"
     ]
   }
 }
