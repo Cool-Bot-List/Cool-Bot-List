@@ -26,15 +26,15 @@ router.post("/", async (req, res) => {
     if (bot) return res.status(400).send({ message: "This bot already exists!", error: "Bad Request." });
     const newBot = new Bots({ id, name, prefix, description, owners, website, helpCommand, supportServer, library });
 
-    owners.forEach(async (e) => {
-        const users = await Users.findOne({ id: e });
+    for(const owner in owners) {
+        const users = await Users.findOne({ id: owner });
         users.bots.push(id);
         try {
             await users.save();
         } catch (err) {
             return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
         }
-    });
+    }
 
     try {
         await newBot.save();
@@ -64,7 +64,12 @@ router.delete("/:id", async (req, res) => {
     try {
         await Bots.findOneAndDelete({ id });
     } catch (err) {
+<<<<<<< HEAD
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
+=======
+        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." 
+        }); 
+>>>>>>> 4155cc953cbd665dd27fca6cf21ec3e5d1a0e533
     }
     return res.json({ message: "Succesfully deleted the bot from the database!" });
 });
