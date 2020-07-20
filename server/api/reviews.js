@@ -15,10 +15,10 @@ router.post("/reviews/:id", async (req, res) => {
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found."});
 
     // Check if the user already reviewed this bot
-    const userReviewd = await Reviews.findOne({ botID: id, userID });
+    const userReviewd = await Reviews.findOne({ botId: id, userID });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
 
-    const newReview = new Reviews({ botID: id, userID, review, reply: "", likes: 0, dislikes: 0 });
+    const newReview = new Reviews({ botId: id, userID, review, reply: "", likes: 0, dislikes: 0 });
     try {
         newReview.save();
     } catch (err) {
@@ -46,18 +46,33 @@ router.get("/reviews/:id", async (req, res) => {
 });
 
 // Get ONE review for specified bot
-router.get("/reviews/:botID/:reviewID", async (req, res) => {
-    const { botID, reviewID } = req.params;
+router.get("/reviews/:botId/:reviewId", async (req, res) => {
+    const { botId, reviewId } = req.params;
 
     // Check if the bot actually exists
-    const foundBot = await Bots.findOne({ id: botID });
+    const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
     // Check if the review exists
-    const foundReview = await Review.findById({ _id: reviewID });
+    const foundReview = await Review.findById({ _id: reviewId });
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
 
     else return res.status(200).json(foundReview);
+
+});
+
+// Delete ONE review for specified bot
+router.delete("/reviews/:botId/:reviewId", async (req, res) => {
+    const { botId, reviewId } = req.params;
+
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+
+    const foundReview = await Reviews.findById({ _id: reviewId });
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+
+    else return res.status(200).json({ message: "Successfully deleted the review from the database." });
 
 });
 
