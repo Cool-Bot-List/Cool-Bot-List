@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
     if (bot) return res.status(400).send({ message: "This bot already exists!", error: "Bad Request." });
     const newBot = new Bots({ id, name, prefix, description, owners, website, helpCommand, supportServer, library });
 
-    for(const owner in owners) {
+    for(const owner of owners) {
         const users = await Users.findOne({ id: owner });
         users.bots.push(id);
         try {
