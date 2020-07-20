@@ -8,6 +8,7 @@ const Review = new mongoose.Schema({
     // reply: String, -- Removed for now
     likes: Number,
     dislikes: Number,
+    rating: Number,
 });
 
 module.exports = mongoose.model("reviews", Review);
