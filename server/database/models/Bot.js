@@ -11,6 +11,7 @@ const Bot = new mongoose.Schema({
     helpCommand: String,
     supportServer: String,
     library: String,
+    reviews: Array,
 });
 
 module.exports = mongoose.model("bots", Bot);
