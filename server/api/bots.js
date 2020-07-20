@@ -57,7 +57,8 @@ router.delete("/:id", async (req, res) => {
     try { 
         await Bots.findOneAndDelete({ id });
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." }); 
+        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." 
+        }); 
     }
     return res.json({ message: "Succesfully deleted the bot from the database!" });
 }); 
