@@ -28,5 +28,21 @@ router.post("/reviews/:id", async (req, res) => {
 
 });
 
+// Get ALL reviews for specified bot
+router.get("/reviews/:id", async (req, res) => {
+
+    const { id } = req.params;
+
+    // Check if the bot exists or not
+    const foundBot = await Bots.findOne({ id });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+
+    const reviews = await Reviews.find();
+
+    if (reviews.length === 0) return res.status(404).json({ message: "This bot has no reviews.", error: "Not Found." });
+    else return res.status(200).json(reviews);
+
+});
+
 module.exports = router;
 
