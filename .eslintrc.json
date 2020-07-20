@@ -29,7 +29,7 @@
       }
     ],
     "comma-dangle": [
-      "warn",
+      "always-multiline",
       {
         "arrays": "always",
         "objects": "always",
