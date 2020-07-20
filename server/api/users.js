@@ -41,9 +41,9 @@ router.put("/", async (req, res) => {
     try {
         await foundUser.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!" });
+        return res.status(500).json({ message: "Something went wrong and the user did not save to the database!" });
     }
-    return res.json({ message: "Succesfully updated the bot from the database!" });
+    return res.json({ message: "Succesfully updated the user from the database!" });
 });
 
 // delete user
