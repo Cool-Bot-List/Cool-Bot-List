@@ -27,6 +27,10 @@
       {
         "code": 150
       }
+    ],
+    "comma-dangle": [
+      "error",
+      "always"
     ]
   }
 }
