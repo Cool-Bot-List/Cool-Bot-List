@@ -4,7 +4,7 @@ mongoose.pluralize(null);
 const Review = new mongoose.Schema({
     botId: String,
     userId: String,
-    review: String,
+    review: String, //should this be description
     // reply: String, -- Removed for now
     likes: Number,
     dislikes: Number,
