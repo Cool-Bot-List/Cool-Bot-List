@@ -25,8 +25,21 @@
     "max-len": [
       "error",
       {
-        "code": 150
+        "code": 250
       }
+    ],
+    "comma-dangle": [
+      "warn",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "never",
+        "exports": "never",
+        "functions": "never"
+      }
+    ],
+    "camelcase": [
+      "error"
     ]
   }
 }
