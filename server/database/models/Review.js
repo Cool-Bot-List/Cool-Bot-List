@@ -5,7 +5,7 @@ const Review = new mongoose.Schema({
     botID: String,
     userID: String,
     review: String,
-    reply: String,
+    // reply: String, -- Removed for now
     likes: Number,
     dislikes: Number,
 });
