@@ -82,7 +82,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
-router.put("/likes/:method/:reviewId", (req, res) => {
+router.put("/likes/:method/:reviewId", async (req, res) => {
     
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
@@ -90,7 +90,8 @@ router.put("/likes/:method/:reviewId", (req, res) => {
     //here= await Revie
     
     const foundReview = await Reviews.findById(reviewId);
-    // does it not run
+    // does it not run wait  yeah error oh lmfao
+    // LMFAO there you go, push so I can pull it    bruh
     if (method === likeMethods.INCREMENT) { 
        foundReview.likes = foundReview.likes + 1
     }
