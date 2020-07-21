@@ -82,7 +82,7 @@ router.delete("/:botId/reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
-router.put("/likes/:method/:reviewId", (req, res) => {
+router.put("/dislikes/:method/:reviewId", (req, res) => {
     
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
@@ -90,10 +90,10 @@ router.put("/likes/:method/:reviewId", (req, res) => {
     
     const foundReview = await Reviews.findById(reviewId)
     if (method === likeMethods.INCREMENT) {
-       foundReview.likes = foundReview.likes + 1
+       foundReview.likes = foundReview.dislikes + 1
     }
     if(method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.likes - 1
+        foundReview.likes = foundReview.dislikes - 1
     }
     try {
         await foundReview.save();
@@ -103,5 +103,8 @@ router.put("/likes/:method/:reviewId", (req, res) => {
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 
 });
+
+});
+
 
 module.exports = router;
