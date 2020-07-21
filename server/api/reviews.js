@@ -60,7 +60,7 @@ router.get("/:botId/:reviewId", async (req, res) => {
 });
 
 // Delete ONE review for specified bot
-router.delete("/:botId/reviewId", async (req, res) => {
+router.delete("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
@@ -84,7 +84,9 @@ router.delete("/:botId/reviewId", async (req, res) => {
 router.put("/likes", (req, res) => {
     const { method } = req.body;
     if (!method) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    if(method)
+    // if(method) {
+
+    // }
 });
 
 module.exports = router;

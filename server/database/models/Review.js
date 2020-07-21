@@ -11,14 +11,14 @@ const Review = new mongoose.Schema({
     rating: Number, //should this be stars instead
 });
 // example object
-const example = {
-    botId: "23984928439238492",
-    userId: "1342358234958",
-    review: "idk what this even is tbh",
-    // reply: String, -- Removed for now
-    likes: 1,
-    dislikes: 2,
-    ratings: 4,
-};
+// const example = {
+//     botId: "23984928439238492",
+//     userId: "1342358234958",
+//     review: "idk what this even is tbh",
+//     // reply: String, -- Removed for now
+//     likes: 1,
+//     dislikes: 2,
+//     ratings: 4,
+// }; -- why is this here lol
 
 module.exports = mongoose.model("reviews", Review);
