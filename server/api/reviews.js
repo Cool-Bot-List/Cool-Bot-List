@@ -59,16 +59,10 @@ router.get("/:botId/:reviewId", async (req, res) => {
 });
 
 // Delete ONE review for specified bot
-router.delete("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
     //remove the reviewId from the bot.reviews array
     // ok
     // Check if the bot exists
-    const foundBot = await Bots.findOne({ id: botId });
-    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-
-    const foundReview = await Reviews.findById(reviewId);
-    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
 
     const { reviews } = foundBot;
 
