@@ -1,3 +1,4 @@
-module.exports.likeMethods = {
+module.exports = {
     INCREMENT: "increment",
+    DECREMENT: "decrement",
 };
