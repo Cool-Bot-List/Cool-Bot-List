@@ -83,21 +83,19 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 router.put("/likes/:method/:reviewId", async (req, res) => {
-    
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     //here= await Revie
-    
+
     const foundReview = await Reviews.findById(reviewId);
-    // does it not run wait  yeah error oh lmfao
-    // LMFAO there you go, push so I can pull it    bruh look at the commit message lmao
-    
-    if (method === likeMethods.INCREMENT) { 
-       foundReview.likes = foundReview.likes + 1
+
+    // perfect commit name
+    if (method === likeMethods.INCREMENT) {
+        foundReview.likes = foundReview.likes + 1;
     }
-    if(method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.likes - 1
+    if (method === likeMethods.DECREMENT) {
+        foundReview.likes = foundReview.likes - 1;
     }
     try {
         await foundReview.save();
@@ -105,20 +103,20 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
-
 });
 
-router.put("/dislikes/:method/:reviewId", (req, res) => {
+router.put("/dislikes/:method/:reviewId", async (req, res) => {
+    // this one needs to be async too dum dum
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    
-    const foundReview = await Reviews.findById(reviewId)
+
+    const foundReview = await Reviews.findById(reviewId);
     if (method === likeMethods.INCREMENT) {
-       foundReview.likes = foundReview.dislikes + 1
+        foundReview.likes = foundReview.dislikes + 1;
     }
-    if(method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.dislikes - 1
+    if (method === likeMethods.DECREMENT) {
+        foundReview.likes = foundReview.dislikes - 1;
     }
     try {
         await foundReview.save();
@@ -126,8 +124,6 @@ router.put("/dislikes/:method/:reviewId", (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });
-
 });
-
 
 module.exports = router;
