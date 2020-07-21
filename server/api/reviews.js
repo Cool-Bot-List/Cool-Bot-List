@@ -91,7 +91,8 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
     
     const foundReview = await Reviews.findById(reviewId);
     // does it not run wait  yeah error oh lmfao
-    // LMFAO there you go, push so I can pull it    bruh
+    // LMFAO there you go, push so I can pull it    bruh look at the commit message lmao
+    
     if (method === likeMethods.INCREMENT) { 
        foundReview.likes = foundReview.likes + 1
     }
