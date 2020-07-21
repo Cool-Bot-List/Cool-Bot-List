@@ -30,7 +30,7 @@ router.post("/:id", async (req, res) => {
     res.status(200).json({ message: "Successfully saved the review to the database" });
 });
 
-// Get ALL reviews for specified bot
+// Get ALL reviews for specified bot -- This isnt working lol cause uh i was stoopid ;)
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -38,7 +38,8 @@ router.get("/:id", async (req, res) => {
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
-    const reviews = await Reviews.find();
+    const tempReviews = await Reviews.find(); // woops
+    const reviews = tempReviews.filter((reviewObject) => reviewObject.botId === id);
 
     if (reviews.length === 0) return res.status(404).json({ message: "This bot has no reviews.", error: "Not Found." });
     else return res.status(200).json(reviews);
@@ -59,17 +60,17 @@ router.get("/:botId/:reviewId", async (req, res) => {
 });
 
 // Delete ONE review for specified bot
+router.delete("/:botId/reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
-    //remove the reviewId from the bot.reviews array
-    // ok
-    // Check if the bot exists
-
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     const { reviews } = foundBot;
 
     reviews.splice(
         reviews.findIndex((element) => element === reviewId),
         1
     );
+
     try {
         // so review a bot, then delete the review right
         await foundBot.save();
@@ -80,6 +81,10 @@ router.get("/:botId/:reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
-router.put("/");
+router.put("/likes", (req, res) => {
+    const { method } = req.body;
+    if (!method) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    if(method)
+});
 
 module.exports = router;
