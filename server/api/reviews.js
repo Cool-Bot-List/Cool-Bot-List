@@ -104,7 +104,7 @@ router.put("/dislikes/:method/:reviewId", (req, res) => {
 
 });
 
-router.put("/dislikes/:method/:reviewId", (req, res) => {
+router.put("/likes/:method/:reviewId", (req, res) => {
     
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
