@@ -61,7 +61,7 @@ router.get("/:botId/:reviewId", async (req, res) => {
 });
 
 // Delete ONE review for specified bot
-router.delete("/:botId/reviewId", async (req, res) => {
+router.delete("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
@@ -101,8 +101,6 @@ router.put("/dislikes/:method/:reviewId", (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
-
-});
 
 });
 
