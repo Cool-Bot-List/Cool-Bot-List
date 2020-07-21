@@ -17,8 +17,10 @@ router.post("/:id", async (req, res) => {
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
 
     const newReview = new Reviews({ botId: id, userId, review, reply: "", likes: 0, dislikes: 0 });
+    foundBot.reviews.push(newReview._id);
     try {
         newReview.save();
+        foundBot.save();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the review was not saved to the database", error: "Internal Server Error." });
     }
