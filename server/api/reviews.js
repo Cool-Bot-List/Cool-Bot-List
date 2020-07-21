@@ -6,12 +6,12 @@ const Bots = require("../database/models/Bot");
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
     const { id } = req.params;
-    const { userId, review } = req.body;
+    const { userId, review, likes, dislikes, rating } = req.body;
 
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-
+    // why does this seem like its spelled wrong lol lmao
     // Check if the user already reviewed this bot
     const userReviewd = await Reviews.findOne({ botId: id, userId });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
@@ -59,13 +59,18 @@ router.get("/:botId/:reviewId", async (req, res) => {
 // Delete ONE review for specified bot
 router.delete("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
-
+    //remove the reviewId from the bot.reviews array
+    // ok
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+
+    const reviewsArray = foundBot.reviews;
+
+    reviewsArray.splice();
 
     try {
         await Reviews.findByIdAndDelete(reviewId);
