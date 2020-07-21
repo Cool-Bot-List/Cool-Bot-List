@@ -90,6 +90,28 @@ router.put("/dislikes/:method/:reviewId", (req, res) => {
     
     const foundReview = await Reviews.findById(reviewId)
     if (method === likeMethods.INCREMENT) {
+       foundReview.likes = foundReview.likes + 1
+    }
+    if(method === likeMethods.DECREMENT) {
+        foundReview.likes = foundReview.likes - 1
+    }
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+    }
+    return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
+
+});
+
+router.put("/dislikes/:method/:reviewId", (req, res) => {
+    
+    const { method, reviewId } = req.params;
+    if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    
+    const foundReview = await Reviews.findById(reviewId)
+    if (method === likeMethods.INCREMENT) {
        foundReview.likes = foundReview.dislikes + 1
     }
     if(method === likeMethods.DECREMENT) {
@@ -100,7 +122,7 @@ router.put("/dislikes/:method/:reviewId", (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
-    return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
+    return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });
 
 });
 
