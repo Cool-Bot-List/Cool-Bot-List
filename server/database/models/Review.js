@@ -5,7 +5,11 @@ const Review = new mongoose.Schema({
     botId: String,
     userId: String,
     review: String, //should this be description
-    // reply: String, -- Removed for now
+    ownerReply: {
+        review: String,
+        likes: { type: Number, default: 0, required: false },
+        dislikes: { type: Number, default: 0, required: false },
+    },
     likes: { type: Number, default: 0, required: false },
     dislikes: { type: Number, default: 0, required: false },
     rating: Number, //should this be stars instead
