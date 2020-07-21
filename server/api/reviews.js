@@ -4,7 +4,7 @@ const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 
 // Post user review -- requires Oauth to actually function --
-router.post("/reviews/:id", async (req, res) => {
+router.post("/:id", async (req, res) => {
     const { id } = req.params;
     const { userId, review } = req.body;
 
@@ -27,7 +27,7 @@ router.post("/reviews/:id", async (req, res) => {
 });
 
 // Get ALL reviews for specified bot
-router.get("/reviews/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
     // Check if the bot exists or not
@@ -41,7 +41,7 @@ router.get("/reviews/:id", async (req, res) => {
 });
 
 // Get ONE review for specified bot
-router.get("/reviews/:botId/:reviewId", async (req, res) => {
+router.get("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
 
     // Check if the bot actually exists
@@ -55,7 +55,7 @@ router.get("/reviews/:botId/:reviewId", async (req, res) => {
 });
 
 // Delete ONE review for specified bot
-router.delete("/reviews/:botId/:reviewId", async (req, res) => {
+router.delete("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
 
     // Check if the bot exists
