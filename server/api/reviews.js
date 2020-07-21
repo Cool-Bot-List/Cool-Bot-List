@@ -6,9 +6,11 @@ const Bots = require("../database/models/Bot");
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
     const { id } = req.params;
-    const { userId, review, likes, dislikes, rating } = req.body;
-
-    // Check if the bot exists
+    const { userId, review, rating } = req.body;
+    //check if properties are missing from the body likes and dislikes are 0 by default
+    if (!userId || !review || !rating) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
+    // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // why does this seem like its spelled wrong lol lmao
@@ -16,11 +18,11 @@ router.post("/:id", async (req, res) => {
     const userReviewd = await Reviews.findOne({ botId: id, userId });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
 
-    const newReview = new Reviews({ botId: id, userId, review, reply: "", likes: 0, dislikes: 0 });
+    const newReview = new Reviews({ botId: id, userId, review });
     foundBot.reviews.push(newReview._id);
     try {
-        newReview.save();
-        foundBot.save();
+        await newReview.save();
+        await foundBot.save();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the review was not saved to the database", error: "Internal Server Error." });
     }
@@ -68,16 +70,22 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
 
-    const reviewsArray = foundBot.reviews;
+    const { reviews } = foundBot;
 
-    reviewsArray.splice();
-
+    reviews.splice(
+        reviews.findIndex((element) => element === reviewId),
+        1
+    );
     try {
+        // so review a bot, then delete the review right
+        await foundBot.save();
         await Reviews.findByIdAndDelete(reviewId);
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
+
+router.put("/");
 
 module.exports = router;

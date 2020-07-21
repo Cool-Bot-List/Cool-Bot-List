@@ -6,9 +6,9 @@ const Review = new mongoose.Schema({
     userId: String,
     review: String, //should this be description
     // reply: String, -- Removed for now
-    likes: Number,
-    dislikes: Number,
-    rating: { type: Number, default: [], required: false }, //should this be stars instead
+    likes: { type: Number, default: 0, required: false },
+    dislikes: { type: Number, default: 0, required: false },
+    rating: Number, //should this be stars instead
 });
 // example object
 const example = {
