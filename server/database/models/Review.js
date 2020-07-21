@@ -8,7 +8,7 @@ const Review = new mongoose.Schema({
     // reply: String, -- Removed for now
     likes: Number,
     dislikes: Number,
-    ratings: { type: Number, default: null, required: false }, //should this be stars instead
+    ratings: { type: Number, default: [], required: false }, //should this be stars instead
 });
 // example object
 const example = {
