@@ -85,3 +85,4 @@ router.delete("/:id", async (req, res) => {
     return res.json({ message: "Succesfully deleted the bot from the database!" });
 });
 module.exports = router;
+//test
