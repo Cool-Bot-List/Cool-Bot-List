@@ -23,7 +23,7 @@ client.on("ready", async () => {
         }
     });
     socket.on("new-bot", (data) => {
-        const embed = new MessageEmbed().setDescription(`id:${data.id}\nName:${data.name}\nPrefix:${data.prefix}\nDescription:${data.description}\nowners:${data.owners}\nwebsite:${data.website}\nhelpCommand:${data.helpCommand}\nsupportServer:${data.supportServer}\nlibrary:${data.library}\nreviews:none the bot was just created`);
+        const embed = new MessageEmbed().setDescription(`id:${data.id}\nName:${data.name}\nPrefix:${data.prefix}\nDescription:${data.description}\nowners:${data.owners}\nwebsite:${data.website}\nhelpCommand:${data.helpCommand}\nsupportServer:${data.supportServer}\nlibrary:${data.library}\nreviews:none the bot was just created`).setTitle("A new user was created.");
         logChannel.send("A new user was created.");
         logChannel.send(embed);
     });
