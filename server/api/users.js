@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Users = require("../database/models/User.js");
 
+// Get the currently logged in user
+router.get("/@me", async (req, res) => {
+    if (!req.user) return res.status(404).json({ message: "There is no user curently logged in!", error: "Not Found." });
+    if (req.user) return res.status(200).json(req.user);
+});
+
 // post user
 router.post("/", async (req, res) => {
     const { id, bio, bots } = req.body;
@@ -12,7 +18,7 @@ router.post("/", async (req, res) => {
     try {
         await newUser.save();
     } catch (err) {
-    //     :: I have no idea what status code to put here, someone help lmao
+        //     :: I have no idea what status code to put here, someone help lmao
         return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
@@ -55,8 +61,7 @@ router.delete("/:id", async (req, res) => {
     try {
         await Users.findOneAndDelete({ id });
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error.",
-        }); 
+        return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error." });
     }
     return res.json({ message: "Succesfully deleted the user from the database!" });
 });
