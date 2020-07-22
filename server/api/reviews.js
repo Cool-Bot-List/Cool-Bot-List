@@ -82,19 +82,22 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
+//add the owner reply
 router.put("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
 
     const { ownerReply, ownerId } = req.body;
 
-    if (!ownerReply || !ownerId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
 
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
     // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.some(el => el === ownerId)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    if (!foundBot.owners.some((el) => el === ownerId)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+
+    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
 
     // Make sure the review exists
     const foundReview = await Reviews.findById(reviewId);
@@ -103,16 +106,24 @@ router.put("/:botId/:reviewId", async (req, res) => {
     // Insert the reply
     foundReview.ownerReply.review = ownerReply;
 
-    try { // Save it
+    try {
+        // Save it
         await foundReview.save();
     } catch (err) {
         res.status(500).json({ message: "Something wen't wrong and the reply did not post.", error: "Internal Server Error" });
     }
 
     res.status(200).json({ message: "Your reply has been successfully posted." });
-    
+});
+//delete the owners reply
+router.delete("/:botId/:reviewId", async (req, res) => {
+    const { botId, reviewId } = req.params;
+
+    const { ownerReply, ownerId } = req.body;
+    if (!ownerReply || !ownerId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
 });
 
+//like the review
 router.put("/likes/:method/:reviewId", async (req, res) => {
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
@@ -136,6 +147,7 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 });
 
+//dislike the review
 router.put("/dislikes/:method/:reviewId", async (req, res) => {
     // this one needs to be async too dum dum
     const { method, reviewId } = req.params;
