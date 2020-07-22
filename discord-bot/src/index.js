@@ -14,13 +14,26 @@ client.on("ready", async () => {
     socket.on("new-user", (data) => {
         data = JSON.parse(data);
         console.log("on new-user triggered");
-        if (logChannel) {
-            logChannel.send("a new user was made");
-            const embed = new MessageEmbed().setTitle("new user").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
-            logChannel.send(embed);
 
-            logChannel.send(data);
-        }
+        logChannel.send("a new user was made");
+        const embed = new MessageEmbed().setTitle("a new user was made").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        logChannel.send(embed);
+
+        logChannel.send(data);
+    });
+    socket.on("user-update", (data) => {
+        logChannel.send("a user was updated");
+        const embed = new MessageEmbed().setTitle("a user was updated").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        logChannel.send(embed);
+
+        logChannel.send(data);
+    });
+    socket.on("user-delete", (data) => {
+        logChannel.send("a user was deleted");
+        const embed = new MessageEmbed().setTitle("a user was deleted").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        logChannel.send(embed);
+
+        logChannel.send(data);
     });
     socket.on("new-bot", (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;

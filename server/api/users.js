@@ -46,6 +46,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the user did not save to the database!" });
     }
+    WebSocket.emit("user-update", foundUser);
     return res.json({ message: "Succesfully updated the user from the database!" });
 });
 // just testing so i have a commit
@@ -60,6 +61,7 @@ router.delete("/:id", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error." });
     }
+    WebSocket.emit("user-delete", foundUser);
     return res.json({ message: "Succesfully deleted the user from the database!" });
 });
 // this is have stupid
