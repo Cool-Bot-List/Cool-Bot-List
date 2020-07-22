@@ -145,10 +145,10 @@ router.put("owner-reply/like/:method/:botId/:reviewId", async (req, res) => {
     if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Handle method
     if (method === likeMethods.INCREMENT) {
-        foundReview.ownerReply.likes = foundReview.likes + 1;
+        foundReview.ownerReply.likes = foundReview.ownerReply.likes + 1;
     }
     if (method === likeMethods.DECREMENT) {
-        foundReview.ownerReply.likes = foundReview.likes - 1;
+        foundReview.ownerReply.likes = foundReview.ownerReply.likes - 1;
     }
     try {
         await foundReview.save();
@@ -156,6 +156,32 @@ router.put("owner-reply/like/:method/:botId/:reviewId", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the owners reply did not handle likes in the database", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the likes of the owners reply on the database." });
+});
+// Dislike the owners reply
+router.put("owner-reply/dislike/:method/:botId/:reviewId", async (req, res) => {
+    const { method, botId, reviewId } = req.params;
+    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Handle method
+    if (method === likeMethods.INCREMENT) {
+        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes + 1;
+    }
+    if (method === likeMethods.DECREMENT) {
+        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes - 1;
+    }
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle dislikes in the database", error: "Internal Server Error." });
+    }
+    return res.status(200).json({ message: "Successfully updated the dislikes of the owners reply on the database." });
 });
 
 //like the review
