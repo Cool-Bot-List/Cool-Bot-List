@@ -5,21 +5,20 @@ const Bots = require("../database/models/Bot");
 const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
-router.post("/:id", async (req, res) => {
-    const { id } = req.params;
-    const { userId, review, rating } = req.body;
+router.post("/", async (req, res) => {
+    const { userId, review, rating, botId } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
-    const foundBot = await Bots.findOne({ id });
+    const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // why does this seem like its spelled wrong lol lmao
     // Check if the user already reviewed this bot
-    const userReviewd = await Reviews.findOne({ botId: id, userId });
+    const userReviewd = await Reviews.findOne({ botId, userId });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
 
-    const newReview = new Reviews({ botId: id, userId, review });
+    const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
     try {
         await newReview.save();
