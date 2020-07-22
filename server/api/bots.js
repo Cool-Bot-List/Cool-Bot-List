@@ -53,6 +53,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
+    WebSocket.emit("bot-update", foundBot);
     return res.json({ message: "Succesfully updated the bot from the database!" });
 });
 
