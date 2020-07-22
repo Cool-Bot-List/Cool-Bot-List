@@ -5,21 +5,20 @@ const Bots = require("../database/models/Bot");
 const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
-router.post("/:id", async (req, res) => {
-    const { id } = req.params;
-    const { userId, review, rating } = req.body;
+router.post("/", async (req, res) => {
+    const { userId, review, rating, botId } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
-    const foundBot = await Bots.findOne({ id });
+    const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // why does this seem like its spelled wrong lol lmao
     // Check if the user already reviewed this bot
-    const userReviewd = await Reviews.findOne({ botId: id, userId });
+    const userReviewd = await Reviews.findOne({ botId, userId });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
 
-    const newReview = new Reviews({ botId: id, userId, review });
+    const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
     try {
         await newReview.save();
@@ -82,15 +81,115 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
+//add the owner reply
+router.put("owner-reply/:botId/:reviewId", async (req, res) => {
+    const { botId, reviewId } = req.params;
+    const { ownerReply, ownerId } = req.body;
+    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Check to make sure it's one of the owners making the request
+    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Insert the reply
+    foundReview.ownerReply.review = ownerReply;
+    try {
+        // Save it
+        await foundReview.save();
+    } catch (err) {
+        res.status(500).json({ message: "Something wen't wrong and the reply did not post.", error: "Internal Server Error" });
+    }
+
+    res.status(200).json({ message: "Your reply has been successfully posted." });
+});
+//delete the owners reply
+router.delete("owner-reply/:botId/:reviewId", async (req, res) => {
+    const { botId, reviewId } = req.params;
+    const { ownerReply, ownerId } = req.body;
+    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Check to make sure it's one of the owners making the request
+    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Delete the reply
+    foundReview.ownerReply.review = "";
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owner's reply did not delete from the database.", error: "Internal Server Error." });
+    }
+
+    return res.status(200).json({ message: "Successfully deleted the owner's reply from the database." });
+});
+// Like the owners reply
+router.put("owner-reply/like/:method/:botId/:reviewId", async (req, res) => {
+    const { method, botId, reviewId } = req.params;
+    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Handle method
+    if (method === likeMethods.INCREMENT) {
+        foundReview.ownerReply.likes = foundReview.ownerReply.likes + 1;
+    }
+    if (method === likeMethods.DECREMENT) {
+        foundReview.ownerReply.likes = foundReview.ownerReply.likes - 1;
+    }
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle likes in the database", error: "Internal Server Error." });
+    }
+    return res.status(200).json({ message: "Successfully updated the likes of the owners reply on the database." });
+});
+// Dislike the owners reply
+router.put("owner-reply/dislike/:method/:botId/:reviewId", async (req, res) => {
+    const { method, botId, reviewId } = req.params;
+    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Handle method
+    if (method === likeMethods.INCREMENT) {
+        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes + 1;
+    }
+    if (method === likeMethods.DECREMENT) {
+        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes - 1;
+    }
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle dislikes in the database", error: "Internal Server Error." });
+    }
+    return res.status(200).json({ message: "Successfully updated the dislikes of the owners reply on the database." });
+});
+
+//like the review
 router.put("/likes/:method/:reviewId", async (req, res) => {
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    //here= await Revie
-
     const foundReview = await Reviews.findById(reviewId);
 
-    // perfect commit name
     if (method === likeMethods.INCREMENT) {
         foundReview.likes = foundReview.likes + 1;
     }
@@ -100,11 +199,12 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
     try {
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+        return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 });
 
+//dislike the review
 router.put("/dislikes/:method/:reviewId", async (req, res) => {
     // this one needs to be async too dum dum
     const { method, reviewId } = req.params;
@@ -121,7 +221,7 @@ router.put("/dislikes/:method/:reviewId", async (req, res) => {
     try {
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+        return res.status(500).json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });
 });

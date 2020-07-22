@@ -6,7 +6,7 @@ const Review = new mongoose.Schema({
     userId: String,
     review: String, //should this be description
     ownerReply: {
-        review: String,
+        review: { type: String, default: "" },
         likes: { type: Number, default: 0, required: false },
         dislikes: { type: Number, default: 0, required: false },
     },
