@@ -1,7 +1,6 @@
 require("dotenv").config();
 const { Client, MessageEmbed } = require("discord.js");
 const io = require("socket.io-client");
-const { json } = require("express");
 const client = new Client();
 require("dotenv").config();
 client.login(process.env.BOT_TOKEN);
