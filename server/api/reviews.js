@@ -83,29 +83,20 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 //add the owner reply
-router.put("/:botId/:reviewId", async (req, res) => {
+router.put("owner-reply/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
-
     const { ownerReply, ownerId } = req.body;
-
     if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-
     // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.some((el) => el === ownerId)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
-
     if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
-
     // Make sure the review exists
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-
     // Insert the reply
     foundReview.ownerReply.review = ownerReply;
-
     try {
         // Save it
         await foundReview.save();
@@ -116,11 +107,29 @@ router.put("/:botId/:reviewId", async (req, res) => {
     res.status(200).json({ message: "Your reply has been successfully posted." });
 });
 //delete the owners reply
-router.delete("/:botId/:reviewId", async (req, res) => {
+router.delete("owner-reply/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
-
     const { ownerReply, ownerId } = req.body;
-    if (!ownerReply || !ownerId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Check to make sure it's one of the owners making the request
+    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Delete the reply
+    foundReview.ownerReply.review = "";
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owner's reply did not delete from the database.", error: "Internal Server Error." });
+    }
+
+    return res.status(200).json({ message: "Successfully deleted the owner's reply from the database." });
 });
 
 //like the review
