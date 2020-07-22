@@ -9,7 +9,7 @@ router.get("/@me", async (req, res) => {
 });
 
 // post user
-router.post("/", async (req, res) => {
+/* router.post("/", async (req, res) => {
     const { id, bio, bots } = req.body;
     if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
     const user = await Users.findOne({ id });
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
-});
+}); */
 
 // get specific user
 router.get("/:id", async (req, res) => {
