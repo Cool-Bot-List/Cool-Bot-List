@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
     const foundBot = await Bots.findOneAndUpdate(req.body.id, req.body, { new: true });
+    if (!req.user.id === foundBot.id) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     try {
         await foundBot.save();
     } catch (err) {
