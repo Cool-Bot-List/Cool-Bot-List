@@ -45,7 +45,7 @@ router.put("/", async (req, res) => {
     }
     return res.json({ message: "Succesfully updated the user from the database!" });
 });
-
+// just testing so i have a commit
 // delete user
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
