@@ -58,6 +58,8 @@ router.put("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
+    if (!req.user.id === foundBot.id) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+
     const { id } = req.params;
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) {
