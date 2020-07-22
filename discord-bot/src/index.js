@@ -87,12 +87,11 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("new-review", (data) => {
-        logChannel.send(JSON.stringify(data));
         const { userId, review, rating, botId } = data;
 
         const user = client.users.cache.get(userId);
         const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.username}(review author)`, user.displayAvatarURL());
-        let embedDescription;
+        let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
         if (botId) embedDescription += `botId: ${botId}\n\n`;
         if (review) embedDescription += `review: ${review}\n\n`;
