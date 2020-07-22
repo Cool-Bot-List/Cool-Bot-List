@@ -1,15 +1,16 @@
-const http = require("http");
-const io = require("socket.io");
-
-function startWebSocket(app) {
-    http.Server(app);
-    io(http);
-
-    io.on("connection", (socket) => {
-        console.log("conection happend");
-    });
-
-    http.listen(5000);
+class WebSocket {
+    constructor() {
+        this.socket = null;
+    }
+    static setSocket(httpServer) {
+        this.socket = require("socket.io")(httpServer);
+        console.log("setting");
+        return this;
+    }
+    static getSocket() {
+        console.log("getting");
+        return this.socket;
+    }
 }
 
-module.exports = startWebSocket;
+module.exports = WebSocket;

@@ -1,6 +1,10 @@
 const express = require("express");
+const http = require("http");
 const app = express();
 require("./database/database");
+
+const server = http.createServer(app);
+require("./websocket/ws").setSocket(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,4 +17,4 @@ app.use("/api/bots/reviews", require("./api/reviews"));
 
 //semi colons smh
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+server.listen(PORT, () => console.log(`Listening on ${PORT}`));
