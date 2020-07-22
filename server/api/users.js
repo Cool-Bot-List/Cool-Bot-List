@@ -60,5 +60,5 @@ router.delete("/:id", async (req, res) => {
     }
     return res.json({ message: "Succesfully deleted the user from the database!" });
 });
-
+// this is have stupid
 module.exports = router;
