@@ -3,7 +3,8 @@ const { Client, MessageEmbed } = require("discord.js");
 const io = require("socket.io-client");
 const { json } = require("express");
 const client = new Client();
-client.login("NzM1MjczMzQ4ODc1MDI2NTcz.XxeA4A.WDrtkGOVI897wOzrCufW4r-6TUM");
+require("dotenv").config();
+client.login(process.env.BOT_TOKEN);
 
 const socket = io("http://localhost:5000");
 
