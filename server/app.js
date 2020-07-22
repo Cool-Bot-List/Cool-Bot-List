@@ -5,16 +5,17 @@ const DiscordStrategy = require("./api/oauth2/strategies/discordStrategy");
 const app = express();
 require("./database/database");
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: "Testing",
-    cookie: {
-        maxAge: 60 * 1000 * 60 * 24,
-    },
-    saveUninitialized: false,
-}));
+app.use(
+    session({
+        secret: "Testing",
+        cookie: {
+            maxAge: 60 * 1000 * 60 * 24,
+        },
+        saveUninitialized: false,
+    })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
