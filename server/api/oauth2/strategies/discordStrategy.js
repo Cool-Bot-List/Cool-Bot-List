@@ -1,6 +1,7 @@
 const DiscordStrategy = require("passport-discord");
 const passport = require("passport");
 const User = require("../../../database/models/User");
+require("dotenv").config();
 
 passport.serializeUser((user, done) => {
     done(null, user._id);
@@ -14,8 +15,8 @@ passport.deserializeUser(async (id, done) => {
 passport.use(
     new DiscordStrategy(
         {
-            clientID: "735273348875026573",
-            clientSecret: "YLj5rbnzhIuV1seAQ7VeitS1pSLkGKW7",
+            clientID: process.env.CLIENT_ID,
+            clientSecret: process.env.CLIENT_SECERET,
             callbackURL: "http://localhost:5000/api/login/redirect",
             scope: ["identify", "applications.builds.read"],
         },
