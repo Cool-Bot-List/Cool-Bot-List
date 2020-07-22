@@ -131,17 +131,40 @@ router.delete("owner-reply/:botId/:reviewId", async (req, res) => {
 
     return res.status(200).json({ message: "Successfully deleted the owner's reply from the database." });
 });
+// Like the owners reply
+router.put("owner-reply/like/:method/:botId/:reviewId", async (req, res) => {
+    const { method, botId, reviewId } = req.params;
+    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    // Check if the bot exists
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+    // Make sure the review exists
+    const foundReview = await Reviews.findById(reviewId);
+    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    // Make sure the owners reply exists
+    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    // Handle method
+    if (method === likeMethods.INCREMENT) {
+        foundReview.ownerReply.likes = foundReview.likes + 1;
+    }
+    if (method === likeMethods.DECREMENT) {
+        foundReview.ownerReply.likes = foundReview.likes - 1;
+    }
+    try {
+        await foundReview.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle likes in the database", error: "Internal Server Error." });
+    }
+    return res.status(200).json({ message: "Successfully updated the likes of the owners reply on the database." });
+});
 
 //like the review
 router.put("/likes/:method/:reviewId", async (req, res) => {
     const { method, reviewId } = req.params;
     if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    //here= await Revie
-
     const foundReview = await Reviews.findById(reviewId);
 
-    // perfect commit name
     if (method === likeMethods.INCREMENT) {
         foundReview.likes = foundReview.likes + 1;
     }
@@ -151,7 +174,7 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
     try {
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+        return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 });
@@ -173,7 +196,7 @@ router.put("/dislikes/:method/:reviewId", async (req, res) => {
     try {
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+        return res.status(500).json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });
 });
