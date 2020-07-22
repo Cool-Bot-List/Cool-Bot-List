@@ -83,6 +83,7 @@ router.delete("/:id", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
+    WebSocket.emit("bot-delete", foundBot);
     return res.json({ message: "Succesfully deleted the bot from the database!" });
 });
 module.exports = router;
