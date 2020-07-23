@@ -3,12 +3,14 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const likeMethods = require("../constants/likeMethods");
+const Users = require("../database/models/User");
 
 // Post user review -- requires Oauth to actually function --
-router.post("/", async (req, res) => {
-    const { userId, review, rating, botId } = req.body;
+router.post("/:id", async (req, res) => {
+    const botId = req.params.id;
+    const { userId, review, rating } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating || botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id: botId });
@@ -20,6 +22,18 @@ router.post("/", async (req, res) => {
 
     const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
+
+    for (const owner of foundBot.owners) {
+        const ownerObject = await Users.findOne({ id: owner });
+        ownerObject.notifications.push("This is a notification");
+        try {
+            await ownerObject.save();
+        } catch (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Something went wrong and the owners were not notified of the reviews.", error: "Internal Server Error." });
+        }
+    }
+
     try {
         await newReview.save();
         await foundBot.save();

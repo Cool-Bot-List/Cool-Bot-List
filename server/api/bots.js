@@ -72,7 +72,6 @@ router.put("/:id/:method", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
-    res.status(201).json({ message: "Succesfully updated the bot's status." });
 });
 
 //delets a bot from the db
