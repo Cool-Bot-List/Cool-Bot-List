@@ -18,12 +18,12 @@ router.get("/:id", async (req, res) => {
 });
 //posts a bot to the db
 router.post("/", async (req, res) => {
-    const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
-    if (!id || !name || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
+    const { id, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
+    if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
     const bot = await Bots.findOne({ id });
     //need a good error code
     if (bot) return res.status(400).send({ message: "This bot already exists!", error: "Bad Request." });
-    const newBot = new Bots({ id, name, prefix, description, owners, website, helpCommand, supportServer, library });
+    const newBot = new Bots({ id, tag, prefix, description, owners, website, helpCommand, supportServer, library });
 
     for (const owner of owners) {
         const users = await Users.findOne({ id: owner });
