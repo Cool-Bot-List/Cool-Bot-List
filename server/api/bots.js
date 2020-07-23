@@ -63,7 +63,9 @@ router.put("/:id/:method", async (req, res) => {
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database!", error: "Not Found." });
     if (method === botApproveMethods.APPROVE) foundBot.isApproved = true;
-    if (method === botApproveMethods.REJECT) foundBot.isApproved = false;
+    if (method === botApproveMethods.REJECT) {
+        foundBot.isApproved = false;
+        await foundBot.deleteOne()
     try {
         await foundBot.save();
     } catch (err) {
