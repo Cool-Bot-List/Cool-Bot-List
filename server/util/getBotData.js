@@ -1,4 +1,4 @@
-require("dotenv");
+require("dotenv").config();
 const { getAvatarUrl } = require("../util/getAvatarUrl");
 const { getTag } = require("../util/getAvatarUrl");
 const axios = require("axios").default;
