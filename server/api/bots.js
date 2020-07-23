@@ -65,13 +65,14 @@ router.put("/:id/:method", async (req, res) => {
     if (method === botApproveMethods.APPROVE) foundBot.isApproved = true;
     if (method === botApproveMethods.REJECT) {
         foundBot.isApproved = false;
-        await foundBot.deleteOne()
-    try {
-        await foundBot.save();
-    } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
+        await foundBot.deleteOne();
+        try {
+            await foundBot.save();
+        } catch (err) {
+            return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
+        }
+        res.status(201).json({ message: "Succesfully updated the bot's status." });
     }
-    res.status(201).json({ message: "Succesfully updated the bot's status." });
 });
 
 //delets a bot from the db
