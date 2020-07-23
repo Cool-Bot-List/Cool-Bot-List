@@ -9,6 +9,7 @@ const User = new mongoose.Schema({
     bio: { type: String, default: "", required: false },
     bots: { type: Array, default: [], required: false },
     newUser: { type: Boolean, default: true, required: false },
+    notifications: { type: Array, default: [], required: false },
 });
 
 module.exports = mongoose.model("users", User);
