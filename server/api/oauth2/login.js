@@ -8,6 +8,7 @@ router.get("/login/redirect", passport.authenticate("discord"), async (req, res)
         res.redirect("http://localhost:3000/bio/add");
         const user = await Users.findOne({ id: req.user.id });
         user.newUser = false;
+        await user.save();
     } else if (!req.user.newUser) {
         res.redirect(`http://localhost:3000/users/${req.user.id}`);
     } else {
