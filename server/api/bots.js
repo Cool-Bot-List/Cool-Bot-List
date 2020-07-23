@@ -65,7 +65,8 @@ router.put("/:id/:method", async (req, res) => {
     if (method === botApproveMethods.APPROVE) foundBot.isApproved = true;
     if (method === botApproveMethods.REJECT) {
         foundBot.isApproved = false;
-        await foundBot.deleteOne()
+        await foundBot.deleteOne();
+    }
     try {
         await foundBot.save();
     } catch (err) {
