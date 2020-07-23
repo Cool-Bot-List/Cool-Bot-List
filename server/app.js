@@ -25,6 +25,7 @@ app.use(express.json(), express.urlencoded({ extended: true }));
 app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
 app.use("/api/bots/reviews", require("./api/reviews"));
+app.use("/api", require("./api/oauth2/login"));
 
 //semi colons smh
 const PORT = 5000;
