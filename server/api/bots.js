@@ -3,21 +3,19 @@ const router = express.Router();
 const Bots = require("../database/models/Bot.js");
 const Users = require("../database/models/User");
 
-//Need a good error codes for all of these. Please help
-
+// get all bots from db
 router.get("/", async (req, res) => {
-    // get all bots from db
     const allBots = await Bots.find();
     return res.json(allBots);
 });
-
+//gets one bot based on its id
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "A bot was not found!", error: "Not Found." });
     return res.json(foundBot);
 });
-
+//posts a bot to the db
 router.post("/", async (req, res) => {
     const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
     if (!id || !name || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
@@ -45,7 +43,7 @@ router.post("/", async (req, res) => {
 
     return res.json({ message: "Succesfully created a new bot in the database!" });
 });
-
+//updates a bot from the db
 router.put("/", async (req, res) => {
     const foundBot = await Bots.findOneAndUpdate(req.body.id, req.body, { new: true });
     if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
@@ -56,7 +54,9 @@ router.put("/", async (req, res) => {
     }
     return res.json({ message: "Succesfully updated the bot from the database!" });
 });
+//changes the isApproved status
 
+//delets a bot from the db
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     const foundBot = await Bots.findOne({ id });
