@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Bots = require("../database/models/Bot.js");
 const Users = require("../database/models/User");
+const botApproveMethods = require("../constants/botApproveMethods");
 
 // get all bots from db
 router.get("/", async (req, res) => {
@@ -55,6 +56,21 @@ router.put("/", async (req, res) => {
     return res.json({ message: "Succesfully updated the bot from the database!" });
 });
 //changes the isApproved status
+router.put("/:id/:method", async (req, res) => {
+    const { id, method } = req.params;
+    if (!id || !method) return res.status(400).json({ msg: "Your missing parameters.", error: "Bad Request." });
+    if (method !== botApproveMethods.APPROVE || method !== botApproveMethods.REJECT) res.status(400).send({ message: "Invalid method paramter!", error: "Bad Request." });
+    const foundBot = await Bots.findOne({ id });
+    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database!", error: "Not Found." });
+    if (method === botApproveMethods.APPROVE) foundBot.isApproved = true;
+    if (method === botApproveMethods.REJECT) foundBot.isApproved = false;
+    try {
+        await foundBot.save();
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
+    }
+    res.status(201).json({ message: "Succesfully updated the bot's status." });
+});
 
 //delets a bot from the db
 router.delete("/:id", async (req, res) => {
