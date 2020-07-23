@@ -11,6 +11,7 @@ const Bot = new mongoose.Schema({
     helpCommand: String,
     supportServer: String,
     library: String,
+    isApproved: { type: Boolean, default: false, required: false },
     reviews: { type: Array, default: [], required: false },
 });
 
