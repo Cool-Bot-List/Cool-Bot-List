@@ -9,7 +9,7 @@ const likeMethods = require("../constants/likeMethods");
 router.post("/", async (req, res) => {
     const { userId, review, rating, botId } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id: botId });
