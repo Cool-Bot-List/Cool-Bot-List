@@ -109,18 +109,24 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
 });
 
 //dislike the review
-router.put("/dislikes/:method/:reviewId", async (req, res) => {
+router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     // this one needs to be async too dum dum
-    const { method, reviewId } = req.params;
-    if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    const { method, userId, reviewId } = req.params;
+    if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
 
     const foundReview = await Reviews.findById(reviewId);
+    const foundUser = await Users.findOne({ id: userId });
+    if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
+
     if (method === likeMethods.INCREMENT) {
-        foundReview.likes = foundReview.dislikes + 1;
+        foundReview.dislikes.push(foundUser.id);
     }
     if (method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.dislikes - 1;
+        foundReview.dislikes.splice(
+            foundReview.dislikes.findIndex((element) => element === foundUser.id),
+            1
+        );
     }
     try {
         await foundReview.save();
