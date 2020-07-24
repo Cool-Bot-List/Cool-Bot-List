@@ -1,19 +1,18 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-// const DiscordStrategy = require("./api/oauth2/strategies/discordStrategy");
+require("./api/oauth2/strategies/discordStrategy");
 const app = express();
 require("./database/database");
 require("dotenv").config();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(
     session({
         secret: "Testing",
         cookie: {
             maxAge: 60 * 1000 * 60 * 24,
         },
+        resave: false,
         saveUninitialized: false,
     })
 );
@@ -25,6 +24,10 @@ app.use(express.json(), express.urlencoded({ extended: true }));
 
 app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
+<<<<<<< HEAD
+=======
+app.use("/api/login", require("./api/oauth2/login"));
+>>>>>>> 55a56e8b6eeac4fb029cfa497ad2798e185838fc
 app.use("/api/bots/reviews", require("./api/reviews"));
 app.use("/api", require("./api/oauth2/login"));
 app.use("/api/users/notifications", require("./api/notifications"));
