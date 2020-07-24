@@ -16,12 +16,13 @@ passport.use(
     new DiscordStrategy(
         {
             clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECERET,
+            clientSecret: process.env.CLIENT_SECRET,
             callbackURL: "http://localhost:5000/api/login/redirect",
             scope: ["identify", "applications.builds.read"],
         },
         async (accesToken, refreshToken, profile, done) => {
             try {
+                // console.log(process.env.CLIENT_SECERT);
                 const user = await User.findOne({ id: profile.id });
                 if (user) {
                     user.avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`;
