@@ -46,7 +46,12 @@ router.get("/:id", async (req, res) => {
     else return res.status(200).json(reviews);
 });
 // Get AVERAGE rating for specified bot
-router.get("/average-rating/:botId/", async (req, res) => {});
+router.get("/average-rating/:botId/", async (req, res) => {
+    const { botId } = req.params;
+    if (!botId) return res.status(400).json({ message: "You are missing a botId paramter.", error: "Bad Request." });
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "The bot doesn't exist in the database", error: "Not Found." });
+});
 
 // Get ONE review for specified bot
 router.get("/:botId/:reviewId", async (req, res) => {
