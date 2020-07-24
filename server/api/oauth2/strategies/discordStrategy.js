@@ -1,4 +1,4 @@
-const DiscordStrategy = require("passport-discord");
+const DiscordStrategy = require("passport-discord").Strategy;
 const passport = require("passport");
 const User = require("../../../database/models/User");
 require("dotenv").config();

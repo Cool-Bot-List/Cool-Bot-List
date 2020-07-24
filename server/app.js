@@ -24,7 +24,9 @@ app.use(express.json(), express.urlencoded({ extended: true }));
 
 app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
-app.use("/api", require("./api/oauth2/login"));
+app.use("/api/login", require("./api/oauth2/login"));
+app.use("/api/bots/reviews", require("./api/reviews"));
+
 //semi colons smh
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
