@@ -1,7 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const DiscordStrategy = require("./api/oauth2/strategies/discordStrategy");
+// const DiscordStrategy = require("./api/oauth2/strategies/discordStrategy");
 const app = express();
 require("./database/database");
 
@@ -26,6 +26,7 @@ app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
 app.use("/api/bots/reviews", require("./api/reviews"));
 app.use("/api", require("./api/oauth2/login"));
+app.use("/api/users/notifications", require("./api/notifications"));
 
 //semi colons smh
 const PORT = 5000;

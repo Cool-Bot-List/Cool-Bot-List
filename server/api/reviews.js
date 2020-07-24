@@ -15,7 +15,15 @@ router.post("/:id", async (req, res) => {
     // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-    // why does this seem like its spelled wrong lol lmao
+
+    // Check if the owner is trying to review
+    if (foundBot.owners.some(id => id === userId)) return res.status(403).json({ message: "You can't review your own bot.", error: "Forbidden" });
+
+    // Check if the user reviewing exists in the db -- also declaring the reviewer
+    const reviewer = await Users.findOne({ id: userId });
+    console.log(reviewer);
+    if (!reviewer) return res.status(404).json({ message: "The user reviewing this bot does not exist.", error: "Not Found." });
+
     // Check if the user already reviewed this bot
     const userReviewd = await Reviews.findOne({ botId, userId });
     if (userReviewd) return res.status(400).json({ message: "You already reviewed this bot.", error: "Bad Request." });
@@ -25,7 +33,7 @@ router.post("/:id", async (req, res) => {
 
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
-        ownerObject.notifications.push("This is a notification");
+        ownerObject.notifications.push({ message: `${reviewer.username}#${reviewer.discriminator} just rated your bot ${rating} stars!`, read: false });
         try {
             await ownerObject.save();
         } catch (err) {
