@@ -101,6 +101,14 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         // so review a bot, then delete the review right
         await foundBot.save();
         await Reviews.findByIdAndDelete(reviewId);
+        let ratings = [];
+        const { updatedReviews } = foundBot;
+        for (const review of updatedReviews) {
+            const foundReview = await Reviews.findById(review);
+            ratings.push(foundReview.rating);
+        }
+        const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+        foundBot.averageRating = averageRating;
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
