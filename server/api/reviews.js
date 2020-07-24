@@ -45,6 +45,8 @@ router.get("/:id", async (req, res) => {
     if (reviews.length === 0) return res.status(404).json({ message: "This bot has no reviews.", error: "Not Found." });
     else return res.status(200).json(reviews);
 });
+// Get AVERAGE rating for specified bot
+router.get("/average-rating/:botId/", async (req, res) => {});
 
 // Get ONE review for specified bot
 router.get("/:botId/:reviewId", async (req, res) => {
