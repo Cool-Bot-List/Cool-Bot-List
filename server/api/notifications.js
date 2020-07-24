@@ -13,7 +13,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.put("/", async (req, res) => {
-    const { notification, method, userId } = req.params;
+    const { notification, method, userId } = req.body;
     if (!notification || !method || !userId) return res.status(404).json({ message: "You are missing properties.", error: "Not Found." });
 });
 
