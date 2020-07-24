@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const Users = require("../database/models/User");
 
+//get ALL notifications for ONE user
 router.get("/:id", async (req, res) => {
-
     const { id } = req.params;
     // const { reviewedUser } = req.body;
 
@@ -10,7 +10,11 @@ router.get("/:id", async (req, res) => {
     if (!user) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
 
     return res.status(200).json(user.notifications);
+});
 
+router.put("/", async (req, res) => {
+    const { notification, method, userId } = req.params;
+    if (!notification || !method || !userId) return res.status(404).json({ message: "You are missing properties.", error: "Not Found." });
 });
 
 module.exports = router;
