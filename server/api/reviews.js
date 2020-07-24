@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
+const Users = require("../database/models/User");
 const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
@@ -82,17 +83,22 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 //like the review
-router.put("/likes/:method/:reviewId", async (req, res) => {
-    const { method, reviewId } = req.params;
-    if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
+    const { method, userId, reviewId } = req.params;
+    if (!method || userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     const foundReview = await Reviews.findById(reviewId);
+    const foundUser = await Users.findOne({ id: userId });
+    if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
 
     if (method === likeMethods.INCREMENT) {
-        foundReview.likes = foundReview.likes + 1;
+        foundReview.likes.push(foundUser.id);
     }
     if (method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.likes - 1;
+        foundReview.likes.splice(
+            foundReview.likes.findIndex((element) => element === foundUser.id),
+            1
+        );
     }
     try {
         await foundReview.save();
