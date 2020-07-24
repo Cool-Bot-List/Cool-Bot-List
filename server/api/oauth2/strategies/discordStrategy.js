@@ -32,8 +32,7 @@ passport.use(
                 } else {
                     const newUser = new User({
                         id: profile.id,
-                        discriminator: profile.discriminator,
-                        username: profile.username,
+                        tag: getTag(profile.username, profile.discriminator),
                         avatarUrl: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`,
                     });
                     const savedUser = await newUser.save();
