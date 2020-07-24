@@ -9,7 +9,7 @@ const likeMethods = require("../constants/likeMethods");
 router.post("/", async (req, res) => {
     const { userId, review, rating, botId } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating || botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id: botId });
@@ -21,6 +21,15 @@ router.post("/", async (req, res) => {
 
     const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
+
+    const { reviews } = foundBot;
+    let ratings = [];
+    for (const review of reviews) {
+        const foundReview = await Reviews.findById(review);
+        ratings.push(foundReview.rating);
+    }
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    foundBot.averageRating = averageRating;
     try {
         await newReview.save();
         await foundBot.save();
@@ -51,6 +60,15 @@ router.get("/average-rating/:botId/", async (req, res) => {
     if (!botId) return res.status(400).json({ message: "You are missing a botId paramter.", error: "Bad Request." });
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "The bot doesn't exist in the database", error: "Not Found." });
+    const { reviews } = foundBot;
+    if (!reviews) return res.status(404).json({ message: "This bot doesn't have any reviews", error: "Not Found." });
+    let ratings = [];
+    for (const review of reviews) {
+        const foundReview = await Reviews.findById(review);
+        ratings.push(foundReview.rating);
+    }
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    return res.status(200).json(averageRating);
 });
 
 // Get ONE review for specified bot
