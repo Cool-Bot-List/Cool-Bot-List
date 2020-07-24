@@ -17,7 +17,7 @@ passport.use(
     new DiscordStrategy(
         {
             clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECERET,
+            clientSecret: process.env.CLIENT_SECERT,
             callbackURL: "http://localhost:5000/api/login/redirect",
             scope: ["identify", "applications.builds.read"],
         },
