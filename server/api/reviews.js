@@ -4,6 +4,7 @@ const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const likeMethods = require("../constants/likeMethods");
 const Users = require("../database/models/User");
+const { getTag } = require("../util/getTag");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
@@ -17,7 +18,7 @@ router.post("/:id", async (req, res) => {
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
 
     // Check if the owner is trying to review
-    if (foundBot.owners.some(id => id === userId)) return res.status(403).json({ message: "You can't review your own bot.", error: "Forbidden" });
+    if (foundBot.owners.some((id) => id === userId)) return res.status(403).json({ message: "You can't review your own bot.", error: "Forbidden" });
 
     // Check if the user reviewing exists in the db -- also declaring the reviewer
     const reviewer = await Users.findOne({ id: userId });
@@ -33,7 +34,7 @@ router.post("/:id", async (req, res) => {
 
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
-        ownerObject.notifications.push({ message: `${reviewer.username}#${reviewer.discriminator} just rated your bot ${rating} stars!`, read: false });
+        ownerObject.notifications.push({ message: `${getTag(reviewer.username, reviewer.discriminator)} just rated your bot ${rating} stars!`, read: false });
         try {
             await ownerObject.save();
         } catch (err) {
