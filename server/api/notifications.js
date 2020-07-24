@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Users = require("../database/models/User");
+const notificationMethods = require("../constants/notificationMethods");
 
 //get ALL notifications for ONE user
 router.get("/:id", async (req, res) => {
