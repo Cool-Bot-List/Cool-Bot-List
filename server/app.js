@@ -4,6 +4,7 @@ const passport = require("passport");
 // const DiscordStrategy = require("./api/oauth2/strategies/discordStrategy");
 const app = express();
 require("./database/database");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
