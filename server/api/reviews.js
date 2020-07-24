@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     res.status(200).json({ message: "Successfully saved the review to the database" });
 });
 
-// Get ALL reviews for specified bot -- This isnt working lol cause uh i was stoopid ;) //does it still not work
+// Get ALL reviews for specified bot -- This isnt working lol cause uh i was stoopid ;) //does it still not work or is this fixed i mean
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
