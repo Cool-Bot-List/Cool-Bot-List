@@ -1,6 +1,7 @@
 const DiscordStrategy = require("passport-discord");
 const passport = require("passport");
 const User = require("../../../database/models/User");
+const { getTag } = require("../../../util/getTag");
 require("dotenv").config();
 
 passport.serializeUser((user, done) => {
@@ -25,8 +26,7 @@ passport.use(
                 const user = await User.findOne({ id: profile.id });
                 if (user) {
                     user.avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`;
-                    user.username = profile.username;
-                    user.discriminator = profile.discriminator;
+                    user.tag = getTag(profile.username, profile.discriminator);
                     await user.save();
                     done(null, user);
                 } else {
