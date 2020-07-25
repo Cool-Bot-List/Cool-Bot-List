@@ -6,7 +6,7 @@ const Users = require("../database/models/User");
 const likeMethods = require("../constants/likeMethods");
 
 //add the owner reply
-router.put("/:botId/:reviewId", async (req, res) => {
+router.post("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
     const { ownerReply, ownerId } = req.body;
     if (!ownerReply || !ownerId || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
