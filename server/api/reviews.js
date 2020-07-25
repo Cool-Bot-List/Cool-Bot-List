@@ -43,14 +43,14 @@ router.post("/:id", async (req, res) => {
         }
     }
 
-    const { reviews } = foundBot;
-    let ratings = [];
-    for (const review of reviews) {
-        const foundReview = await Reviews.findById(review);
-        ratings.push(foundReview.rating);
-    }
-    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
-    foundBot.averageRating = averageRating;
+    // const { reviews } = foundBot;
+    // let ratings = [];
+    // for (const review of reviews) {
+    //     const foundReview = await Reviews.findById(review);
+    //     ratings.push(foundReview.rating);
+    // }
+    // const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    // foundBot.averageRating = averageRating;
     try {
         await newReview.save();
         await foundBot.save();
@@ -124,6 +124,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
         const { updatedReviews } = foundBot;
+        console.log(updatedReviews);
         for (const review of updatedReviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
@@ -131,6 +132,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
         foundBot.averageRating = averageRating;
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
@@ -144,7 +146,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     const foundUser = await Users.findOne({ id: userId });
     if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
-
+    const userToPushTo = await Users.findOne({ id: foundReview.userId });
     if (method === likeMethods.INCREMENT) {
         foundReview.likes.push(foundUser.id);
         // Remove the dislike of the user if dislike
@@ -154,6 +156,8 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
+        userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false });
+
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.likes.splice(
@@ -162,6 +166,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
         );
     }
     try {
+        await userToPushTo.save();
         await foundReview.save();
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
