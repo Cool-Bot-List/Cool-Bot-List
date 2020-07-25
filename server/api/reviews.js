@@ -43,14 +43,14 @@ router.post("/:id", async (req, res) => {
         }
     }
 
-    // const { reviews } = foundBot;
-    // let ratings = [];
-    // for (const review of reviews) {
-    //     const foundReview = await Reviews.findById(review);
-    //     ratings.push(foundReview.rating);
-    // }
-    // const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
-    // foundBot.averageRating = averageRating;
+    const { reviews } = foundBot;
+    let ratings = [];
+    for (const review of reviews) {
+        const foundReview = await Reviews.findById(review);
+        ratings.push(foundReview.rating);
+    }
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    foundBot.averageRating = averageRating;
     try {
         await newReview.save();
         await foundBot.save();
