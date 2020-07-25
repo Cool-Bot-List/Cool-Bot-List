@@ -130,19 +130,19 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
         const updatedBot = await Bots.findOne({ id: botId });
-        console.log("bot", updatedBot);
         const { reviews } = updatedBot;
         //something is null please fix
         for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
         }
-        console.log(ratings);
+
         let averageRating;
         if (ratings.length === 1) averageRating = ratings[0];
         else if (ratings.length === 0) averageRating = null;
         else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
         foundBot.averageRating = averageRating;
+        await foundBot.save();
     } catch (err) {
         console.log(err);
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
