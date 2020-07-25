@@ -43,4 +43,29 @@ router.put("/", async (req, res) => {
     return res.status(200).json({ message: `Successfully set the notification to ${method}.` });
 });
 
+// Mark ALL as read
+router.put("/all", async (req, res) => {
+    
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ message: "You are missing properties.", error: "Bad Request." });
+    const foundUser = await Users.findOne({ id: userId });
+
+    console.log(foundUser);
+
+    if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
+
+    for (const notification of foundUser.notifications) {
+        notification.read = true;
+    }
+
+    try {
+        await foundUser.updateOne(foundUser);
+    } catch (err) {
+        return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
+    }
+
+    return res.status(200).json({ message: "Successfully set all notification to read" });
+
+});
+
 module.exports = router;

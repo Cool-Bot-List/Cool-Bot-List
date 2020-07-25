@@ -35,7 +35,7 @@ router.post("/:id", async (req, res) => {
 
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
-        ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: [false] });
+        ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: false });
         try {
             await ownerObject.save();
         } catch (err) {
