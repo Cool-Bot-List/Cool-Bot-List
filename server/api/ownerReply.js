@@ -9,7 +9,7 @@ const likeMethods = require("../constants/likeMethods");
 router.put("/:botId/:reviewId", async (req, res) => {
     const { botId, reviewId } = req.params;
     const { ownerReply, ownerId } = req.body;
-    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (!ownerReply || !ownerId || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
@@ -57,7 +57,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 // Like the owners reply
-router.put("owner-reply/like/:method/:userId/:reviewId", async (req, res) => {
+router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
     if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
@@ -95,7 +95,7 @@ router.put("owner-reply/like/:method/:userId/:reviewId", async (req, res) => {
 });
 
 // Dislike the owners reply
-router.put("owner-reply/dislike/:method/:userId/:reviewId", async (req, res) => {
+router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
     if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
