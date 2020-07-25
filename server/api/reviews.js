@@ -4,7 +4,6 @@ const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
 const likeMethods = require("../constants/likeMethods");
-const Users = require("../database/models/User");
 // const { getTag } = require("../util/getTag");
 
 // Post user review -- requires Oauth to actually function --
