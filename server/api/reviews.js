@@ -118,7 +118,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 //like the review
 router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
-    
+
     if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
     const foundReview = await Reviews.findById(reviewId);
     const foundUser = await Users.findOne({ id: userId });
@@ -126,6 +126,13 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
 
     if (method === likeMethods.INCREMENT) {
         foundReview.likes.push(foundUser.id);
+        // Remove the dislike of the user if dislike
+        if (foundReview.dislikes.includes(foundUser.id)) {
+            foundReview.dislikes.splice(
+                foundReview.dislikes.findIndex((element) => element === foundUser.id),
+                1
+            );
+        }
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.likes.splice(
@@ -154,6 +161,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
 
     if (method === likeMethods.INCREMENT) {
         foundReview.dislikes.push(foundUser.id);
+        // Remove the like of the user if like.
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.dislikes.splice(
