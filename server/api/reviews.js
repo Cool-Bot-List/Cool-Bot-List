@@ -123,9 +123,10 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         await foundBot.save();
         await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
-        const { updatedReviews } = foundBot;
-        console.log(updatedReviews);
-        for (const review of updatedReviews) {
+        const updatedBot = await Bots.findOne({ id: botId });
+        const { reviews } = updatedBot;
+        console.log(reviews);
+        for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
         }
@@ -157,7 +158,6 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false });
-
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.likes.splice(
