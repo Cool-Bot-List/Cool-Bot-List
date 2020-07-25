@@ -118,7 +118,9 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 //like the review
 router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
+
     console.log(method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT);
+
     if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
     if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect method", error: "Bad Request." });
     const foundReview = await Reviews.findById(reviewId);
