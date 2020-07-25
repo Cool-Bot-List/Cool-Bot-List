@@ -49,8 +49,6 @@ router.put("/all/:userId", async (req, res) => {
     if (!userId) return res.status(400).json({ message: "You are missing properties.", error: "Bad Request." });
     const foundUser = await Users.findOne({ id: userId });
 
-    console.log(foundUser);
-
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
 
     for (const notification of foundUser.notifications) {

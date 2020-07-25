@@ -87,7 +87,6 @@ router.delete("/:id", async (req, res) => {
 
     const allUsers = await Users.find();
     const owners = allUsers.filter((singleUser) => singleUser.bots.includes(id));
-    console.log(owners);
     for (const owner of owners) {
         const users = await Users.findOne({ id: owner.id });
         users.bots.splice(

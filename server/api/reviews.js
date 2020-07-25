@@ -22,7 +22,6 @@ router.post("/:id", async (req, res) => {
 
     // Check if the user reviewing exists in the db -- also declaring the reviewer
     const reviewer = await Users.findOne({ id: userId });
-    console.log(reviewer);
     if (!reviewer) return res.status(404).json({ message: "The user reviewing this bot does not exist.", error: "Not Found." });
 
     // Check if the user already reviewed this bot
@@ -42,14 +41,18 @@ router.post("/:id", async (req, res) => {
             return res.status(500).json({ message: "Something went wrong and the owners were not notified of the reviews.", error: "Internal Server Error." });
         }
     }
-
+    console.log("before loop");
     const { reviews } = foundBot;
     let ratings = [];
+
     for (const review of reviews) {
+        console.log("in loop");
         const foundReview = await Reviews.findById(review);
         ratings.push(foundReview.rating);
     }
+    console.log("before reduce");
     const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    console.log("average rating", averageRating);
     foundBot.averageRating = averageRating;
     try {
         await newReview.save();
@@ -119,7 +122,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     );
 
     try {
-        // so review a bot, then delete the review right
+        // so review a bot, then delete the review
         await foundBot.save();
         await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
