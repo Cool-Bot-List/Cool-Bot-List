@@ -19,25 +19,32 @@ router.put("/", async (req, res) => {
 
     const user = await Users.findOne({ id: userId });
     if (!user) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
-
-    console.log(message);
+    
     const notificationMessage = user.notifications.find(n => n.message === `${message}`);
-    // console.log(user.notifications);
-    console.log(notificationMessage);
+    
     if (!notificationMessage) return res.status(404).json({ message: "That notification doesn't exist in the database.", error: "Not Found." });
-
+    const index = user.notifications.findIndex(n => n.message === notificationMessage.message);
+  
     if (method === notificationMethods.READ) {
-        notificationMessage.read = true;
+        user.notifications[index].read =  "Bruh" ;
     }
+    //yeah idk i think we should be done for today just commit and push so i can TRY to fix it tommorow
     if (method === notificationMethods.UNREAD) {
-        notificationMessage.read = false;
-    }
-
-    console.log(notificationMessage, "after");
-    try {
-        await user.save();
+        user.notifications[index].read = false;
+    } // aight
+    try { 
+        await user.save(); //one sec gonna do this on my postman whats the body 
+    
+        /*
+        {
+            "message": "undefined#undefined just rated your bot 5 stars!",
+            "method": "read",
+            "userId": "408080307603111936"
+        }
+        */ // smh nothing is working ;( 😡😡😡
+        //pc is so slow smh
+        
     } catch (err) {
-        console.log(err);
         return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
     }
 
