@@ -8,6 +8,8 @@ const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
+    console.log("?????");
+    console.log("posting", "test");
     const botId = req.params.id;
     const { userId, review, rating } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
@@ -50,6 +52,7 @@ router.post("/:id", async (req, res) => {
         const foundReview = await Reviews.findById(review);
         ratings.push(foundReview.rating);
     }
+    console.log(ratings);
     console.log("before reduce");
     const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
     console.log("average rating", averageRating);
