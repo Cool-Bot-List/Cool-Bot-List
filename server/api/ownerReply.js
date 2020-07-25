@@ -8,19 +8,27 @@ const likeMethods = require("../constants/likeMethods");
 //add the owner reply
 router.post("/", async (req, res) => {
     const { ownerReply, ownerId, botId, reviewId } = req.body;
-    if (!ownerReply || !ownerId || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (!ownerReply || !ownerId || !botId || !reviewId) return res.status(400).json({ message: "a", error: "Bad Request." });
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    // if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     // Make sure the review exists
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+
+    const userToPushTo = await Users.findOne({ id: foundReview.userId });
+    const owner = await Users.findOne({ id: ownerId });
+    const ownerTag = owner.tag;
+    // Push notification to user
+    userToPushTo.notifications.push({ message: `${ownerTag} has replied to your review!`, read: false });
+
     // Insert the reply
     foundReview.ownerReply.review = ownerReply;
     try {
         // Save it
+        await userToPushTo.save();
         await foundReview.save();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the reply did not post.", error: "Internal Server Error" });

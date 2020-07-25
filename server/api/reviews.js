@@ -10,7 +10,7 @@ const likeMethods = require("../constants/likeMethods");
 router.post("/:id", async (req, res) => {
     const botId = req.params.id;
     const { userId, review, rating } = req.body;
-    //check if properties are missing from the body likes and dislikes are 0 by default
+    //check if properties are missing from the body likes and dislikes are 0 by default 
     if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
@@ -168,7 +168,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
-        userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false });
+        userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.likes.splice(
