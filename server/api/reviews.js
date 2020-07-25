@@ -132,7 +132,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         const updatedBot = await Bots.findOne({ id: botId });
         console.log("bot", updatedBot);
         const { reviews } = updatedBot;
-
+        //something is null please fix
         for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
