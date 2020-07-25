@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
+const Users = require("../database/models/User");
 const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/", async (req, res) => {
     const { userId, review, rating, botId } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
-    if (!userId || !review || !rating || botId) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
     const foundBot = await Bots.findOne({ id: botId });
@@ -20,6 +21,15 @@ router.post("/", async (req, res) => {
 
     const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
+
+    const { reviews } = foundBot;
+    let ratings = [];
+    for (const review of reviews) {
+        const foundReview = await Reviews.findById(review);
+        ratings.push(foundReview.rating);
+    }
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    foundBot.averageRating = averageRating;
     try {
         await newReview.save();
         await foundBot.save();
@@ -30,7 +40,7 @@ router.post("/", async (req, res) => {
     res.status(200).json({ message: "Successfully saved the review to the database" });
 });
 
-// Get ALL reviews for specified bot -- This isnt working lol cause uh i was stoopid ;)
+// Get ALL reviews for specified bot -- This isnt working lol cause uh i was stoopid ;) //does it still not work or is this fixed i mean
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
@@ -43,6 +53,22 @@ router.get("/:id", async (req, res) => {
 
     if (reviews.length === 0) return res.status(404).json({ message: "This bot has no reviews.", error: "Not Found." });
     else return res.status(200).json(reviews);
+});
+// Get AVERAGE rating for specified bot
+router.get("/average-rating/:botId/", async (req, res) => {
+    const { botId } = req.params;
+    if (!botId) return res.status(400).json({ message: "You are missing a botId paramter.", error: "Bad Request." });
+    const foundBot = await Bots.findOne({ id: botId });
+    if (!foundBot) return res.status(404).json({ message: "The bot doesn't exist in the database", error: "Not Found." });
+    const { reviews } = foundBot;
+    if (!reviews) return res.status(404).json({ message: "This bot doesn't have any reviews", error: "Not Found." });
+    let ratings = [];
+    for (const review of reviews) {
+        const foundReview = await Reviews.findById(review);
+        ratings.push(foundReview.rating);
+    }
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+    return res.status(200).json(averageRating);
 });
 
 // Get ONE review for specified bot
@@ -75,126 +101,44 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         // so review a bot, then delete the review right
         await foundBot.save();
         await Reviews.findByIdAndDelete(reviewId);
+        let ratings = [];
+        const { updatedReviews } = foundBot;
+        for (const review of updatedReviews) {
+            const foundReview = await Reviews.findById(review);
+            ratings.push(foundReview.rating);
+        }
+        const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+        foundBot.averageRating = averageRating;
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
-//add the owner reply
-router.put("owner-reply/:botId/:reviewId", async (req, res) => {
-    const { botId, reviewId } = req.params;
-    const { ownerReply, ownerId } = req.body;
-    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    // Check if the bot exists
-    const foundBot = await Bots.findOne({ id: botId });
-    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-    // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
-    // Make sure the review exists
-    const foundReview = await Reviews.findById(reviewId);
-    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-    // Insert the reply
-    foundReview.ownerReply.review = ownerReply;
-    try {
-        // Save it
-        await foundReview.save();
-    } catch (err) {
-        res.status(500).json({ message: "Something wen't wrong and the reply did not post.", error: "Internal Server Error" });
-    }
-
-    res.status(200).json({ message: "Your reply has been successfully posted." });
-});
-//delete the owners reply
-router.delete("owner-reply/:botId/:reviewId", async (req, res) => {
-    const { botId, reviewId } = req.params;
-    const { ownerReply, ownerId } = req.body;
-    if (!ownerReply || !ownerId || botId || reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    // Check if the bot exists
-    const foundBot = await Bots.findOne({ id: botId });
-    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-    // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
-    // Make sure the review exists
-    const foundReview = await Reviews.findById(reviewId);
-    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-    // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
-    // Delete the reply
-    foundReview.ownerReply.review = "";
-    try {
-        await foundReview.save();
-    } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the owner's reply did not delete from the database.", error: "Internal Server Error." });
-    }
-
-    return res.status(200).json({ message: "Successfully deleted the owner's reply from the database." });
-});
-// Like the owners reply
-router.put("owner-reply/like/:method/:botId/:reviewId", async (req, res) => {
-    const { method, botId, reviewId } = req.params;
-    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    // Check if the bot exists
-    const foundBot = await Bots.findOne({ id: botId });
-    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-    // Make sure the review exists
-    const foundReview = await Reviews.findById(reviewId);
-    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-    // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
-    // Handle method
-    if (method === likeMethods.INCREMENT) {
-        foundReview.ownerReply.likes = foundReview.ownerReply.likes + 1;
-    }
-    if (method === likeMethods.DECREMENT) {
-        foundReview.ownerReply.likes = foundReview.ownerReply.likes - 1;
-    }
-    try {
-        await foundReview.save();
-    } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle likes in the database", error: "Internal Server Error." });
-    }
-    return res.status(200).json({ message: "Successfully updated the likes of the owners reply on the database." });
-});
-// Dislike the owners reply
-router.put("owner-reply/dislike/:method/:botId/:reviewId", async (req, res) => {
-    const { method, botId, reviewId } = req.params;
-    if (!method || !botId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    // Check if the bot exists
-    const foundBot = await Bots.findOne({ id: botId });
-    if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
-    // Make sure the review exists
-    const foundReview = await Reviews.findById(reviewId);
-    if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-    // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
-    // Handle method
-    if (method === likeMethods.INCREMENT) {
-        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes + 1;
-    }
-    if (method === likeMethods.DECREMENT) {
-        foundReview.ownerReply.dislikes = foundReview.ownerReply.dislikes - 1;
-    }
-    try {
-        await foundReview.save();
-    } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the owners reply did not handle dislikes in the database", error: "Internal Server Error." });
-    }
-    return res.status(200).json({ message: "Successfully updated the dislikes of the owners reply on the database." });
-});
-
 //like the review
-router.put("/likes/:method/:reviewId", async (req, res) => {
-    const { method, reviewId } = req.params;
-    if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
+    const { method, userId, reviewId } = req.params;
+
+    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
     const foundReview = await Reviews.findById(reviewId);
+    const foundUser = await Users.findOne({ id: userId });
+    if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
 
     if (method === likeMethods.INCREMENT) {
-        foundReview.likes = foundReview.likes + 1;
+        foundReview.likes.push(foundUser.id);
+        // Remove the dislike of the user if dislike
+        if (foundReview.dislikes.includes(foundUser.id)) {
+            foundReview.dislikes.splice(
+                foundReview.dislikes.findIndex((element) => element === foundUser.id),
+                1
+            );
+        }
     }
     if (method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.likes - 1;
+        foundReview.likes.splice(
+            foundReview.likes.findIndex((element) => element === foundUser.id),
+            1
+        );
     }
     try {
         await foundReview.save();
@@ -205,18 +149,31 @@ router.put("/likes/:method/:reviewId", async (req, res) => {
 });
 
 //dislike the review
-router.put("/dislikes/:method/:reviewId", async (req, res) => {
+router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     // this one needs to be async too dum dum
-    const { method, reviewId } = req.params;
-    if (!method || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
-    if (method !== likeMethods.INCREMENT || method !== likeMethods.DECREMENT) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    const { method, userId, reviewId } = req.params;
+    if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
+    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
 
     const foundReview = await Reviews.findById(reviewId);
+    const foundUser = await Users.findOne({ id: userId });
+    if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
+
     if (method === likeMethods.INCREMENT) {
-        foundReview.likes = foundReview.dislikes + 1;
+        foundReview.dislikes.push(foundUser.id);
+        // Remove the like of the user if like.
+        if (foundReview.likes.includes(foundUser.id)) {
+            foundReview.likes.splice(
+                foundReview.likes.findIndex((element) => element === foundUser.id),
+                1
+            );
+        }
     }
     if (method === likeMethods.DECREMENT) {
-        foundReview.likes = foundReview.dislikes - 1;
+        foundReview.dislikes.splice(
+            foundReview.dislikes.findIndex((element) => element === foundUser.id),
+            1
+        );
     }
     try {
         await foundReview.save();
