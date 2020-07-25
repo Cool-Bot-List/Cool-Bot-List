@@ -8,8 +8,6 @@ const likeMethods = require("../constants/likeMethods");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
-    console.log("?????");
-    console.log("posting", "test");
     const botId = req.params.id;
     const { userId, review, rating } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default
@@ -32,33 +30,35 @@ router.post("/:id", async (req, res) => {
 
     const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
+    await foundBot.save();
 
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
         ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: false });
         try {
+            await newReview.save();
             await ownerObject.save();
         } catch (err) {
             console.error(err);
             return res.status(500).json({ message: "Something went wrong and the owners were not notified of the reviews.", error: "Internal Server Error." });
         }
     }
-    console.log("before loop");
-    const { reviews } = foundBot;
-    let ratings = [];
 
+    const foundAfterUpdateBot = await Bots.findOne({ id: botId });
+
+    const { reviews } = foundAfterUpdateBot;
+    let ratings = [];
     for (const review of reviews) {
-        console.log("in loop");
         const foundReview = await Reviews.findById(review);
+
         ratings.push(foundReview.rating);
     }
-    console.log(ratings);
-    console.log("before reduce");
-    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
-    console.log("average rating", averageRating);
+
+    let averageRating;
+    if (ratings.length === 1) averageRating = ratings[0];
+    else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
     foundBot.averageRating = averageRating;
     try {
-        await newReview.save();
         await foundBot.save();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the review was not saved to the database", error: "Internal Server Error." });
@@ -131,12 +131,14 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         let ratings = [];
         const updatedBot = await Bots.findOne({ id: botId });
         const { reviews } = updatedBot;
-        console.log(reviews);
+
         for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
         }
-        const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+        let averageRating;
+        if (ratings.length === 1) averageRating = ratings[0];
+        else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
         foundBot.averageRating = averageRating;
     } catch (err) {
         console.log(err);
