@@ -60,6 +60,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 router.put("owner-reply/like/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
     if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
     // Check if the bot exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
@@ -90,6 +91,7 @@ router.put("owner-reply/like/:method/:userId/:reviewId", async (req, res) => {
 router.put("owner-reply/dislike/:method/:userId/:reviewId", async (req, res) => {
     const { method, userId, reviewId } = req.params;
     if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
+    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
     // Check if the bot exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
