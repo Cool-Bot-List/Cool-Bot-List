@@ -110,6 +110,13 @@ router.put("owner-reply/dislike/:method/:userId/:reviewId", async (req, res) => 
     // Handle method
     if (method === likeMethods.INCREMENT) {
         foundReview.ownerReply.dislikes.push(foundUser.id);
+        // Remove the like of the user if like.
+        if (foundReview.ownerReply.likes.includes(foundUser.id)) {
+            foundReview.ownerReply.likes.splice(
+                foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
+                1
+            );
+        }
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.ownerReply.dislikes.splice(
