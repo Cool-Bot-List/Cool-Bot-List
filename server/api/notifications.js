@@ -44,9 +44,8 @@ router.put("/", async (req, res) => {
 });
 
 // Mark ALL as read
-router.put("/all", async (req, res) => {
-    
-    const { userId } = req.body;
+router.put("/all/:userId", async (req, res) => {
+    const { userId } = req.params;
     if (!userId) return res.status(400).json({ message: "You are missing properties.", error: "Bad Request." });
     const foundUser = await Users.findOne({ id: userId });
 
@@ -65,7 +64,6 @@ router.put("/all", async (req, res) => {
     }
 
     return res.status(200).json({ message: "Successfully set all notification to read" });
-
 });
 
 module.exports = router;
