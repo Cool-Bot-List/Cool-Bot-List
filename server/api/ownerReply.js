@@ -24,7 +24,7 @@ router.put("/:botId/:reviewId", async (req, res) => {
         // Save it
         await foundReview.save();
     } catch (err) {
-        res.status(500).json({ message: "Something wen't wrong and the reply did not post.", error: "Internal Server Error" });
+        res.status(500).json({ message: "Something went wrong and the reply did not post.", error: "Internal Server Error" });
     }
 
     res.status(200).json({ message: "Your reply has been successfully posted." });
