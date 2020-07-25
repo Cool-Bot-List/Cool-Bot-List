@@ -4,6 +4,7 @@ const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
 const likeMethods = require("../constants/likeMethods");
+const { update } = require("../database/models/User");
 // const { getTag } = require("../util/getTag");
 
 // Post user review -- requires Oauth to actually function --
@@ -130,14 +131,17 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
         const updatedBot = await Bots.findOne({ id: botId });
+        console.log("bot", updatedBot);
         const { reviews } = updatedBot;
 
         for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
         }
+        console.log(ratings);
         let averageRating;
         if (ratings.length === 1) averageRating = ratings[0];
+        else if (ratings.length === 0) averageRating = null;
         else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
         foundBot.averageRating = averageRating;
     } catch (err) {
