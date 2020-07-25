@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Users = require("../database/models/User.js");
+// const getTag = require("../util/getTag.js");
+// const getBotData = require("../util/getBotData.js");
 
 // Get the currently logged in user
 router.get("/@me", async (req, res) => {
@@ -9,20 +11,24 @@ router.get("/@me", async (req, res) => {
 });
 
 // post user
-/* router.post("/", async (req, res) => {
-    const { id, bio, bots } = req.body;
-    if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
-    const user = await Users.findOne({ id });
-    if (user) return res.status(430).json({ message: "That user already exists" });
-    const newUser = new Users({ id, bio, bots });
-    try {
-        await newUser.save();
-    } catch (err) {
-        //     :: I have no idea what status code to put here, someone help lmao
-        return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
-    }
-    return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
-}); */
+// router.post("/", async (req, res) => {
+
+//     const { id, bio, bots } = req.body;
+//     if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+//     const user = await Users.findOne({ id });
+//     if (user) return res.status(430).json({ message: "That user already exists" });
+//     const data = await getBotData()
+//     const tag = getTag()
+
+//     const newUser = new Users({ id,  bio, bots });
+//     try {
+//         await newUser.save();
+//     } catch (err) {
+//         console.log(err, "error");
+//         return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
+//     }
+//     return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
+// }); 
 
 // get specific user
 router.get("/:id", async (req, res) => {

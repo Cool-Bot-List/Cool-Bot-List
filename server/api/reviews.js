@@ -4,7 +4,7 @@ const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const likeMethods = require("../constants/likeMethods");
 const Users = require("../database/models/User");
-const { getTag } = require("../util/getTag");
+// const { getTag } = require("../util/getTag");
 
 // Post user review -- requires Oauth to actually function --
 router.post("/:id", async (req, res) => {
@@ -32,9 +32,10 @@ router.post("/:id", async (req, res) => {
     const newReview = new Reviews({ botId, userId, review, rating });
     foundBot.reviews.push(newReview._id);
 
+
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
-        ownerObject.notifications.push({ message: `${getTag(reviewer.username, reviewer.discriminator)} just rated your bot ${rating} stars!`, read: false });
+        ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: [false] });
         try {
             await ownerObject.save();
         } catch (err) {
