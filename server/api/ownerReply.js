@@ -84,7 +84,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
                 foundReview.ownerReply.dislikes.findIndex((element) => element === foundUser.id),
                 1
             );
-        } // aight terminal is read write, I can't help rn tho, i need to do some chores ;( rip
+        }
         const foundBot = await Bots.findOne({id: foundReview.botId});
         for (const owner of foundBot.owners) {
             const ownerObject = await Users.findOne({ id: owner });
@@ -127,6 +127,11 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
                 foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
                 1
             );
+        }
+        const foundBot = await Bots.findOne({id: foundReview.botId});
+        for (const owner of foundBot.owners) {
+            const ownerObject = await Users.findOne({ id: owner });
+            ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
         }
     }
     if (method === likeMethods.DECREMENT) {

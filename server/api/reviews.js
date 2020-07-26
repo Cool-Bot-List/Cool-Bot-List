@@ -206,7 +206,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
-        userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review.`, read: false });
+        userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
 
     }
     if (method === likeMethods.DECREMENT) {
