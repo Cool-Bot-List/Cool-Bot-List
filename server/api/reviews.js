@@ -214,7 +214,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
             foundReview.dislikes.findIndex((element) => element === foundUser.id),
             1
         );
-    }
+    } // hello there
     try {
         await foundReview.save();
     } catch (err) {

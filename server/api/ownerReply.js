@@ -89,6 +89,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
         for (const owner of foundBot.owners) {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
+            await ownerObject.save();
         }
     }
     if (method === likeMethods.DECREMENT) {
@@ -132,6 +133,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
         for (const owner of foundBot.owners) {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
+            await ownerObject.save();
         }
     }
     if (method === likeMethods.DECREMENT) {
