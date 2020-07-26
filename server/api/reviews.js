@@ -195,6 +195,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     const foundUser = await Users.findOne({ id: userId });
     if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
+    const userToPushTo = await Users.findOne({ id: foundReview.userId });
 
     if (method === likeMethods.INCREMENT) {
         foundReview.dislikes.push(foundUser.id);
@@ -205,6 +206,8 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
+        userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review.`, read: false });
+
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.dislikes.splice(
