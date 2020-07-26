@@ -7,9 +7,8 @@ const likeMethods = require("../constants/likeMethods");
 // const { getTag } = require("../util/getTag");
 
 // Post user review -- requires Oauth to actually function --
-router.post("/:id", async (req, res) => {
-    const botId = req.params.id;
-    const { userId, review, rating } = req.body;
+router.post("/", async (req, res) => {
+    const { botId, userId, review, rating } = req.body;
     //check if properties are missing from the body likes and dislikes are 0 by default 
     if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
