@@ -13,6 +13,7 @@ const Bot = new mongoose.Schema({
     library: String,
     isApproved: { type: Boolean, default: null, required: false },
     reviews: { type: Array, default: [], required: false },
+    tags: { type: Array, default: [], required: false },
 });
 
 module.exports = mongoose.model("bots", Bot);
