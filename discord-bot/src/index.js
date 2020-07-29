@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Client, MessageEmbed, Message } = require("discord.js");
+const { Client, MessageEmbed } = require("discord.js");
 const io = require("socket.io-client");
 const client = new Client();
 require("dotenv").config();
