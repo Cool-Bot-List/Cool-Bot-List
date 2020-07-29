@@ -3,7 +3,6 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
-const likeMethods = require("../constants/likeMethods");
 
 //add the owner reply
 router.post("/", async (req, res) => {
@@ -63,10 +62,9 @@ router.delete("/", async (req, res) => {
 });
 
 // Like the owners reply
-router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
-    const { method, userId, reviewId } = req.params;
-    if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
+router.put("/like/:userId/:reviewId", async (req, res) => {
+    const { userId, reviewId } = req.params;
+    if (!userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
@@ -76,7 +74,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
     // Make sure the owners reply exists
     if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Handle method
-    if (method === likeMethods.INCREMENT) {
+    if (!foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.push(foundUser.id);
         // Remove the dislike of the user if dislike
         if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
@@ -85,14 +83,13 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
-        const foundBot = await Bots.findOne({id: foundReview.botId});
+        const foundBot = await Bots.findOne({ id: foundReview.botId });
         for (const owner of foundBot.owners) {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
         }
-    }
-    if (method === likeMethods.DECREMENT) {
+    } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.splice(
             foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
             1
@@ -107,10 +104,9 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
 });
 
 // Dislike the owners reply
-router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
-    const { method, userId, reviewId } = req.params;
-    if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
+router.put("/dislike/:userId/:reviewId", async (req, res) => {
+    const { userId, reviewId } = req.params;
+    if (!userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
@@ -120,7 +116,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     // Make sure the owners reply exists
     if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Handle method
-    if (method === likeMethods.INCREMENT) {
+    if (!foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.push(foundUser.id);
         // Remove the like of the user if like.
         if (foundReview.ownerReply.likes.includes(foundUser.id)) {
@@ -129,14 +125,13 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
-        const foundBot = await Bots.findOne({id: foundReview.botId});
+        const foundBot = await Bots.findOne({ id: foundReview.botId });
         for (const owner of foundBot.owners) {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
             await ownerObject.save();
         }
-    }
-    if (method === likeMethods.DECREMENT) {
+    } else if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.splice(
             foundReview.ownerReply.dislikes.findIndex((element) => element === foundUser.id),
             1
