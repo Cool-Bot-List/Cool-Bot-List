@@ -9,7 +9,7 @@ const likeMethods = require("../constants/likeMethods");
 // Post user review -- requires Oauth to actually function --
 router.post("/", async (req, res) => {
     const { botId, userId, review, rating } = req.body;
-    //check if properties are missing from the body likes and dislikes are 0 by default 
+    //check if properties are missing from the body likes and dislikes are 0 by default
     if (!userId || !review || !rating || !botId) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     if (rating > 5) return res.status(400).json({ message: "You can't have a rating over 5 stars!", error: "Bad Request." });
     // Check if the bot exists //does the delete remove from the bots.reviews array?
@@ -206,15 +206,15 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
-
     }
     if (method === likeMethods.DECREMENT) {
         foundReview.dislikes.splice(
             foundReview.dislikes.findIndex((element) => element === foundUser.id),
             1
         );
-    } // hello there
+    }
     try {
+        await userToPushTo.save();
         await foundReview.save();
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
