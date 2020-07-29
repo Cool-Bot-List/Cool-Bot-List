@@ -105,10 +105,9 @@ router.put("/likes/:userId/:reviewId", async (req, res) => {
 });
 
 // Dislike the owners reply
-router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
-    const { method, userId, reviewId } = req.params;
-    if (!method || !userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
-    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
+router.put("/dislikes/:userId/:reviewId", async (req, res) => {
+    const { userId, reviewId } = req.params;
+    if (!userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found." });
@@ -118,7 +117,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
     // Make sure the owners reply exists
     if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Handle method
-    if (method === likeMethods.INCREMENT) {
+    if (!foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.push(foundUser.id);
         // Remove the like of the user if like.
         if (foundReview.ownerReply.likes.includes(foundUser.id)) {
@@ -134,7 +133,7 @@ router.put("/dislikes/:method/:userId/:reviewId", async (req, res) => {
             await ownerObject.save();
         }
     }
-    if (method === likeMethods.DECREMENT) {
+    if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.splice(
             foundReview.ownerReply.dislikes.findIndex((element) => element === foundUser.id),
             1
