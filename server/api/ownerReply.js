@@ -89,8 +89,7 @@ router.put("/likes/:userId/:reviewId", async (req, res) => {
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
         }
-    }
-    if (foundReview.ownerReply.likes.includes(foundUser.id)) {
+    } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.splice(
             foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
             1
@@ -132,8 +131,7 @@ router.put("/dislikes/:userId/:reviewId", async (req, res) => {
             ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
             await ownerObject.save();
         }
-    }
-    if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
+    } else if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.splice(
             foundReview.ownerReply.dislikes.findIndex((element) => element === foundUser.id),
             1

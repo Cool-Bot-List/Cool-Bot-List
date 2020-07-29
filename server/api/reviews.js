@@ -166,8 +166,7 @@ router.put("/likes/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
-    }
-    if (foundReview.likes.includes(foundUser.id)) {
+    } else if (foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.splice(
             foundReview.likes.findIndex((element) => element === foundUser.id),
             1
@@ -203,8 +202,7 @@ router.put("/dislikes/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
-    }
-    if (foundReview.dislikes.includes(foundUser.id)) {
+    } else if (foundReview.dislikes.includes(foundUser.id)) {
         foundReview.dislikes.splice(
             foundReview.dislikes.findIndex((element) => element === foundUser.id),
             1
