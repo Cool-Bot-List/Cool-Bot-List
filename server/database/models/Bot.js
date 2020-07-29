@@ -3,7 +3,8 @@ mongoose.pluralize(null);
 
 const Bot = new mongoose.Schema({
     id: String,
-    name: String,
+    tag: String,
+    avatarUrl: String,
     prefix: String,
     description: String,
     owners: Array,
@@ -11,6 +12,8 @@ const Bot = new mongoose.Schema({
     helpCommand: String,
     supportServer: String,
     library: String,
+    averageRating: { type: Number, default: null, required: false },
+    isApproved: { type: Boolean, default: null, required: false },
     reviews: { type: Array, default: [], required: false },
 });
 
