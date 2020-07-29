@@ -26,7 +26,8 @@ app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
 app.use("/api/login", require("./api/oauth2/login"));
 app.use("/api/bots/reviews", require("./api/reviews"));
-app.use("/api/bots/reviews/owner-reply", require("./api/ownerReply"));
+app.use("/api/users/notifications", require("./api/notifications"));
+app.use("/api/bots/reviews/owner-reply", require("./api/ownerReply")); 
 
 //semi colons smh
 const PORT = 5000;

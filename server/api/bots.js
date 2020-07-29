@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
 
-    return res.json({ message: "Succesfully created a new bot in the database!" });
+    return res.json({ message: "Successfully created a new bot in the database!" });
 });
 //updates a bot from the db
 router.put("/", async (req, res) => {
@@ -55,7 +55,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
-    return res.json({ message: "Succesfully updated the bot from the database!" });
+    return res.json({ message: "Successfully updated the bot from the database!" });
 });
 //changes the isApproved status
 router.put("/:id/:method", async (req, res) => {
@@ -74,10 +74,9 @@ router.put("/:id/:method", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
-    res.status(201).json({ message: "Succesfully updated the bot's status." });
 });
 
-//delets a bot from the db
+//delete a bot from the db
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     const foundBot = await Bots.findOne({ id });
@@ -88,7 +87,6 @@ router.delete("/:id", async (req, res) => {
 
     const allUsers = await Users.find();
     const owners = allUsers.filter((singleUser) => singleUser.bots.includes(id));
-    console.log(owners);
     for (const owner of owners) {
         const users = await Users.findOne({ id: owner.id });
         users.bots.splice(
@@ -106,6 +104,6 @@ router.delete("/:id", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
-    return res.json({ message: "Succesfully deleted the bot from the database!" });
+    return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 module.exports = router;
