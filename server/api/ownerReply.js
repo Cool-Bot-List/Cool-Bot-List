@@ -62,7 +62,7 @@ router.delete("/", async (req, res) => {
 });
 
 // Like the owners reply
-router.put("/likes/:userId/:reviewId", async (req, res) => {
+router.put("/like/:userId/:reviewId", async (req, res) => {
     const { userId, reviewId } = req.params;
     if (!userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists
@@ -104,7 +104,7 @@ router.put("/likes/:userId/:reviewId", async (req, res) => {
 });
 
 // Dislike the owners reply
-router.put("/dislikes/:userId/:reviewId", async (req, res) => {
+router.put("/dislike/:userId/:reviewId", async (req, res) => {
     const { userId, reviewId } = req.params;
     if (!userId || !reviewId) return res.status(400).json({ message: "You are missing required parameters", error: "Bad Request." });
     // Check if the bot exists

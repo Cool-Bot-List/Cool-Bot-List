@@ -149,7 +149,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 //like the review
-router.put("/likes/:userId/:reviewId", async (req, res) => {
+router.put("/like/:userId/:reviewId", async (req, res) => {
     const { userId, reviewId } = req.params;
 
     const foundReview = await Reviews.findById(reviewId);
@@ -182,7 +182,7 @@ router.put("/likes/:userId/:reviewId", async (req, res) => {
 });
 
 //dislike the review
-router.put("/dislikes/:userId/:reviewId", async (req, res) => {
+router.put("/dislike/:userId/:reviewId", async (req, res) => {
     // this one needs to be async too dum dum
     const { userId, reviewId } = req.params;
     if (!userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
