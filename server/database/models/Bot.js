@@ -3,7 +3,8 @@ mongoose.pluralize(null);
 
 const Bot = new mongoose.Schema({
     id: String,
-    name: String,
+    tag: String,
+    avatarUrl: String,
     prefix: String,
     description: String,
     owners: Array,
