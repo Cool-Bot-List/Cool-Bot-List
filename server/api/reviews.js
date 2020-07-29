@@ -150,15 +150,14 @@ router.delete("/:botId/:reviewId", async (req, res) => {
 });
 
 //like the review
-router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
-    const { method, userId, reviewId } = req.params;
+router.put("/likes/:userId/:reviewId", async (req, res) => {
+    const { userId, reviewId } = req.params;
 
-    if (method !== likeMethods.INCREMENT && method !== likeMethods.DECREMENT) return res.status(400).json({ message: "Incorrect Method", error: "Bad Request." });
     const foundReview = await Reviews.findById(reviewId);
     const foundUser = await Users.findOne({ id: userId });
     if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
     const userToPushTo = await Users.findOne({ id: foundReview.userId });
-    if (method === likeMethods.INCREMENT) {
+    if (!foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.push(foundUser.id);
         // Remove the dislike of the user if dislike
         if (foundReview.dislikes.includes(foundUser.id)) {
@@ -169,7 +168,7 @@ router.put("/likes/:method/:userId/:reviewId", async (req, res) => {
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
     }
-    if (method === likeMethods.DECREMENT) {
+    if (foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.splice(
             foundReview.likes.findIndex((element) => element === foundUser.id),
             1
