@@ -28,14 +28,14 @@ router.get("/@me", async (req, res) => {
 //         return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
 //     }
 //     return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
-// }); 
+// });
 
 // get specific user
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await Users.findOne({ id });
     if (!user) return res.status(404).json({ message: "That user doesn't exist!", error: "Not Found." });
-    res.status(200).json({ user });
+    res.status(200).json(user);
 });
 
 // all users ::
