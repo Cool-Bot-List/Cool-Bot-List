@@ -40,15 +40,15 @@ client.on("ready", async () => {
 
         const user = client.users.cache.get(owners[0]);
         const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
-        let embedDescription;
+        let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
         if (prefix) embedDescription += `prefix: ${prefix}\n\n`;
-        if (description) embedDescription += `desciption: ${description}\n\n`;
+        if (description) embedDescription += `description: ${description}\n\n`;
         if (owners) embedDescription += `owners: ${owners}\n\n`;
         if (website) embedDescription += `website: ${website}\n\n`;
         if (helpCommand) embedDescription += `help command: ${supportServer}\n\n`;
-        if (library) embedDescription += `libary: ${library}\n\n`;
+        if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
     });
@@ -57,15 +57,15 @@ client.on("ready", async () => {
 
         const user = client.users.cache.get(owners[0]);
         const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
-        let embedDescription;
+        let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
         if (prefix) embedDescription += `prefix: ${prefix}\n\n`;
-        if (description) embedDescription += `desciption: ${description}\n\n`;
+        if (description) embedDescription += `description: ${description}\n\n`;
         if (owners) embedDescription += `owners: ${owners}\n\n`;
         if (website) embedDescription += `website: ${website}\n\n`;
         if (helpCommand) embedDescription += `help command: ${supportServer}\n\n`;
-        if (library) embedDescription += `libary: ${library}\n\n`;
+        if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
     });
@@ -74,15 +74,15 @@ client.on("ready", async () => {
 
         const user = client.users.cache.get(owners[0]);
         const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
-        let embedDescription;
+        let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
         if (prefix) embedDescription += `prefix: ${prefix}\n\n`;
-        if (description) embedDescription += `desciption: ${description}\n\n`;
+        if (description) embedDescription += `description: ${description}\n\n`;
         if (owners) embedDescription += `owners: ${owners}\n\n`;
         if (website) embedDescription += `website: ${website}\n\n`;
         if (helpCommand) embedDescription += `help command: ${supportServer}\n\n`;
-        if (library) embedDescription += `libary: ${library}\n\n`;
+        if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
     });
