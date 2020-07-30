@@ -12,28 +12,30 @@ client.on("ready", async () => {
     const logChannel = await client.channels.cache.get("735286894421606400");
 
     socket.on("new-user", (data) => {
-        data = JSON.parse(data);
         console.log("on new-user triggered");
+        if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
 
         logChannel.send("a new user was made");
-        const embed = new MessageEmbed().setTitle("a new user was made").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        const embed = new MessageEmbed().setTitle("a new user was made").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
-        logChannel.send(data);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("user-update", (data) => {
+        if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
         logChannel.send("a user was updated");
-        const embed = new MessageEmbed().setTitle("a user was updated").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        const embed = new MessageEmbed().setTitle("a user was updated").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
-        logChannel.send(data);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("user-delete", (data) => {
+        if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
         logChannel.send("a user was deleted");
-        const embed = new MessageEmbed().setTitle("a user was deleted").addField("id", data.id).addField("id", data.id).addField("bio", data.bio);
+        const embed = new MessageEmbed().setTitle("a user was deleted").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
-        logChannel.send(data);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("new-bot", (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
