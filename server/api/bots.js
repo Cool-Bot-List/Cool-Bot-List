@@ -4,6 +4,7 @@ const Bots = require("../database/models/Bot.js");
 const Users = require("../database/models/User");
 const botApproveMethods = require("../constants/botApproveMethods");
 const { getBotData } = require("../util/getBotData");
+const { BOT_TAGS } = require("../constants/botTags");
 
 // get all bots from db
 router.get("/", async (req, res) => {
