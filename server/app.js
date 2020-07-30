@@ -1,17 +1,18 @@
 require("dotenv").config();
+require("./database/database");
 const express = require("express");
 const app = express();
 const http = require("http");
 const session = require("express-session");
 const passport = require("passport");
-require("./api/oauth2/strategies/discordStrategy");
-require("./database/database");
-
-const cors = require("cors");
-app.use(cors());
 
 const server = http.createServer(app);
 require("./websocket/ws").setSocket(server);
+
+require("./api/oauth2/strategies/discordStrategy");
+
+const cors = require("cors");
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +40,5 @@ app.use("/api/bots/reviews", require("./api/reviews"));
 app.use("/api/users/notifications", require("./api/notifications"));
 app.use("/api/bots/reviews/owner-reply", require("./api/ownerReply"));
 
-//semi colons smh
 const PORT = 5000;
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));

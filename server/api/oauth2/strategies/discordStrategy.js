@@ -1,9 +1,11 @@
+require("dotenv").config();
 const DiscordStrategy = require("passport-discord").Strategy;
 const passport = require("passport");
 const User = require("../../../database/models/User");
 const { getTag } = require("../../../util/getTag");
-require("dotenv").config();
 
+const WebSocket = require("../../../websocket/ws").getSocket();
+console.log(WebSocket);
 passport.serializeUser((user, done) => {
     done(null, user._id);
 });
@@ -37,6 +39,8 @@ passport.use(
                         avatarUrl: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`,
                     });
                     const savedUser = await newUser.save();
+                    WebSocket.emit("new-user", newUser);
+
                     done(null, savedUser);
                 }
             } catch (err) {

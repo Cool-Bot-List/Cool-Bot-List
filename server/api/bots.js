@@ -6,6 +6,7 @@ const botApproveMethods = require("../constants/botApproveMethods");
 const { getBotData } = require("../util/getBotData");
 const { BOT_TAGS } = require("../constants/botTags");
 
+const WebSocket = require("../websocket/ws").getSocket();
 // get all bots from db
 router.get("/", async (req, res) => {
     const allBots = await Bots.find();
