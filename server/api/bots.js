@@ -66,9 +66,12 @@ router.put("/", async (req, res) => {
             // eslint-disable-next-line max-len
             if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
         }
-    } // error?
+    }
+    for (const tag of foundBot1.tags) {
+        req.body.tags.push(tag);
+    }
     const foundBot = await foundBot1.updateOne(req.body, { new: true });
-    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" }); // wait wot
+    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     try {
         await foundBot.save();
     } catch (err) {
