@@ -25,6 +25,7 @@ router.post("/", async (req, res) => {
     // Check if the tags are valid
     if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
     for (const t of tags) {
+        // eslint-disable-next-line max-len
         if (!t === BOT_TAGS.MODERATION && !t === BOT_TAGS.MUSIC && !t === BOT_TAGS.LEVELING && !t === BOT_TAGS.FUN && !t === BOT_TAGS.UTILITY && !t === BOT_TAGS.DASHBOARD && !t === BOT_TAGS.CUSTOMIZABLE && !t === BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
     }
     const bot = await Bots.findOne({ id });
@@ -84,7 +85,7 @@ router.put("/:id/:method", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
-}); // comment so i can pr
+});
 
 //delete a bot from the db
 router.delete("/:id", async (req, res) => {
