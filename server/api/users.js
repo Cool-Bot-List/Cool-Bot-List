@@ -5,34 +5,36 @@ const WebSocket = require("../websocket/ws").getSocket();
 
 // Get the currently logged in user
 router.get("/@me", async (req, res) => {
-    if (!req.user) return res.status(404).json({ message: "There is no user curently logged in!", error: "Not Found." });
+    if (!req.user) return res.status(404).json({ message: "There is no user currently logged in!", error: "Not Found." });
     if (req.user) return res.status(200).json(req.user);
 });
 
 // post user
-/* router.post("/", async (req, res) => {
-    const { id, bio, bots } = req.body;
-    if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
-    const user = await Users.findOne({ id });
-    if (user) return res.status(430).json({ message: "That user already exists" });
-    const newUser = new Users({ id, bio, bots });
-    try {
-        await newUser.save();
-    } catch (err) {
-        //     :: I have no idea what status code to put here, someone help lmao
-        return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
-    }
-    console.log("emitting event...");
-    WebSocket.emit("new-user", JSON.stringify(newUser));
-    return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
-}); */
+// router.post("/", async (req, res) => {
+
+//     const { id, bio, bots } = req.body;
+//     if (!id || !bio || !bots) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+//     const user = await Users.findOne({ id });
+//     if (user) return res.status(430).json({ message: "That user already exists" });
+//     const data = await getBotData()
+//     const tag = getTag()
+
+//     const newUser = new Users({ id,  bio, bots });
+//     try {
+//         await newUser.save();
+//     } catch (err) {
+//         console.log(err, "error");
+//         return res.status(500).json({ message: "Something went wrong and the user was not saved to the database", error: "Internal Server Error." });
+//     }
+//     return res.status(200).json({ message: "Successfully created a new user and added them to the database" });
+// });
 
 // get specific user
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await Users.findOne({ id });
     if (!user) return res.status(404).json({ message: "That user doesn't exist!", error: "Not Found." });
-    res.status(200).json({ user });
+    res.status(200).json(user);
 });
 
 // all users ::
@@ -45,7 +47,7 @@ router.get("/", async (req, res) => {
 // update user
 router.put("/", async (req, res) => {
     const { id } = req.body;
-    if (!id) return res.status(400).json({ message: "You are missing the id paramater.", error: "Bad Request." });
+    if (!id) return res.status(400).json({ message: "You are missing the id parameter.", error: "Bad Request." });
     const foundUser = await Users.findOneAndUpdate(req.body.id, req.body, { new: true });
     try {
         await foundUser.save();
@@ -53,13 +55,13 @@ router.put("/", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the user did not save to the database!" });
     }
     WebSocket.emit("user-update", foundUser);
-    return res.json({ message: "Succesfully updated the user from the database!" });
+    return res.json({ message: "Successfully updated the user from the database!" });
 });
-// just testing so i have a commit
+
 // delete user
 router.delete("/:id", async (req, res) => {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ message: "You are missing paramaters", error: "Bad Request." });
+    if (!id) return res.status(400).json({ message: "You are missing parameters", error: "Bad Request." });
     const foundUser = await Users.findOne({ id });
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database!" });
     try {
@@ -68,7 +70,7 @@ router.delete("/:id", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error." });
     }
     WebSocket.emit("user-delete", foundUser);
-    return res.json({ message: "Succesfully deleted the user from the database!" });
+    return res.json({ message: "Successfully deleted the user from the database!" });
 });
 // this is have stupid
 module.exports = router;
