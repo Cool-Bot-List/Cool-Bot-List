@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { getAvatarUrl } = require("../util/getAvatarUrl");
-const { getTag } = require("../util/getAvatarUrl");
+const { getTag } = require("../util/getTag");
 const axios = require("axios").default;
 
 axios.defaults.headers.common["Authorization"] = `Bot ${process.env.BOT_TOKEN}`;
