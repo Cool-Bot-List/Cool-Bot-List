@@ -2,15 +2,13 @@ class WebSocket {
     constructor() {
         this.socket = null;
     }
-    static setSocket(httpServer) {
+    setSocket(httpServer) {
         this.socket = require("socket.io")(httpServer);
         console.log("setting");
-        return this;
     }
-    static getSocket() {
-        console.log("getting");
+    getSocket() {
         return this.socket;
     }
 }
 
-module.exports = WebSocket;
+module.exports = new WebSocket();
