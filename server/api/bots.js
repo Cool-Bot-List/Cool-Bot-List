@@ -56,16 +56,18 @@ router.post("/", async (req, res) => {
 router.put("/", async (req, res) => {
     const { tags } = req.body;
     if (!req.body.id) return res.status(400).json({ message: "You are missing the id of the bot", error: "Bad Request." });
+    const foundBot1 = await Bots.findOne({ id: req.body.id });
     if (tags) {
         if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
+        if (tags.length + foundBot1.tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
 
         for (const t of tags) {
+            if (foundBot1.tags.some((tag) => tag === t)) return res.status(400).json({ message: "You can not have duplicate tags.", error: "Bad Request." });
             // eslint-disable-next-line max-len
             if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
         }
-    }
-
-    const foundBot = await Bots.findOneAndUpdate({ id: req.body.id }, req.body, { new: true });
+    } // error?
+    const foundBot = await foundBot1.updateOne(req.body, { new: true });
     if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" }); // wait wot
     try {
         await foundBot.save();
