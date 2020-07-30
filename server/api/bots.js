@@ -20,17 +20,21 @@ router.get("/:id", async (req, res) => {
 });
 //posts a bot to the db
 router.post("/", async (req, res) => {
-    const { id, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
-    if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
+    const { id, prefix, description, owners, website, helpCommand, supportServer, library, tags } = req.body;
+    if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library || tags) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
+    // Check if the tags are valid
+    if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
+    for (const t of tags) {
+        if (!t === BOT_TAGS.MODERATION && !t === BOT_TAGS.MUSIC && !t === BOT_TAGS.LEVELING && !t === BOT_TAGS.FUN && !t === BOT_TAGS.UTILITY && !t === BOT_TAGS.DASHBOARD && !t === BOT_TAGS.CUSTOMIZABLE && !t === BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
+    }
     const bot = await Bots.findOne({ id });
     const botApiData = await getBotData(id);
     const { tag, avatarUrl } = botApiData;
     if (bot) return res.status(400).send({ message: "This bot already exists!", error: "Bad Request." });
-    const newBot = new Bots({ id, tag, avatarUrl, prefix, description, owners, website, helpCommand, supportServer, library });
+    const newBot = new Bots({ id, tag, avatarUrl, prefix, description, owners, website, helpCommand, supportServer, library, tags });
 
     for (const owner of owners) {
         const users = await Users.findOne({ id: owner });
-        // users is null ;(
         users.bots.push(id);
         try {
             await users.save();
@@ -45,10 +49,15 @@ router.post("/", async (req, res) => {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
 
-    return res.json({ message: "Succesfully created a new bot in the database!" });
+    return res.json({ message: "Successfully created a new bot in the database!" });
 });
 //updates a bot from the db
 router.put("/", async (req, res) => {
+    const { tags } = req.body;
+    if (tags) {
+        if (tags !== BOT_TAGS.CUSTOMIZABLE) console.log();
+    }
+
     const foundBot = await Bots.findOneAndUpdate(req.body.id, req.body, { new: true });
     if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     try {
@@ -56,7 +65,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
-    return res.json({ message: "Succesfully updated the bot from the database!" });
+    return res.json({ message: "Successfully updated the bot from the database!" });
 });
 //changes the isApproved status
 router.put("/:id/:method", async (req, res) => {
