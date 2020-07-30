@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
     if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
     for (const t of tags) {
         // eslint-disable-next-line max-len
-        if (!t === BOT_TAGS.MODERATION && !t === BOT_TAGS.MUSIC && !t === BOT_TAGS.LEVELING && !t === BOT_TAGS.FUN && !t === BOT_TAGS.UTILITY && !t === BOT_TAGS.DASHBOARD && !t === BOT_TAGS.CUSTOMIZABLE && !t === BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
+        if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
     }
     const bot = await Bots.findOne({ id });
     const botApiData = await getBotData(id);
@@ -52,15 +52,21 @@ router.post("/", async (req, res) => {
 
     return res.json({ message: "Successfully created a new bot in the database!" });
 });
-//updates a bot from the db
+//updates a bot from the db doesn't need every felid only updates the felids that u specify
 router.put("/", async (req, res) => {
     const { tags } = req.body;
+    if (!req.body.id) return res.status(400).json({ message: "You are missing the id of the bot", error: "Bad Request." });
     if (tags) {
-        if (tags !== BOT_TAGS.CUSTOMIZABLE) console.log();
+        if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
+
+        for (const t of tags) {
+            // eslint-disable-next-line max-len
+            if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
+        }
     }
 
-    const foundBot = await Bots.findOneAndUpdate(req.body.id, req.body, { new: true });
-    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    const foundBot = await Bots.findOneAndUpdate({ id: req.body.id }, req.body, { new: true });
+    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" }); // wait wot
     try {
         await foundBot.save();
     } catch (err) {
