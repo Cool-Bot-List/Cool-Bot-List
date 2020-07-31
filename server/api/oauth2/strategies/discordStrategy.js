@@ -31,6 +31,7 @@ passport.use(
                     user.avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`;
                     user.tag = getTag(profile.username, profile.discriminator);
                     await user.save();
+                    WebSocket.emit("user-update", user);
                     done(null, user);
                 } else {
                     const newUser = new User({
@@ -40,7 +41,6 @@ passport.use(
                     });
                     const savedUser = await newUser.save();
                     WebSocket.emit("new-user", newUser);
-
                     done(null, savedUser);
                 }
             } catch (err) {
