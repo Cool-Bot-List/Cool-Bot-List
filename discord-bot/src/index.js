@@ -111,4 +111,10 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
+    socket.on("notification-update", (data) => {
+        const embed = new MessageEmbed().setTitle("A notification was updated.").setAuthor(data.tag, data.avatarUrl).setThumbnail(data.avatarUrl);
+        for (const noti of data.notifications) embed.addField("notification", `${noti.message} read: ${noti.read}`);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
+    });
 });
