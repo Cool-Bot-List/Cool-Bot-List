@@ -167,6 +167,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
+        WebSocket.emit("new-notification", userToPushTo.notifications);
     } else if (foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.splice(
             foundReview.likes.findIndex((element) => element === foundUser.id),
