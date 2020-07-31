@@ -204,6 +204,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
+        WebSocket.emit("new-notification", userToPushTo.notifications);
     } else if (foundReview.dislikes.includes(foundUser.id)) {
         foundReview.dislikes.splice(
             foundReview.dislikes.findIndex((element) => element === foundUser.id),
