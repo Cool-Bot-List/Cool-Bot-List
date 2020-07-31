@@ -37,10 +37,10 @@ client.on("ready", async () => {
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
-    socket.on("new-bot", (data) => {
+    socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-
-        const user = client.users.cache.get(owners[0]);
+        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
+        const user = await r.json();
         const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -53,11 +53,12 @@ client.on("ready", async () => {
         if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
-    socket.on("bot-update", (data) => {
+    socket.on("bot-update", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-
-        const user = client.users.cache.get(owners[0]);
+        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
+        const user = await r.json();
         const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -70,11 +71,12 @@ client.on("ready", async () => {
         if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
-    socket.on("bot-delete", (data) => {
+    socket.on("bot-delete", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-
-        const user = client.users.cache.get(owners[0]);
+        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
+        const user = await r.json();
         const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -87,12 +89,13 @@ client.on("ready", async () => {
         if (library) embedDescription += `library: ${library}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
-    socket.on("new-review", (data) => {
+    socket.on("new-review", async (data) => {
         const { userId, review, rating, botId } = data;
-
-        const user = client.users.cache.get(userId);
-        const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.username}(review author)`, user.displayAvatarURL());
+        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
+        const user = await r.json();
+        const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
         if (botId) embedDescription += `botId: ${botId}\n\n`;
@@ -100,8 +103,12 @@ client.on("ready", async () => {
         if (rating) embedDescription += `rating: ${rating}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("new-notification", (data) => {
-        const embed = new MessageEmbed().setAuthor();
+        const embed = new MessageEmbed().setTitle("A new notification was made").setAuthor(data.tag, data.avatarUrl).setThumbnail(data.avatarUrl);
+        for (const noti of data.notifications) embed.addField("notification", `${noti.message} read: ${noti.read}`);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
 });
