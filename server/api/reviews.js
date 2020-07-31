@@ -33,6 +33,7 @@ router.post("/", async (req, res) => {
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
         ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: false });
+        WebSocket.emit("new-notification", ownerObject.notifications);
         try {
             await newReview.save();
             await ownerObject.save();
