@@ -3,6 +3,7 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
+const WebSocket = require("../WebSocket").getSocket();
 
 //add the owner reply
 router.post("/", async (req, res) => {
@@ -22,6 +23,7 @@ router.post("/", async (req, res) => {
     const ownerTag = owner.tag;
     // Push notification to user
     userToPushTo.notifications.push({ message: `${ownerTag} has replied to your review!`, read: false });
+    WebSocket.emit("new-notification", userToPushTo.notifications);
 
     // Insert the reply
     foundReview.ownerReply.review = ownerReply;
