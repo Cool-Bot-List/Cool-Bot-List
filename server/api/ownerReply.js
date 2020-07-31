@@ -133,6 +133,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
             await ownerObject.save();
+            WebSocket.emit("new-notification", ownerObject.notifications);
         }
     } else if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.splice(
