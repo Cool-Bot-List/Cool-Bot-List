@@ -101,4 +101,7 @@ client.on("ready", async () => {
         embed.setDescription(embedDescription);
         logChannel.send(embed);
     });
+    socket.on("new-notification", (data) => {
+        const embed = new MessageEmbed().setAuthor();
+    });
 });

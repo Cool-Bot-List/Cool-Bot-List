@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
     for (const owner of foundBot.owners) {
         const ownerObject = await Users.findOne({ id: owner });
         ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars!`, read: false });
-        WebSocket.emit("new-notification", ownerObject.notifications);
+        WebSocket.emit("new-notification", ownerObject);
         try {
             await newReview.save();
             await ownerObject.save();
@@ -167,7 +167,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
-        WebSocket.emit("new-notification", userToPushTo.notifications);
+        WebSocket.emit("new-notification", userToPushTo);
     } else if (foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.splice(
             foundReview.likes.findIndex((element) => element === foundUser.id),
@@ -204,7 +204,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
             );
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
-        WebSocket.emit("new-notification", userToPushTo.notifications);
+        WebSocket.emit("new-notification", userToPushTo);
     } else if (foundReview.dislikes.includes(foundUser.id)) {
         foundReview.dislikes.splice(
             foundReview.dislikes.findIndex((element) => element === foundUser.id),

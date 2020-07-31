@@ -40,7 +40,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
     }
-    WebSocket.emit("notification-update", foundUser.notifications);
+    WebSocket.emit("notification-update", foundUser);
     return res.status(200).json({ message: `Successfully set the notification to ${method}.` });
 });
 
@@ -61,7 +61,7 @@ router.put("/all/:userId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
     }
-    WebSocket.emit("notification-update", foundUser.notifications);
+    WebSocket.emit("notification-update", foundUser);
     return res.status(200).json({ message: "Successfully set all notification to read" });
 });
 

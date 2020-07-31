@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
     const ownerTag = owner.tag;
     // Push notification to user
     userToPushTo.notifications.push({ message: `${ownerTag} has replied to your review!`, read: false });
-    WebSocket.emit("new-notification", userToPushTo.notifications);
+    WebSocket.emit("new-notification", userToPushTo);
 
     // Insert the reply
     foundReview.ownerReply.review = ownerReply;
@@ -90,7 +90,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
-            WebSocket.emit("new-notification", ownerObject.notifications);
+            WebSocket.emit("new-notification", ownerObject);
         }
     } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.splice(
@@ -133,7 +133,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} disliked your reply 😢.`, read: false });
             await ownerObject.save();
-            WebSocket.emit("new-notification", ownerObject.notifications);
+            WebSocket.emit("new-notification", ownerObject);
         }
     } else if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
         foundReview.ownerReply.dislikes.splice(
