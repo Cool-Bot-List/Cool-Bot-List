@@ -90,6 +90,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
+            WebSocket.emit("new-notification", ownerObject.notifications);
         }
     } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.splice(
