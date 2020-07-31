@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Users = require("../database/models/User.js");
-const WebSocket = require("../websocket/ws").getSocket();
+const WebSocket = require("../WebSocket").getSocket();
 
 // Get the currently logged in user
 router.get("/@me", async (req, res) => {

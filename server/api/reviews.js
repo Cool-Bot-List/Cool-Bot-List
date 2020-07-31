@@ -3,7 +3,7 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
-const WebSocket = require("../websocket/ws").getSocket();
+const WebSocket = require("../WebSocket").getSocket();
 
 // Post user review -- requires Oauth to actually function --
 router.post("/", async (req, res) => {

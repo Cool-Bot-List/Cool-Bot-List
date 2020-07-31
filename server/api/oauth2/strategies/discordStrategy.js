@@ -4,7 +4,7 @@ const passport = require("passport");
 const User = require("../../../database/models/User");
 const { getTag } = require("../../../util/getTag");
 
-const WebSocket = require("../../../websocket/ws").getSocket();
+const WebSocket = require("../../../WebSocket").getSocket();
 
 passport.serializeUser((user, done) => {
     done(null, user._id);

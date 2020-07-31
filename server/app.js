@@ -7,7 +7,7 @@ const session = require("express-session");
 const passport = require("passport");
 
 const server = http.createServer(app);
-require("./websocket/ws").setSocket(server);
+require("./WebSocket").setSocket(server);
 
 require("./api/oauth2/strategies/discordStrategy");
 
