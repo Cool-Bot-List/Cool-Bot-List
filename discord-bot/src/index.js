@@ -118,17 +118,12 @@ client.on("ready", async () => {
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
     socket.on("vote", (user, bot) => {
-        const embed = new MessageEmbed()
-            .setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl)
-            .setThumbnail(bot.avatarUrl)
-            .setDescription(`**Total Votes -** ${bot.votes}`);
+        const embed = new MessageEmbed().setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl).setThumbnail(bot.avatarUrl).setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
     socket.on("owner-reply", (review, ownerSchema, userSchema) => {
-        const embed = new MessageEmbed()
-            .setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl)
-            .setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`)
-            .setThumbnail(userSchema.avatarUrl);
+        // eslint-disable-next-line max-len
+        const embed = new MessageEmbed().setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl).setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`).setThumbnail(userSchema.avatarUrl);
         logChannel.send(embed);
     });
     socket.on("owner-like", (review, user, liked) => {
@@ -143,6 +138,14 @@ client.on("ready", async () => {
             .setAuthor(`${user.tag} ${disliked ? "disliked" : "un-disliked"} "Owners" reply!`, user.avatarUrl)
             .setThumbnail("https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png") // place holder
             .setDescription(`Total Dislikes - ${review.ownerReply.dislikes.length}`);
+        logChannel.send(embed);
+    });
+    socket.on("owner-reply-delete", async (review) => {
+        const user = await fetch(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
+        const embed = new MessageEmbed()
+            .setTitle("An owner-reply was deleted")
+            .setAuthor(user.tag, user.avatarUrl)
+            .setDescription(`\`\`\`js\n${JSON.stringify(review, null, 4)}\`\`\``);
         logChannel.send(embed);
     });
 });
