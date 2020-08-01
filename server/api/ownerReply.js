@@ -60,7 +60,7 @@ router.delete("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the owner's reply did not delete from the database.", error: "Internal Server Error." });
     }
-
+    WebSocket.emit("owner-reply-delete", foundReview);
     return res.status(200).json({ message: "Successfully deleted the owner's reply from the database." });
 });
 
