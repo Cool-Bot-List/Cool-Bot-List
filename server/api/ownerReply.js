@@ -77,6 +77,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
     // Make sure the owners reply exists
     if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Handle method
+    let liked = null;
     if (!foundReview.ownerReply.likes.includes(foundUser.id)) {
         foundReview.ownerReply.likes.push(foundUser.id);
         // Remove the dislike of the user if dislike
@@ -91,9 +92,11 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
-            WebSocket.emit("new-notification", ownerObject);
+            // WebSocket.emit("new-notification", ownerObject);
         }
+        liked = true;
     } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
+        liked = false;
         foundReview.ownerReply.likes.splice(
             foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
             1
@@ -104,6 +107,9 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the owners reply did not handle likes in the database", error: "Internal Server Error." });
     }
+
+    WebSocket.emit("owner-like", foundReview, foundUser, liked);
+
     return res.status(200).json({ message: "Successfully updated the likes of the owners reply on the database." });
 });
 
