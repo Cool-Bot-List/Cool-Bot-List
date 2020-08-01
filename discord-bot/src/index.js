@@ -118,17 +118,10 @@ client.on("ready", async () => {
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("vote", (user, bot) => {
-        // console.log(user, "user");
-        // console.log(bot, "bot");
         const embed = new MessageEmbed()
-            .setAuthor(`${user.tag} voted for ${bot.tag}`, bot.avatarUrl)
-            .setThumbnail(user.avatarUrl)
-            .addField("User", `
-            b
-            `)
-            .addField("Bot", `
-            a
-            `);
+            .setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl)
+            .setThumbnail(bot.avatarUrl)
+            .setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
 });
