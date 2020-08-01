@@ -103,13 +103,13 @@ client.on("ready", async () => {
         if (rating) embedDescription += `rating: ${rating}\n\n`;
         embed.setDescription(embedDescription);
         logChannel.send(embed);
-        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
     socket.on("new-notification", (data) => {
         const embed = new MessageEmbed().setTitle("A new notification was made").setAuthor(data.tag, data.avatarUrl).setThumbnail(data.avatarUrl);
         for (const noti of data.notifications) embed.addField("notification", `${noti.message} read: ${noti.read}`);
         logChannel.send(embed);
-        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
     socket.on("notification-update", (data) => {
         const embed = new MessageEmbed().setTitle("A notification was updated.").setAuthor(data.tag, data.avatarUrl).setThumbnail(data.avatarUrl);
@@ -138,7 +138,11 @@ client.on("ready", async () => {
             .setDescription(`Total Likes - ${review.ownerReply.likes.length}`);
         logChannel.send(embed);
     });
-    socket.on("owner-dislike", (review, user) => {
-
+    socket.on("owner-dislike", (review, user, disliked) => {
+        const embed = new MessageEmbed()
+            .setAuthor(`${user.tag} ${disliked ? "disliked" : "un-disliked"} "Owners" reply!`, user.avatarUrl)
+            .setThumbnail("https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png") // place holder
+            .setDescription(`Total Dislikes - ${review.ownerReply.dislikes.length}`);
+        logChannel.send(embed);
     });
 });
