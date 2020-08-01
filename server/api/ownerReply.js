@@ -3,6 +3,7 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
+// const { socket } = require("../WebSocket");
 const WebSocket = require("../WebSocket").getSocket();
 
 //add the owner reply
@@ -34,7 +35,7 @@ router.post("/", async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the reply did not post.", error: "Internal Server Error" });
     }
-
+    WebSocket.emit("owner-reply", foundReview, owner, userToPushTo);
     res.status(200).json({ message: "Your reply has been successfully posted." });
 });
 

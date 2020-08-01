@@ -124,4 +124,11 @@ client.on("ready", async () => {
             .setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
+    socket.on("owner-reply", (review, ownerSchema, userSchema) => {
+        const embed = new MessageEmbed()
+            .setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl)
+            .setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`)
+            .setThumbnail(userSchema.avatarUrl);
+        logChannel.send(embed);
+    });
 });
