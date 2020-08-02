@@ -2,6 +2,7 @@ require("dotenv").config();
 const { Client, MessageEmbed } = require("discord.js");
 const io = require("socket.io-client");
 const client = new Client();
+const axios = require("axios").default;
 require("dotenv").config();
 client.login(process.env.BOT_TOKEN);
 
@@ -39,8 +40,8 @@ client.on("ready", async () => {
     });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
-        const user = await r.json();
+        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const user = r.data;
         const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -57,8 +58,8 @@ client.on("ready", async () => {
     });
     socket.on("bot-update", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
-        const user = await r.json();
+        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const user = r.data;
         const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -75,8 +76,8 @@ client.on("ready", async () => {
     });
     socket.on("bot-delete", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await fetch(`http://localhost:5000/api/users${owners[0]}`);
-        const user = await r.json();
+        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const user = r.data;
         const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -128,18 +129,19 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("owner-reply-delete", async (review) => {
-        const r = await fetch(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
-        const user = await r.json(); // bruh it literally is easier than what you're doing you literally add one param
-        const embed = new MessageEmbed() //can u help me. why is it saying not defined
+        const r = axios.get(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
+        const user = (await r).data;
+        const embed = new MessageEmbed()
             .setTitle("An owner-reply was deleted")
             .setAuthor(user.tag, user.avatarUrl)
             .setDescription(`\`\`\`js\n${JSON.stringify(review, null, 4)}\`\`\``);
         logChannel.send(embed);
     });
     socket.on("new-review", async (data) => {
+        console.log("new-review");
         const { userId, review, rating, botId } = data;
-        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
-        const user = await r.json();
+        const r = await axios.get(`http://localhost:5000/api/user/${userId}`);
+        const user = r.data;
         const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
@@ -150,12 +152,12 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
-    socket.on("review-delete", (review) => {
+    socket.on("review-delete", async (data) => {
+        console.log("review-delete");
         const { userId, review, rating, botId } = data;
-        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
-        const user = await r.json();
-        const embed = new MessageEmbed().setTitle("A review was deleted")
-                .setAuthor(`${user.tag}(review author)`, user.avatarUrl);
+        const r = await axios.get(`http://localhost:5000/api/user/${userId}`);
+        const user = r.data;
+        const embed = new MessageEmbed().setTitle("A review was deleted").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
         if (botId) embedDescription += `botId: ${botId}\n\n`;
@@ -169,14 +171,14 @@ client.on("ready", async () => {
         const embed = new MessageEmbed()
             .setAuthor(`${user.tag} ${like ? "liked" : "un-liked"} ${reviewer.tag}'s review!`, user.avatarUrl)
             .setThumbnail(reviewer.avatarUrl)
-            .setDescription(`**Review -** ${review.review}\n**Total Likes -** ${review.likes}`);
+            .setDescription(`**Review -** ${review.review}\n**Total Likes -** ${review.likes.length}`);
         logChannel.send(embed);
     });
     socket.on("review-dislike", (review, user, reviewer, dislike) => {
         const embed = new MessageEmbed()
             .setAuthor(`${user.tag} ${dislike ? "disliked" : "un-disliked"} ${reviewer.tag}'s review!`, user.avatarUrl)
             .setThumbnail(reviewer.avatarUrl)
-            .setDescription(`**Review -** ${review.review}\n**Total Likes -** ${review.likes}`);
+            .setDescription(`**Review -** ${review.review}\n**Total Dislikes -** ${review.dislikes.length}`);
         logChannel.send(embed);
     });
 });
