@@ -3,6 +3,7 @@ const router = express.Router();
 const Reviews = require("../database/models/Review");
 const Bots = require("../database/models/Bot");
 const Users = require("../database/models/User");
+const { findOne, findById } = require("../database/models/User");
 const WebSocket = require("../WebSocket").getSocket();
 
 // Post user review -- requires Oauth to actually function --
@@ -122,11 +123,11 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         reviews.findIndex((element) => element === reviewId),
         1
     );
-
+    const foundReview = await findById(reviewId);
     try {
         // so review a bot, then delete the review
         await foundBot.save();
-        const foundReview = await Reviews.findByIdAndDelete(reviewId);
+        await foundReview.deleteOne();
         let ratings = [];
         const updatedBot = await Bots.findOne({ id: botId });
         const { reviews } = updatedBot;
@@ -185,7 +186,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
     }
-    WebSocket.emit("review-like", foundReview, foundUser, like);
+    WebSocket.emit("review-like", foundReview, foundUser, userToPushTo, like);
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 });
 
@@ -198,7 +199,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
     const foundUser = await Users.findOne({ id: userId });
     if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
     const userToPushTo = await Users.findOne({ id: foundReview.userId });
-
+    let dislike = null;
     if (!foundReview.dislikes.includes(foundUser.id)) {
         foundReview.dislikes.push(foundUser.id);
         // Remove the like of the user if like.
@@ -207,6 +208,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
                 foundReview.likes.findIndex((element) => element === foundUser.id),
                 1
             );
+            dislike = true;
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} disliked your review 😢.`, read: false });
         WebSocket.emit("new-notification", userToPushTo);
@@ -215,6 +217,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
             foundReview.dislikes.findIndex((element) => element === foundUser.id),
             1
         );
+        dislike = false;
     }
     try {
         await userToPushTo.save();
@@ -222,6 +225,7 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
     }
+    WebSocket.emit("review-dislike", foundReview, foundUser, userToPushTo, dislike); // ready to test?
     return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });
 });
 

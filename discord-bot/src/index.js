@@ -129,8 +129,8 @@ client.on("ready", async () => {
     });
     socket.on("owner-reply-delete", async (review) => {
         const r = await fetch(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
-        const user = await r.json(); // wut
-        const embed = new MessageEmbed()
+        const user = await r.json(); // bruh it literally is easier than what you're doing you literally add one param
+        const embed = new MessageEmbed() //can u help me. why is it saying not defined
             .setTitle("An owner-reply was deleted")
             .setAuthor(user.tag, user.avatarUrl)
             .setDescription(`\`\`\`js\n${JSON.stringify(review, null, 4)}\`\`\``);
@@ -150,6 +150,33 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
-    socket.on("review-delete", (review) => {});
-    socket.on("review-like", (review, user, like) => {});
+    socket.on("review-delete", (review) => {
+        const { userId, review, rating, botId } = data;
+        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
+        const user = await r.json();
+        const embed = new MessageEmbed().setTitle("A review was deleted")
+                .setAuthor(`${user.tag}(review author)`, user.avatarUrl);
+        let embedDescription = "";
+        if (userId) embedDescription += `userId: ${userId}\n\n`;
+        if (botId) embedDescription += `botId: ${botId}\n\n`;
+        if (review) embedDescription += `review: ${review}\n\n`;
+        if (rating) embedDescription += `rating: ${rating}\n\n`;
+        embed.setDescription(embedDescription);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
+    });
+    socket.on("review-like", (review, user, reviewer, like) => {
+        const embed = new MessageEmbed()
+            .setAuthor(`${user.tag} ${like ? "liked" : "un-liked"} ${reviewer.tag}'s review!`, user.avatarUrl)
+            .setThumbnail(reviewer.avatarUrl)
+            .setDescription(`**Review -** ${review.review}\n**Total Likes -** ${review.likes}`);
+        logChannel.send(embed);
+    });
+    socket.on("review-dislike", (review, user, reviewer, dislike) => {
+        const embed = new MessageEmbed()
+            .setAuthor(`${user.tag} ${dislike ? "disliked" : "un-disliked"} ${reviewer.tag}'s review!`, user.avatarUrl)
+            .setThumbnail(reviewer.avatarUrl)
+            .setDescription(`**Review -** ${review.review}\n**Total Likes -** ${review.likes}`);
+        logChannel.send(embed);
+    });
 });
