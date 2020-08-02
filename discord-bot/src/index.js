@@ -128,7 +128,8 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("owner-reply-delete", async (review) => {
-        const user = await fetch(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
+        const r = await fetch(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
+        const user = await r.json(); // wut
         const embed = new MessageEmbed()
             .setTitle("An owner-reply was deleted")
             .setAuthor(user.tag, user.avatarUrl)
@@ -149,5 +150,6 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
+    socket.on("review-delete", (review) => {});
     socket.on("review-like", (review, user, like) => {});
 });
