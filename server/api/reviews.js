@@ -126,11 +126,11 @@ router.delete("/:botId/:reviewId", async (req, res) => {
     try {
         // so review a bot, then delete the review
         await foundBot.save();
-        await Reviews.findByIdAndDelete(reviewId);
+        const foundReview = await Reviews.findByIdAndDelete(reviewId);
         let ratings = [];
         const updatedBot = await Bots.findOne({ id: botId });
         const { reviews } = updatedBot;
-        //something is null please fix
+
         for (const review of reviews) {
             const foundReview = await Reviews.findById(review);
             ratings.push(foundReview.rating);
@@ -146,6 +146,7 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         console.log(err);
         return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
+    WebSocket.emit("review-delete", foundReview);
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
 });
 
@@ -157,9 +158,11 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
     const foundUser = await Users.findOne({ id: userId });
     if (!foundReview || !foundUser) return res.status(404).json({ message: "A user or a review does not exist", error: "Not found." });
     const userToPushTo = await Users.findOne({ id: foundReview.userId });
+    let like = null;
     if (!foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.push(foundUser.id);
         // Remove the dislike of the user if dislike
+
         if (foundReview.dislikes.includes(foundUser.id)) {
             foundReview.dislikes.splice(
                 foundReview.dislikes.findIndex((element) => element === foundUser.id),
@@ -168,11 +171,13 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
         }
         userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
         WebSocket.emit("new-notification", userToPushTo);
+        like = true;
     } else if (foundReview.likes.includes(foundUser.id)) {
         foundReview.likes.splice(
             foundReview.likes.findIndex((element) => element === foundUser.id),
             1
         );
+        like = false;
     }
     try {
         await userToPushTo.save();
@@ -180,12 +185,12 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
     }
+    WebSocket.emit("review-like", foundReview, foundUser, like);
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
 });
 
 //dislike the review
 router.put("/dislike/:userId/:reviewId", async (req, res) => {
-    // this one needs to be async too dum dum
     const { userId, reviewId } = req.params;
     if (!userId || !reviewId) return res.status(400).json({ message: "You are missing properties", error: "Bad Request." });
 

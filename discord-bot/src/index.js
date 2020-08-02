@@ -91,20 +91,7 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
-    socket.on("new-review", async (data) => {
-        const { userId, review, rating, botId } = data;
-        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
-        const user = await r.json();
-        const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
-        let embedDescription = "";
-        if (userId) embedDescription += `userId: ${userId}\n\n`;
-        if (botId) embedDescription += `botId: ${botId}\n\n`;
-        if (review) embedDescription += `review: ${review}\n\n`;
-        if (rating) embedDescription += `rating: ${rating}\n\n`;
-        embed.setDescription(embedDescription);
-        logChannel.send(embed);
-        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
-    });
+
     socket.on("new-notification", (data) => {
         const embed = new MessageEmbed().setTitle("A new notification was made").setAuthor(data.tag, data.avatarUrl).setThumbnail(data.avatarUrl);
         for (const noti of data.notifications) embed.addField("notification", `${noti.message} read: ${noti.read}`);
@@ -148,4 +135,19 @@ client.on("ready", async () => {
             .setDescription(`\`\`\`js\n${JSON.stringify(review, null, 4)}\`\`\``);
         logChannel.send(embed);
     });
+    socket.on("new-review", async (data) => {
+        const { userId, review, rating, botId } = data;
+        const r = await fetch(`http://localhost:5000/api/user/${userId}`);
+        const user = await r.json();
+        const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
+        let embedDescription = "";
+        if (userId) embedDescription += `userId: ${userId}\n\n`;
+        if (botId) embedDescription += `botId: ${botId}\n\n`;
+        if (review) embedDescription += `review: ${review}\n\n`;
+        if (rating) embedDescription += `rating: ${rating}\n\n`;
+        embed.setDescription(embedDescription);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
+    });
+    socket.on("review-like", (review, user, like) => {});
 });
