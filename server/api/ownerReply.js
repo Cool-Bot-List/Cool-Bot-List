@@ -6,16 +6,20 @@ const Users = require("../database/models/User");
 
 //add the owner reply
 router.post("/", async (req, res) => {
-    const { ownerReply, ownerId, botId, reviewId } = req.body;
-    if (!ownerReply || !ownerId || !botId || !reviewId) return res.status(400).json({ message: "a", error: "Bad Request." });
+    const { ownerReply, ownerId, userId, botId, reviewId } = req.body;
+    if (!ownerReply || !ownerId || !userId || !botId || !reviewId) return res.status(400).json({ message: "a", error: "Bad Request." });
+    // Check to see if the user exists
+    const foundUser = await Users.findOne({ id: userId });
+    if (!foundUser) return res.status(400).json({ message: "That user doesn't exist in the database!", error: "Not Found." });
     // Check if the bot exists
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // Check to make sure it's one of the owners making the request
-    // if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     // Make sure the review exists
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
+    if (foundReview.ownerReply.review.length === 0) return res.status(400).json({ message: "An owner reply already exists!", error: "Bad Request." });
 
     const userToPushTo = await Users.findOne({ id: foundReview.userId });
     const owner = await Users.findOne({ id: ownerId });
@@ -23,8 +27,9 @@ router.post("/", async (req, res) => {
     // Push notification to user
     userToPushTo.notifications.push({ message: `${ownerTag} has replied to your review!`, read: false });
 
-    // Insert the reply
+    // Insert the reply and userId
     foundReview.ownerReply.review = ownerReply;
+    foundReview.ownerReply.userId = foundUser.id;
     try {
         // Save it
         await userToPushTo.save();
@@ -49,7 +54,7 @@ router.delete("/", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
     // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    if (foundReview.ownerReply.review.length !== 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Delete the reply
     foundReview.ownerReply.review = "";
     try {
