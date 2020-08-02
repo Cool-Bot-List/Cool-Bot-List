@@ -5,6 +5,7 @@ const Users = require("../database/models/User");
 const botApproveMethods = require("../constants/botApproveMethods");
 const { getBotData } = require("../util/getBotData");
 const { BOT_TAGS } = require("../constants/botTags");
+const { getBotInviteLink } = require("../util/getBotInviteLink");
 
 const WebSocket = require("../WebSocket").getSocket();
 // get all bots from db
@@ -22,6 +23,7 @@ router.get("/:id", async (req, res) => {
 //posts a bot to the db
 router.post("/", async (req, res) => {
     const { id, prefix, description, owners, website, helpCommand, supportServer, library, tags } = req.body;
+    let { inviteLink } = req.body;
     if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library || tags) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
     // Check if the tags are valid
     if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
@@ -29,11 +31,12 @@ router.post("/", async (req, res) => {
         // eslint-disable-next-line max-len
         if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
     }
+    if (!inviteLink) inviteLink = getBotInviteLink(id);
     const bot = await Bots.findOne({ id });
     const botApiData = await getBotData(id);
     const { tag, avatarUrl } = botApiData;
     if (bot) return res.status(400).send({ message: "This bot already exists!", error: "Bad Request." });
-    const newBot = new Bots({ id, tag, avatarUrl, prefix, description, owners, website, helpCommand, supportServer, library, tags });
+    const newBot = new Bots({ id, tag, avatarUrl, prefix, description, owners, website, inviteLink, helpCommand, supportServer, library, tags });
 
     for (const owner of owners) {
         const users = await Users.findOne({ id: owner });
