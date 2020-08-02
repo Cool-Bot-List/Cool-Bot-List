@@ -54,7 +54,7 @@ router.delete("/", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
     // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length === 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
+    if (foundReview.ownerReply.review.length !== 0) return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Delete the reply
     foundReview.ownerReply.review = "";
     try {
