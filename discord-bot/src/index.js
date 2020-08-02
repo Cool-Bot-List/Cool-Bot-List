@@ -138,9 +138,8 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("new-review", async (data) => {
-        console.log("new-review");
         const { userId, review, rating, botId } = data;
-        const r = await axios.get(`http://localhost:5000/api/user/${userId}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${userId}`);
         const user = r.data;
         const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
@@ -153,9 +152,8 @@ client.on("ready", async () => {
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
     socket.on("review-delete", async (data) => {
-        console.log("review-delete");
         const { userId, review, rating, botId } = data;
-        const r = await axios.get(`http://localhost:5000/api/user/${userId}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${userId}`);
         const user = r.data;
         const embed = new MessageEmbed().setTitle("A review was deleted").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
