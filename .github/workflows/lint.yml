@@ -1,11 +1,16 @@
 name: Lint Files
-on: push
+on:
+    push:
+        branches: [master]
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
+            - uses: actions/setup-node@master
+                with:
+                    node-version: 12
             - name: Install modules
-              run: yarn
+              run: npm ci
             - name: Run ESLint
-              run: eslint . --ext .js,.jsx,.ts,.tsx
+              run: npm run lint
