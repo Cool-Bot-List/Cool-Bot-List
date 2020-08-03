@@ -8,9 +8,9 @@ jobs:
         steps:
             - uses: actions/checkout@v2
             - uses: actions/setup-node@master
-                with:
-                    node-version: 12
-            - name: Install modules
+              with:
+                  node-version: 12
+            - name: Install Modules
               run: npm ci
             - name: Run ESLint
               run: npm run lint
