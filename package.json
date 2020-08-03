@@ -9,7 +9,8 @@
         "start": "node server/app.js",
         "server": "nodemon server/app.js",
         "client": "npm start --prefix client",
-        "dev": "concurrently \"npm run server\" \"npm run client\""
+        "bot": "npm run dev --prefix discord-bot",
+        "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run bot\""
     },
     "author": "",
     "license": "ISC",
@@ -21,7 +22,8 @@
         "express-session": "^1.17.1",
         "mongoose": "^5.9.25",
         "passport": "^0.4.1",
-        "passport-discord": "^0.1.4"
+        "passport-discord": "^0.1.4",
+        "socket.io": "^2.3.0"
     },
     "devDependencies": {
         "concurrently": "^5.2.0",

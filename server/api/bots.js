@@ -7,6 +7,7 @@ const { getBotData } = require("../util/getBotData");
 const { BOT_TAGS } = require("../constants/botTags");
 const { getBotInviteLink } = require("../util/getBotInviteLink");
 
+const WebSocket = require("../WebSocket").getSocket();
 // get all bots from db
 router.get("/", async (req, res) => {
     const allBots = await Bots.find();
@@ -52,7 +53,7 @@ router.post("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
-
+    WebSocket.emit("new-bot", newBot);
     return res.json({ message: "Successfully created a new bot in the database!" });
 });
 //updates a bot from the db doesn't need every felid only updates the felids that u specify
@@ -80,6 +81,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not save to the database!", error: "Internal Server Error." });
     }
+    WebSocket.emit("bot-update", foundBot);
     return res.json({ message: "Successfully updated the bot from the database!" });
 });
 //changes the isApproved status
@@ -129,6 +131,7 @@ router.delete("/:id", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the bot did not delete from the database!", error: "Internal Server Error." });
     }
+    WebSocket.emit("bot-delete", foundBot);
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 module.exports = router;

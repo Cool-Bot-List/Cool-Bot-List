@@ -2,7 +2,7 @@ const router = require("express").Router();
 const Users = require("../database/models/User");
 const Bots = require("../database/models/Bot");
 const VOTE_TIMES = require("../constants/voteTimes");
-
+const WebSocket = require("../WebSocket").getSocket();
 // Get the current vote for a user -- Check if a user can vote again
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
     if (!foundUser) return res.status(404).json({ message: "That user doesn't exist in the database.", error: "Not Found" });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found" });
 
-    if (VOTE_TIMES.TWELVE_HOURS - (Date.now() - foundUser.vote.date.getTime()) > 0) return res.status(403).json({ message: "You can't vote again yet!", error: "Forbidden." });
+    if (foundUser.vote.date !== null && VOTE_TIMES.TWELVE_HOURS - (Date.now() - foundUser.vote.date.getTime()) > 0) return res.status(403).json({ message: "You can't vote again yet!", error: "Forbidden." });
 
     foundUser.vote.date = new Date();
     foundUser.vote.bot = foundBot.id;
@@ -35,6 +35,8 @@ router.post("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving the votes to the database.", error: "Internal Server Error." });
     }
+    // console.log(foundBot, "found bot in vote.js");
+    WebSocket.emit("vote", foundUser, foundBot);
     return res.status(200).json({ message: `Successfully voted for ${foundBot.tag}!` });
 });
 
