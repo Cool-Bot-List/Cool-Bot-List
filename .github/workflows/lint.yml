@@ -3,7 +3,7 @@ on:
     push:
         branches: [master]
 jobs:
-    build:
+    Lint Files:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
