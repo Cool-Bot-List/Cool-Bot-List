@@ -5,9 +5,17 @@ const Review = new mongoose.Schema({
     botId: String,
     userId: String,
     review: String,
-    // reply: String, -- Removed for now
-    likes: Number,
-    dislikes: Number,
+    ownerReply: {
+        userId: { type: String, default: "", required: false },
+        review: { type: String, default: "", require: false },
+        likes: { type: Array, default: [], required: false },
+        dislikes: { type: Array, default: [], required: false },
+        date: { type: Date, default: new Date(), required: false },
+    },
+    likes: { type: Array, default: [], required: false },
+    dislikes: { type: Array, default: [], required: false },
+    rating: Number,
+    date: { type: Date, default: new Date(), required: false },
 });
 
 module.exports = mongoose.model("reviews", Review);
