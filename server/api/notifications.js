@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Users = require("../database/models/User");
 const notificationMethods = require("../constants/notificationMethods");
+const WebSocket = require("../WebSocket").getSocket();
 
 //get ALL notifications for ONE user
 router.get("/:id", async (req, res) => {
@@ -39,7 +40,7 @@ router.put("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
     }
-
+    WebSocket.emit("notification-update", foundUser);
     return res.status(200).json({ message: `Successfully set the notification to ${method}.` });
 });
 
@@ -60,7 +61,7 @@ router.put("/all/:userId", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving to the database.", error: "Internal Server Error." });
     }
-
+    WebSocket.emit("notification-update", foundUser);
     return res.status(200).json({ message: "Successfully set all notification to read" });
 });
 
