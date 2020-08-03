@@ -26,7 +26,8 @@ passport.use(
                 // console.log(process.env.CLIENT_SECERT);
                 const user = await User.findOne({ id: profile.id });
                 if (user) {
-                    user.avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`;
+                    // eslint-disable-next-line max-len
+                    user.avatarUrl = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`.includes("null") ? "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" : `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`;
                     user.tag = getTag(profile.username, profile.discriminator);
                     await user.save();
                     done(null, user);
@@ -34,7 +35,8 @@ passport.use(
                     const newUser = new User({
                         id: profile.id,
                         tag: getTag(profile.username, profile.discriminator),
-                        avatarUrl: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`,
+                        // eslint-disable-next-line max-len
+                        avatarUrl: `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`.includes("null") ? "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" : `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=2048`,
                     });
                     const savedUser = await newUser.save();
                     done(null, savedUser);
