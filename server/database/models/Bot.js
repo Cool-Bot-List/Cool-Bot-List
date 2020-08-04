@@ -18,6 +18,9 @@ const Bot = new mongoose.Schema({
     reviews: { type: Array, default: [], required: false },
     votes: { type: Number, default: 0, required: false },
     tags: { type: Array, default: [], required: false },
+    servers: { type: String, default: null, required: false },
+    users: { type: String, default: null, required: false },
+    presence: { type: String, default: null, required: false },
 });
 
 module.exports = mongoose.model("bots", Bot);
