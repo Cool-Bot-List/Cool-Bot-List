@@ -6,6 +6,7 @@ const botApproveMethods = require("../constants/botApproveMethods");
 const { getBotData } = require("../util/getBotData");
 const { BOT_TAGS } = require("../constants/botTags");
 const { getBotInviteLink } = require("../util/getBotInviteLink");
+const { Client } = require("discord.js");
 
 const WebSocket = require("../WebSocket").getSocket();
 // get all bots from db
@@ -134,4 +135,24 @@ router.delete("/:id", async (req, res) => {
     WebSocket.emit("bot-delete", foundBot);
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
+
+router.put("/client", async(req, res) => {
+    if (!(req.body.client instanceof Client)) return res.json({ success: false, message: "Invalid Discord Client." });
+    if (!req.body.token) return res.json({ success: false, message: "Invalid api token." });
+    /*
+    here we can check if the token is valid blablabla
+    */
+    const bot = await Bots.findOne({ id: req.body.client.id });
+    if (!bot) return res.json({ success: false, message: "Invalid Bot." });
+
+    // and here is the big ass ugly code.
+    let updateGuilds, updateUsers, updatePresence;
+    if (req.body.sendTotalGuilds === false) updateGuilds = false;
+    else updateGuilds = req.body.client.guilds.cache.size;
+    if (req.body.sendTotalUsers === false) updateUsers = false;
+    else updateUsers = req.body.client.users.cache.size;
+    if (req.body.sendPresence === false) updatePresence = false;
+    else updatePresence = req.body.client.user.presence;
+});
+
 module.exports = router;
