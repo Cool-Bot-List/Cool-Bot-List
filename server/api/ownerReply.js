@@ -17,11 +17,11 @@ router.post("/", async (req, res) => {
     const foundBot = await Bots.findOne({ id: botId });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
     // Check to make sure it's one of the owners making the request
-    if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    //  if (!foundBot.owners.includes(req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
     // Make sure the review exists
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-    if (foundReview.ownerReply.review.length === 0) return res.status(400).json({ message: "An owner reply already exists!", error: "Bad Request." });
+    if (foundReview.ownerReply.review.length !== 0) return res.status(400).json({ message: "An owner reply already exists!", error: "Bad Request." });
 
     const userToPushTo = await Users.findOne({ id: foundReview.userId });
     const owner = await Users.findOne({ id: ownerId });
