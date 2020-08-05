@@ -137,15 +137,19 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/client", async (req, res) => {
-    const { client, token } = req.body;
+    /**
+     * @type {Client}
+     */
+    const client = req.body.client;
+    const { token } = req.body;
     let { sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
     if (!client || !token || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
     if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
     /*
     here we can check if the token is valid blablabla
     */
-    const bot = await Bots.findOne({ id: req.body.client.id });
-    if (!bot) return res.json({ success: false, message: "Invalid Bot." });
+    const bot = await Bots.findOne({ id: client.user.id });
+    if (!bot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
 
     // and here is the big ass ugly code.
 
