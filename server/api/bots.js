@@ -137,8 +137,9 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/client", async (req, res) => {
-    const { client, token, sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
-    if (!client || !token || sendTotalGuilds || sendTotalUsers || sendPresence) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
+    const { client, token } = req.body;
+    let { sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
+    if (!client || !token || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
     if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
     /*
     here we can check if the token is valid blablabla
@@ -147,13 +148,10 @@ router.put("/client", async (req, res) => {
     if (!bot) return res.json({ success: false, message: "Invalid Bot." });
 
     // and here is the big ass ugly code.
-    let updateGuilds, updateUsers, updatePresence;
-    if (req.body.sendTotalGuilds === false) updateGuilds = false;
-    else updateGuilds = req.body.client.guilds.cache.size;
-    if (req.body.sendTotalUsers === false) updateUsers = false;
-    else updateUsers = req.body.client.users.cache.size;
-    if (req.body.sendPresence === false) updatePresence = false;
-    else updatePresence = req.body.client.user.presence;
+
+    sendTotalGuilds ? (sendTotalGuilds = client.guilds.cache.size) : null;
+    sendTotalUsers ? (sendTotalUsers = client.users.cache.size) : null;
+    sendPresence ? (sendPresence = client.user.presence) : null;
 });
 
 module.exports = router;
