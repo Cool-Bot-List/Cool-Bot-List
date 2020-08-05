@@ -136,6 +136,7 @@ router.delete("/:id", async (req, res) => {
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 
+//  here we can check if the token is valid after Zyleaf does JWT blablabla with the middleware
 router.put("/client", async (req, res) => {
     /**
      * @type {Client}
@@ -145,9 +146,7 @@ router.put("/client", async (req, res) => {
     let { sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
     if (!client || !token || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
     if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
-    /*
-    here we can check if the token is valid after Zyleaf does JWT blablabla 
-    */
+
     const foundBot = await Bots.findOne({ id: client.user.id });
     if (!foundBot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
 
