@@ -146,16 +146,25 @@ router.put("/client", async (req, res) => {
     if (!client || !token || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
     if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
     /*
-    here we can check if the token is valid blablabla
+    here we can check if the token is valid after Zyleaf does JWT blablabla 
     */
-    const bot = await Bots.findOne({ id: client.user.id });
-    if (!bot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
-
-    // and here is the big ass ugly code.
+    const foundBot = await Bots.findOne({ id: client.user.id });
+    if (!foundBot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
 
     sendTotalGuilds ? (sendTotalGuilds = client.guilds.cache.size) : null;
     sendTotalUsers ? (sendTotalUsers = client.users.cache.size) : null;
     sendPresence ? (sendPresence = client.user.presence) : null;
+
+    if (sendTotalGuilds !== false) foundBot.servers = sendTotalGuilds;
+    if (sendTotalUsers !== false) foundBot.users = sendTotalUsers;
+    if (sendPresence !== false) foundBot.presence = sendPresence;
+
+    try {
+        await foundBot.update();
+    } catch (err) {
+        res.status(500).json({ message: "Something went wrong and the bot didn't update", error: "Internal Server Error." });
+    }
+    return res.status(201).json({ message: "Successfully updated the bot's stats." });
 });
 
 module.exports = router;
