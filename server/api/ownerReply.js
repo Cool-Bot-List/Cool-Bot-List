@@ -9,7 +9,7 @@ const WebSocket = require("../WebSocket").getSocket();
 //add the owner reply
 router.post("/", async (req, res) => {
     const { ownerReply, ownerId, userId, botId, reviewId } = req.body;
-    if (!ownerReply || !ownerId || !userId || !botId || !reviewId) return res.status(400).json({ message: "a", error: "Bad Request." });
+    if (!ownerReply || !ownerId || !userId || !botId || !reviewId) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
     // Check to see if the user exists
     const foundUser = await Users.findOne({ id: userId });
     if (!foundUser) return res.status(400).json({ message: "That user doesn't exist in the database!", error: "Not Found." });
