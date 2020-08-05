@@ -136,9 +136,10 @@ router.delete("/:id", async (req, res) => {
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 
-router.put("/client", async(req, res) => {
-    if (!(req.body.client instanceof Client)) return res.json({ success: false, message: "Invalid Discord Client." });
-    if (!req.body.token) return res.json({ success: false, message: "Invalid api token." });
+router.put("/client", async (req, res) => {
+    const { client, token, sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
+    if (!client || !token || sendTotalGuilds || sendTotalUsers || sendPresence) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
+    if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
     /*
     here we can check if the token is valid blablabla
     */
