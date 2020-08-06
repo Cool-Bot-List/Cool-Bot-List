@@ -138,28 +138,28 @@ router.delete("/:id", async (req, res) => {
 
 //  here we can check if the token is valid after Zyleaf does JWT blablabla with the middleware
 router.put("/client", async (req, res) => {
+    console.log(req.body);
     /**
      * @type {Client}
      */
     const client = req.body.client;
-    const { token } = req.body;
+    const { token, presence } = req.body;
     let { sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
-    if (!client || !token || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
-    if (!(req.body.client instanceof Client)) return res.status(400).json({ message: "Invalid Discord Client.", error: "Bad Request." });
+    if (!client || !token || !presence || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
 
     const foundBot = await Bots.findOne({ id: client.user.id });
     if (!foundBot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
 
-    sendTotalGuilds ? (sendTotalGuilds = client.guilds.cache.size) : null;
-    sendTotalUsers ? (sendTotalUsers = client.users.cache.size) : null;
-    sendPresence ? (sendPresence = client.user.presence) : null;
+    sendTotalGuilds ? (sendTotalGuilds = client.guilds.length) : null;
+    sendTotalUsers ? (sendTotalUsers = client.users.length) : null;
+    sendPresence ? (sendPresence = presence.status) : null;
 
     if (sendTotalGuilds !== false) foundBot.servers = sendTotalGuilds;
     if (sendTotalUsers !== false) foundBot.users = sendTotalUsers;
     if (sendPresence !== false) foundBot.presence = sendPresence;
 
     try {
-        await foundBot.update();
+        // await foundBot.update();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the bot didn't update", error: "Internal Server Error." });
     }
