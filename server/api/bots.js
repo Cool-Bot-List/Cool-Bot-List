@@ -138,6 +138,7 @@ router.delete("/:id", async (req, res) => {
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 
+// Route used for users to update their bot.
 router.put("/client", jwtAuth, async (req, res) => {
     /**
      * @type {Client}
