@@ -9,9 +9,10 @@ const User = new mongoose.Schema({
     bots: { type: Array, default: [], required: false },
     newUser: { type: Boolean, default: true, required: false },
     notifications: { type: Array, default: [], required: false },
-    vote: { 
+    token: { type: String, required: false, default: null },
+    vote: {
         date: { type: Date, required: false, default: null },
         bot: { type: String, required: false, default: null },
-    }, 
+    },
 });
-module.exports = mongoose.model("users", User); 
+module.exports = mongoose.model("users", User);
