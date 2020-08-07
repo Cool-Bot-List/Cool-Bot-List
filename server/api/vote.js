@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong while saving the votes to the database.", error: "Internal Server Error." });
     }
-    // console.log(foundBot, "found bot in vote.js");
+
     WebSocket.emit("vote", foundUser, foundBot);
     return res.status(200).json({ message: `Successfully voted for ${foundBot.tag}!` });
 });
