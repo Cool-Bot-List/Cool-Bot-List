@@ -35,7 +35,7 @@ app.use(express.json(), express.urlencoded({ extended: true }));
 app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
 app.use("/api/users/token", require("./api/token"));
-app.use("/api/users/vote", require("./api/vote"));
+app.use("/api/bots/vote", require("./api/vote"));
 app.use("/api/login", require("./api/oauth2/login"));
 app.use("/api/bots/reviews", require("./api/reviews"));
 app.use("/api/users/notifications", require("./api/notifications"));
