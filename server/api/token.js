@@ -17,19 +17,21 @@ router.get("/:id", async (req, res) => {
 router.post("/:id", async (req, res) => {
     const { id } = req.params;
     if (!id) return res.status(400).json({ message: "You are missing the id of the user to update in your params.", error: "Bad Request." });
-    const foundUser = Users.findOne({ id });
-    if (!id) return res.status(404).json({ message: "A user was not found", error: "Not Found." });
+    const foundUser = await Users.findOne({ id });
 
+    if (!foundUser) return res.status(404).json({ message: "A user was not found", error: "Not Found." });
+    const user = { id: foundUser.id };
     // Logic to create the user's token here
+    const token = jwt.sign({ user }, process.env.JWT_SECRET);
     try {
-        const token = await jwt.sign(foundUser, process.env.JWT_SECRET, { expiresIn: "7d" });
-
-        WebSocket.emit("new-token", foundUser);
-        res.status(201).json({ token, message: "Successfully created the user a token." });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Something went wrong while generating a token." });
+        foundUser.token = token;
+        await foundUser.save();
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Something went wrong while generating a token." });
     }
+    WebSocket.emit("new-token", foundUser);
+    return res.status(201).json(token);
 });
 
 module.exports = router;

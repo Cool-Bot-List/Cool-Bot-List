@@ -1,20 +1,21 @@
 require("dotenv").config();
+const Users = require("../database/models/User");
 const jwt = require("jsonwebtoken");
 
-const jwtAuth = (req, res, next) => {
+const jwtAuth = async (req, res, next) => {
     const jwtHeader = req.headers["authorization"];
     const token = jwtHeader && jwtHeader.split(" ")[1];
 
-    if (!token) return res.status(403).json({ message: "Please provide a token." });
+    if (!token) return res.status(400).json({ message: "Please provide a token.", error: "Bad Request." });
 
-    try {
-        const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-        decodedData ? next() : res.status(403).json({ message: "The token is invalid." });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Something went wrong while validating the token." });
-    }
+    if (!decodedData) return res.status(403).json({ message: "The token is invalid." });
+    const { id } = decodedData.user;
+    const foundUser = await Users.findOne({ id });
+    if (token !== foundUser.token) return res.status(401).json({ message: "The token is invalid.", error: "Unauthorized" });
+    console.log("nest");
+    next();
 };
 
 module.exports = jwtAuth;
