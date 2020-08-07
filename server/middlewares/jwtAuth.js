@@ -14,7 +14,6 @@ const jwtAuth = async (req, res, next) => {
     const { id } = decodedData.user;
     const foundUser = await Users.findOne({ id });
     if (token !== foundUser.token) return res.status(401).json({ message: "The token is invalid.", error: "Unauthorized" });
-    console.log("nest");
     next();
 };
 

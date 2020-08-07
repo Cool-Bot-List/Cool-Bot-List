@@ -6,6 +6,8 @@ const botApproveMethods = require("../constants/botApproveMethods");
 const { getBotData } = require("../util/getBotData");
 const { BOT_TAGS } = require("../constants/botTags");
 const { getBotInviteLink } = require("../util/getBotInviteLink");
+const jwtAuth = require("../middlewares/jwtAuth");
+// eslint-disable-next-line no-unused-vars
 const { Client } = require("discord.js");
 
 const WebSocket = require("../WebSocket").getSocket();
@@ -136,19 +138,18 @@ router.delete("/:id", async (req, res) => {
     return res.json({ message: "Successfully deleted the bot from the database!" });
 });
 
-//  here we can check if the token is valid after Zyleaf does JWT blablabla with the middleware
-router.put("/client", async (req, res) => {
-    console.log(req.body);
+router.put("/client", jwtAuth, async (req, res) => {
     /**
      * @type {Client}
      */
     const client = req.body.client;
-    const { token, presence } = req.body;
-    let { sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
-    if (!client || !token || !presence || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
 
-    const foundBot = await Bots.findOne({ id: client.user.id });
-    if (!foundBot) return res.status(404).json({ message: "Invalid Bot.", error: "Not Found." });
+    let { presence, sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
+    if (!client || !presence || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
+
+    const foundBot = await Bots.findOne({ id: client.user });
+
+    if (!foundBot) return res.status(404).json({ message: "The bot was not found.", error: "Not Found." });
 
     sendTotalGuilds ? (sendTotalGuilds = client.guilds.length) : null;
     sendTotalUsers ? (sendTotalUsers = client.users.length) : null;
@@ -159,7 +160,7 @@ router.put("/client", async (req, res) => {
     if (sendPresence !== false) foundBot.presence = sendPresence;
 
     try {
-        // await foundBot.update();
+        await foundBot.save();
     } catch (err) {
         res.status(500).json({ message: "Something went wrong and the bot didn't update", error: "Internal Server Error." });
     }
