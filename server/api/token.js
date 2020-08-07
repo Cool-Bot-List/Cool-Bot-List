@@ -1,8 +1,8 @@
-require('dotenv').config();
+require("dotenv").config();
 const router = require("express").Router();
 const Users = require("../database/models/User");
 const WebSocket = require("../WebSocket").getSocket();
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 // Get the current token for a user.
 router.get("/:id", async (req, res) => {
@@ -22,7 +22,7 @@ router.post("/:id", async (req, res) => {
 
     // Logic to create the user's token here
     try {
-        const token = await jwt.sign(foundUser, process.env.JWT_SECRET, { expiresIn: '7d' });
+        const token = await jwt.sign(foundUser, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         WebSocket.emit("new-token", foundUser);
         res.status(201).json({ token, message: "Successfully created the user a token." });
