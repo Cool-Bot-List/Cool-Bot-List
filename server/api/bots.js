@@ -115,7 +115,7 @@ router.delete("/:id", async (req, res) => {
     if (!foundBot) {
         return res.status(404).json({ message: "That bot doesn't exist in the database!", error: "Not Found." });
     }
-    //if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
 
     const allUsers = await Users.find();
     const owners = allUsers.filter((singleUser) => singleUser.bots.includes(id));

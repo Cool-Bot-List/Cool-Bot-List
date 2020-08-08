@@ -105,7 +105,7 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
-    socket.on("vote", (user, bot) => {
+    socket.on("new-vote", (user, bot) => {
         const embed = new MessageEmbed().setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl).setThumbnail(bot.avatarUrl).setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
