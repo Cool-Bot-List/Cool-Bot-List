@@ -24,17 +24,6 @@ router.get("/:id", async (req, res) => {
     return res.json(foundBot);
 });
 //posts a bot to the db
-const test = {
-    id: "735273348875026573",
-    prefix: "!",
-    description: "A testing bot for Cool Bot List.",
-    owners: ["481158632008974337", "408080307603111936"],
-    website: "https://github.com/Cool-Bot-List",
-    helpCommand: "none",
-    supportServer: "https://discord.gg/kAfkyGB",
-    library: "discord.js",
-    tags: [],
-};
 router.post("/", async (req, res) => {
     const { id, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
     let { inviteLink } = req.body;
@@ -126,7 +115,7 @@ router.delete("/:id", async (req, res) => {
     if (!foundBot) {
         return res.status(404).json({ message: "That bot doesn't exist in the database!", error: "Not Found." });
     }
-    if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+    //if (!foundBot.owners.some((id) => id === req.user.id)) return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
 
     const allUsers = await Users.find();
     const owners = allUsers.filter((singleUser) => singleUser.bots.includes(id));
