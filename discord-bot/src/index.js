@@ -40,7 +40,7 @@ client.on("ready", async () => {
     });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
         const user = r.data;
         const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
@@ -76,7 +76,7 @@ client.on("ready", async () => {
     });
     socket.on("bot-delete", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
         const user = r.data;
         const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
         let embedDescription = "";
