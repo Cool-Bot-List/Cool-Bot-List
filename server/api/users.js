@@ -69,8 +69,6 @@ router.delete("/:id", async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: "Something went wrong and the user did not delete from the database!", error: "Internal Server Error." });
     }
-    console.log("emitting");
-    console.log(WebSocket);
     WebSocket.emit("user-delete", foundUser);
     return res.json({ message: "Successfully deleted the user from the database!" });
 });

@@ -25,7 +25,6 @@ require("./WebSocket").setSocket(server);
 require("./api/oauth2/strategies/discordStrategy");
 
 
-
 app.use(
     cors({
         origin: ["http://localhost:3000"],

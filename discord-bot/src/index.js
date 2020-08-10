@@ -31,7 +31,6 @@ client.on("ready", async () => {
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
     socket.on("user-delete", (data) => {
-        console.log("resevice");
         if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
         logChannel.send("a user was deleted");
         const embed = new MessageEmbed().setTitle("a user was deleted").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
