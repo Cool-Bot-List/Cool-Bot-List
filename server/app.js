@@ -1,15 +1,30 @@
 require("dotenv").config();
 require("./database/database");
 const express = require("express");
+const { ApolloServer, gql } = require("apollo-server-express");
 const app = express();
 const http = require("http");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
+
+const typeDefs = gql`
+  type Query {
+    name: String
+  }
+`;
+const resolvers = {
+    Query: {
+        name: () => "Duck Max!",
+    },
+};
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
+
 const server = http.createServer(app);
 require("./WebSocket").setSocket(server);
-
 require("./api/oauth2/strategies/discordStrategy");
+
+
 
 app.use(
     cors({
@@ -45,5 +60,6 @@ app.use("/api/bots/reviews", require("./api/reviews"));
 app.use("/api/users/notifications", require("./api/notifications"));
 app.use("/api/bots/reviews/owner-reply", require("./api/ownerReply"));
 
+apolloServer.applyMiddleware({ app });
 const PORT = 5000;
 server.listen(PORT, () => console.log(`Listening on ${PORT}`));
