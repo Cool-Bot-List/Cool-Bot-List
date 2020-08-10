@@ -40,9 +40,9 @@ client.on("ready", async () => {
     });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
         const user = r.data;
-        const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
+        const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
@@ -58,9 +58,9 @@ client.on("ready", async () => {
     });
     socket.on("bot-update", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
         const user = r.data;
-        const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
+        const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
@@ -76,9 +76,9 @@ client.on("ready", async () => {
     });
     socket.on("bot-delete", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users${owners[0]}`);
+        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
         const user = r.data;
-        const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.username}(first element is owners array)`, user.displayAvatarURL());
+        const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
         if (name) embedDescription += `name: ${name}\n\n`;
@@ -105,7 +105,7 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
-    socket.on("vote", (user, bot) => {
+    socket.on("new-vote", (user, bot) => {
         const embed = new MessageEmbed().setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl).setThumbnail(bot.avatarUrl).setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });

@@ -25,9 +25,11 @@ router.get("/:id", async (req, res) => {
 });
 //posts a bot to the db
 router.post("/", async (req, res) => {
-    const { id, prefix, description, owners, website, helpCommand, supportServer, library, tags } = req.body;
+    const { id, prefix, description, owners, website, helpCommand, supportServer, library } = req.body;
     let { inviteLink } = req.body;
-    if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library || tags) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
+    if (!id || !prefix || !description || !owners || !website || !helpCommand || !supportServer || !library) return res.status(404).json({ msg: "Your missing some information to create the bot!" });
+    let { tags } = req.params;
+    if (!tags) tags = [];
     // Check if the tags are valid
     if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
     for (const t of tags) {
