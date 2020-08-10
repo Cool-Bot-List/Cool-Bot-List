@@ -9,21 +9,24 @@ const passport = require("passport");
 const cors = require("cors");
 
 const typeDefs = gql`
-  type Query {
-    name: String
-  }
+    type Query {
+        name(text: String): String
+    }
 `;
 const resolvers = {
     Query: {
-        name: () => "Duck Max!",
+        name: (parent, { text }, context, info) => {
+            console.log("parent", parent);
+            console.log("info", info);
+            return text;
+        },
     },
 };
-const apolloServer = new ApolloServer({ typeDefs, resolvers });
+const apolloServer = new ApolloServer({ typeDefs, resolvers, context: (req, res) => ({ req, res }) });
 
 const server = http.createServer(app);
 require("./WebSocket").setSocket(server);
 require("./api/oauth2/strategies/discordStrategy");
-
 
 app.use(
     cors({
