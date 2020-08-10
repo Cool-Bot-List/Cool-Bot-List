@@ -1,9 +1,9 @@
 const { gql } = require("apollo-server-express");
 
-const BotQuery = gql`
+const Queries = gql`
     type Query {
-        bot(id: string): Bot
+        Bot(id: ID!): Bot
     }
 `;
 
-module.exports = BotQuery;
+module.exports = Queries;
