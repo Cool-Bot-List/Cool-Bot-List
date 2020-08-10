@@ -15,7 +15,7 @@ jobs:
             - run: npm ci
             - run: ( cd ./client && npm ci )
             - run: ( cd ./server && npm ci )
-            - run: ( cd ./discord-bot && npm ci )
+          #  - run: ( cd ./discord-bot && npm ci )
             - run: ( cd ./client && npm run build )
             - run: npm run lint            
               
