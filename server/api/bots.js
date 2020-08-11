@@ -34,7 +34,17 @@ router.post("/", async (req, res) => {
     if (tags.length > 3) return res.status(400).json({ message: "You cannot have more than 3 tags.", error: "Bad Request." });
     for (const t of tags) {
         // eslint-disable-next-line max-len
-        if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
+        if (
+            t !== BOT_TAGS.MODERATION &&
+            t !== BOT_TAGS.MUSIC &&
+            t !== BOT_TAGS.LEVELING &&
+            t !== BOT_TAGS.FUN &&
+            t !== BOT_TAGS.UTILITY &&
+            t !== BOT_TAGS.DASHBOARD &&
+            t !== BOT_TAGS.CUSTOMIZABLE &&
+            t !== BOT_TAGS.ECONOMY
+        )
+            return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
     }
     if (!inviteLink) inviteLink = getBotInviteLink(id);
     const bot = await Bots.findOne({ id });
@@ -73,7 +83,17 @@ router.put("/", async (req, res) => {
         for (const t of tags) {
             if (foundBot1.tags.some((tag) => tag === t)) return res.status(400).json({ message: "You can not have duplicate tags.", error: "Bad Request." });
             // eslint-disable-next-line max-len
-            if (t !== BOT_TAGS.MODERATION && t !== BOT_TAGS.MUSIC && t !== BOT_TAGS.LEVELING && t !== BOT_TAGS.FUN && t !== BOT_TAGS.UTILITY && t !== BOT_TAGS.DASHBOARD && t !== BOT_TAGS.CUSTOMIZABLE && t !== BOT_TAGS.ECONOMY) return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
+            if (
+                t !== BOT_TAGS.MODERATION &&
+                t !== BOT_TAGS.MUSIC &&
+                t !== BOT_TAGS.LEVELING &&
+                t !== BOT_TAGS.FUN &&
+                t !== BOT_TAGS.UTILITY &&
+                t !== BOT_TAGS.DASHBOARD &&
+                t !== BOT_TAGS.CUSTOMIZABLE &&
+                t !== BOT_TAGS.ECONOMY
+            )
+                return res.status(400).json({ message: "One or more tags are invalid!", error: "Bad Request." });
         }
     }
     for (const tag of foundBot1.tags) {
@@ -148,7 +168,8 @@ router.put("/client", jwtAuth, async (req, res) => {
     const client = req.body.client;
 
     let { presence, sendTotalGuilds, sendTotalUsers, sendPresence } = req.body;
-    if (!client || !presence || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined) return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
+    if (!client || !presence || sendTotalGuilds === undefined || sendTotalUsers === undefined || sendPresence === undefined)
+        return res.status(400).json({ message: "You are missing properties in the body.", error: "Bad Request." });
 
     const foundBot = await Bots.findOne({ id: client.user });
 

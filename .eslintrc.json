@@ -25,7 +25,7 @@
     "max-len": [
       "error",
       {
-        "code": 250
+        "code": 200
       }
     ],
     "comma-dangle": [

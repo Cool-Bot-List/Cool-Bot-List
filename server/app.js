@@ -23,7 +23,7 @@ const resolvers = {
     },
 };
 const apolloServer = new ApolloServer({
-    typeDefs: [require("./graphql/queries"), require("./graphql/bot/bot.type")],
+    typeDefs: [require("./graphql/queries"), require("./graphql/bot/bot.type"), require("./graphql/bot/bot.type"), require("./graphql/bot/bot.type"), require("./graphql/bot/bot.type")],
     resolvers: [require("./graphql/bot/bot.resolver")],
     context: (req, res) => ({ req, res }),
 });
