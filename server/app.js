@@ -1,31 +1,22 @@
 require("dotenv").config();
 require("./database/database");
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 const app = express();
 const http = require("http");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
 
-const typeDefs = gql`
-    type Query {
-        name(text: String): String
-    }
-`;
-const resolvers = {
-    Query: {
-        name: (parent, { text }, context, info) => {
-            console.log("parent", parent);
-            console.log("info", info);
-            return text;
-        },
-    },
-};
 const apolloServer = new ApolloServer({
     typeDefs: [require("./graphql/queries"), require("./graphql/bot/bot.type")],
     resolvers: [require("./graphql/bot/bot.resolver")],
     context: (req, res) => ({ req, res }),
+    engine: {
+        reportSchema: true,
+
+        apiKey: process.env.APOLLO_KEY,
+    },
 });
 
 const server = http.createServer(app);
@@ -34,7 +25,6 @@ require("./api/oauth2/strategies/discordStrategy");
 
 app.use(
     cors({
-        origin: ["http://localhost:3000"],
         credentials: true,
     })
 );
