@@ -9,12 +9,17 @@ const passport = require("passport");
 const cors = require("cors");
 
 const apolloServer = new ApolloServer({
-    typeDefs: [require("./graphql/queries"), require("./graphql/bot/bot.type")],
-    resolvers: [require("./graphql/bot/bot.resolver")],
+    typeDefs: [
+        require("./graphql/queries"),
+        require("./graphql/bot/bot.type"),
+        require("./graphql/review/review.type"),
+        require("./graphql/ownerReply/ownerReply.type"),
+    ],
+    resolvers: [require("./graphql/bot/bot.resolver"), require("./graphql/review/review.resolver")],
     context: (req, res) => ({ req, res }),
     engine: {
         reportSchema: true,
-
+        variant: "current",
         apiKey: process.env.APOLLO_KEY,
     },
 });

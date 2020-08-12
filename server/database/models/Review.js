@@ -10,7 +10,7 @@ const Review = new mongoose.Schema({
         review: { type: String, default: "", require: false },
         likes: { type: Array, default: [], required: false },
         dislikes: { type: Array, default: [], required: false },
-        date: { type: Date, default: new Date(), required: false },
+        date: { type: Date, default: null, required: false },
     },
     likes: { type: Array, default: [], required: false },
     dislikes: { type: Array, default: [], required: false },
