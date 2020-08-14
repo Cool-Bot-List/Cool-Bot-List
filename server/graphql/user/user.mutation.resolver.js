@@ -15,8 +15,6 @@ const UserMutationResolver = {
             } catch (err) {
                 return new ValidationError("Something went wrong while saving to the database");
             }
-
-            console.log("A");
             WebSocket.emit("user-update", foundUser);
             return foundUser;
         },
