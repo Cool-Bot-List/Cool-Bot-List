@@ -4,6 +4,7 @@ const { BOT_TAGS } = require("../../constants/botTags");
 const { ValidationError } = require("apollo-server-express");
 const { getBotInviteLink } = require("../../util/getBotInviteLink");
 const { getBotData } = require("../../util/getBotData");
+const botApproveMethods = require("../../constants/botApproveMethods");
 const WebSocket = require("../../WebSocket").getSocket();
 
 const BotMutationResolver = {
@@ -127,6 +128,26 @@ const BotMutationResolver = {
                 return new ValidationError("Something went wrong and the bot did not delete from the database!");
             }
             WebSocket.emit("bot-delete", foundBot);
+            return foundBot;
+        },
+        // Approve/Reject a bot
+        approveBot: async (_, { id, method }) => {
+            if (!id || !method) return new ValidationError("Your missing parameters.");
+            console.log(method);
+            if (method !== botApproveMethods.APPROVE && method !== botApproveMethods.REJECT) return new ValidationError("Invalid method paramter!");
+            const foundBot = await Bots.findOne({ id });
+            if (!foundBot) return new ValidationError("That bot doesn't exist in the database!");
+            if (method === botApproveMethods.APPROVE) {
+                foundBot.isApproved = true;
+                await foundBot.save();
+                WebSocket.emit("bot-update", foundBot);
+            }
+            if (method === botApproveMethods.REJECT) {
+                foundBot.isApproved = false;
+                await foundBot.deleteOne();
+                WebSocket.emit("bot-delete", foundBot);
+            }
+
             return foundBot;
         },
     },

@@ -119,7 +119,7 @@ router.put("/", async (req, res) => {
 router.put("/:id/:method", async (req, res) => {
     const { id, method } = req.params;
     if (!id || !method) return res.status(400).json({ msg: "Your missing parameters.", error: "Bad Request." });
-    if (method !== botApproveMethods.APPROVE || method !== botApproveMethods.REJECT)
+    if (method !== botApproveMethods.APPROVE && method !== botApproveMethods.REJECT)
         res.status(400).send({ message: "Invalid method paramter!", error: "Bad Request." });
     const foundBot = await Bots.findOne({ id });
     if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database!", error: "Not Found." });
