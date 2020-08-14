@@ -14,8 +14,17 @@ const apolloServer = new ApolloServer({
         require("./graphql/bot/bot.type"),
         require("./graphql/review/review.type"),
         require("./graphql/ownerReply/ownerReply.type"),
+        require("./graphql/user/user.type"),
+        require("./graphql/notification/notification.type"),
+        require("./graphql/vote/vote.type"),
     ],
-    resolvers: [require("./graphql/bot/bot.resolver"), require("./graphql/review/review.resolver")],
+    resolvers: [
+        require("./graphql/bot/bot.resolver"),
+        require("./graphql/review/review.resolver"),
+        require("./graphql/user/user.resolver"),
+        require("./graphql/notification/notification.resolver"),
+        require("./graphql/vote/vote.resolver"),
+    ],
     context: (req, res) => ({ req, res }),
     engine: {
         reportSchema: true,

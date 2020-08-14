@@ -2,7 +2,10 @@ const { gql } = require("apollo-server-express");
 
 const ReviewType = gql`
     type Review {
-        userId: String!
+        # The userId of the returned Review.
+        userId: String
+        # The user object of the returned Review.
+        userObj: User
         review: String!
         ownerReply: OwnerReply!
         likes: [String!]!

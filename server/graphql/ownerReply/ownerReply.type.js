@@ -2,7 +2,10 @@ const { gql } = require("apollo-server-express");
 
 const OwnerReplyType = gql`
     type OwnerReply {
-        userId: String!
+        # The userId of the returned Review.
+        userId: String
+        # The user object of the returned Review.
+        userObj: User
         review: String!
         likes: [String!]!
         dislikes: [String!]!

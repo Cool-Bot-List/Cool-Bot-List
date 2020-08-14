@@ -10,12 +10,15 @@ const ReviewResolver = {
 
         // Get a ONE reviewObj when a bot is returned by mongoId or array index.
         reviewObj: async (parent, { mongoId, index }) => {
-            const foundReview = await Reviews.findOne({ botId: parent.id, _id: mongoId });
-            if (foundReview) return foundReview;
-            return (
-                (await Reviews.find().filter((reviewObject) => reviewObject.botId === parent.id)[index]) ||
-                new ValidationError("A review was not found!")
-            );
+            if (mongoId) {
+                const foundReview = await Reviews.findOne({ botId: parent.id, _id: mongoId });
+                if (foundReview) return foundReview;
+            } else if (index) {
+                return (
+                    (await Reviews.find().filter((reviewObject) => reviewObject.botId === parent.id)[index]) ||
+                    new ValidationError("A review was not found!")
+                );
+            }
         },
     },
 };

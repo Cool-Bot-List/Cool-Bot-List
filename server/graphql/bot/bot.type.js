@@ -7,7 +7,12 @@ const BotType = gql`
         avatarUrl: String!
         prefix: String!
         description: String!
+        # Get all ownerIds for the returned bot.
         owners: [String!]!
+        # Get ALL owner objects for the returned bot.
+        ownerObjs: [User!]!
+        # Get ONE owner object for the returned bot by userId or array index.
+        ownerObj(id: ID, index: Int): User
         website: String!
         helpCommand: String!
         supportServer: String!
@@ -19,6 +24,7 @@ const BotType = gql`
         servers: Int
         users: Int
         presence: String
+        # Get ALL reviewIds for the returned bot.
         reviews: [String!]!
         # Get ALL reviewObjs for the returned bot.
         reviewObjs: [Review!]!
