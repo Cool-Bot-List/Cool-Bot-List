@@ -134,6 +134,7 @@ const ReviewMutationResolver = {
             WebSocket.emit("review-like", foundReview, foundUser, userToPushTo, like);
             return foundReview;
         },
+
         // Dislike a review.
         dislikeReview: async (_, { userId, reviewId }) => {
             const foundReview = await Reviews.findById(reviewId);
