@@ -53,6 +53,7 @@ const apolloServer = new ApolloServer({
         require("./graphql/review/review.resolver"),
         require("./graphql/review/review.mutation.resolver"),
         require("./graphql/user/user.resolver"),
+        require("./graphql/user/user.mutation.resolver"),
         require("./graphql/notification/notification.resolver"),
         require("./graphql/vote/vote.resolver"),
     ],
