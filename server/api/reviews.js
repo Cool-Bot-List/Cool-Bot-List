@@ -39,7 +39,9 @@ router.post("/", async (req, res) => {
             await ownerObject.save();
         } catch (err) {
             console.error(err);
-            return res.status(500).json({ message: "Something went wrong and the owners were not notified of the reviews.", error: "Internal Server Error." });
+            return res
+                .status(500)
+                .json({ message: "Something went wrong and the owners were not notified of the reviews.", error: "Internal Server Error." });
         }
     }
 
@@ -147,7 +149,9 @@ router.delete("/:botId/:reviewId", async (req, res) => {
         await foundBot.save();
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
+        return res
+            .status(500)
+            .json({ message: "Something went wrong and the review did not delete from the database.", error: "Internal Server Error." });
     }
     WebSocket.emit("review-delete", foundReview);
     return res.status(200).json({ message: "Successfully deleted the review from the database." });
@@ -172,7 +176,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
                 1
             );
         }
-        userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false }); // did notis here, ill work on ownerReply notis, you can do dislike
+        userToPushTo.notifications.push({ message: `${foundUser.tag} liked your review!`, read: false });
         WebSocket.emit("new-notification", userToPushTo);
         like = true;
     } else if (foundReview.likes.includes(foundUser.id)) {
@@ -186,7 +190,9 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
         await userToPushTo.save();
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
+        return res
+            .status(500)
+            .json({ message: "Something went wrong and the review did not handle likes in the database.", error: "Internal Server Error." });
     }
     WebSocket.emit("review-like", foundReview, foundUser, userToPushTo, like);
     return res.status(200).json({ message: "Successfully updated the likes of the review on the database." });
@@ -225,7 +231,9 @@ router.put("/dislike/:userId/:reviewId", async (req, res) => {
         await userToPushTo.save();
         await foundReview.save();
     } catch (err) {
-        return res.status(500).json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
+        return res
+            .status(500)
+            .json({ message: "Something went wrong and the review did not handle dislikes in the database.", error: "Internal Server Error." });
     }
     WebSocket.emit("review-dislike", foundReview, foundUser, userToPushTo, dislike);
     return res.status(200).json({ message: "Successfully updated the dislikes of the review on the database." });

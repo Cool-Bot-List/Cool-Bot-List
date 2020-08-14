@@ -15,6 +15,8 @@ const Mutations = gql`
         createReview(data: ReviewCreatable): Review
         # Delete a Review.
         deleteReview(botId: ID!, reviewId: ID!): Review
+        # Like a Review.
+        likeReview(userId: ID!, reviewId: ID!): Review
     }
 `;
 
