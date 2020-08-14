@@ -59,6 +59,45 @@ const ReviewMutationResolver = {
             WebSocket.emit("new-review", newReview);
             return newReview;
         },
+
+        // Delete a review
+        deleteReview: async (_, { botId, reviewId }) => {
+            const foundBot = await Bots.findOne({ id: botId });
+            if (!foundBot) return new ValidationError("That bot doesn't exist in the database.");
+            const { reviews } = foundBot;
+            reviews.splice(
+                reviews.findIndex((element) => element === reviewId),
+                1
+            );
+            const foundReview = await Reviews.findById(reviewId);
+
+            if (!foundReview) return new ValidationError("The review doesn't exist.");
+
+            try {
+                await foundBot.save();
+                await foundReview.delete();
+                let ratings = [];
+                const updatedBot = await Bots.findOne({ id: botId });
+                const { reviews } = updatedBot;
+
+                for (const review of reviews) {
+                    const foundReview = await Reviews.findById(review);
+                    ratings.push(foundReview.rating);
+                }
+
+                let averageRating;
+                if (ratings.length === 1) averageRating = ratings[0];
+                else if (ratings.length === 0) averageRating = null;
+                else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+                foundBot.averageRating = averageRating;
+                await foundBot.save();
+            } catch (err) {
+                console.log(err);
+                return new ValidationError("Something went wrong and the review did not delete from the database.");
+            }
+            WebSocket.emit("review-delete", foundReview);
+            return foundReview;
+        },
     },
 };
 

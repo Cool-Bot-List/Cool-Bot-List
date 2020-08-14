@@ -17,7 +17,7 @@ const BotType = gql`
         helpCommand: String!
         supportServer: String!
         library: String!
-        averageRating: Int
+        averageRating: Float
         isApproved: Boolean
         votes: Int!
         inviteLink: String
