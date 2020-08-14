@@ -10,8 +10,14 @@ const ReviewType = gql`
         ownerReply: OwnerReply!
         likes: [String!]!
         dislikes: [String!]!
-        rating: Int!
+        rating: Float!
         date: String!
+    }
+    input ReviewCreatable {
+        botId: String!
+        userId: String!
+        review: String!
+        rating: Float!
     }
 `;
 module.exports = ReviewType;
