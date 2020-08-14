@@ -20,6 +20,7 @@ const BotType = gql`
         averageRating: Int
         isApproved: Boolean
         votes: Int!
+        inviteLink: String
         tags: [String!]!
         servers: Int
         users: Int
@@ -30,6 +31,40 @@ const BotType = gql`
         reviewObjs: [Review!]!
         # Get a ONE reviewObj for the returned bot by mongoId or array index.
         reviewObj(mongoId: String, index: Int): Review
+    }
+    input BotCreatable {
+        id: String!
+        prefix: String!
+        description: String!
+        owners: [String!]!
+        website: String!
+        helpCommand: String!
+        supportServer: String!
+        library: String!
+        inviteLink: String
+        tags: [String!]!
+    }
+
+    input BotUpdatable {
+        id: ID!
+        tag: String
+        avatarUrl: String
+        prefix: String
+        description: String
+        owners: [String]
+        website: String
+        helpCommand: String
+        supportServer: String
+        library: String
+        averageRating: Int
+        isApproved: Boolean
+        votes: Int
+        inviteLink: String
+        tags: [String]
+        servers: Int
+        users: Int
+        presence: String
+        reviews: [String]
     }
 `;
 module.exports = BotType;

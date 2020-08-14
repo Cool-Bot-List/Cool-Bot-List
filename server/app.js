@@ -8,35 +8,6 @@ const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
 
-const apolloServer = new ApolloServer({
-    typeDefs: [
-        require("./graphql/queries"),
-        require("./graphql/bot/bot.type"),
-        require("./graphql/review/review.type"),
-        require("./graphql/ownerReply/ownerReply.type"),
-        require("./graphql/user/user.type"),
-        require("./graphql/notification/notification.type"),
-        require("./graphql/vote/vote.type"),
-    ],
-    resolvers: [
-        require("./graphql/bot/bot.resolver"),
-        require("./graphql/review/review.resolver"),
-        require("./graphql/user/user.resolver"),
-        require("./graphql/notification/notification.resolver"),
-        require("./graphql/vote/vote.resolver"),
-    ],
-    context: (req, res) => ({ req, res }),
-    engine: {
-        reportSchema: true,
-        variant: "current",
-        apiKey: process.env.APOLLO_KEY,
-    },
-});
-
-const server = http.createServer(app);
-require("./WebSocket").setSocket(server);
-require("./api/oauth2/strategies/discordStrategy");
-
 app.use(
     cors({
         credentials: true,
@@ -60,6 +31,37 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.json(), express.urlencoded({ extended: true }));
+
+const server = http.createServer(app);
+require("./WebSocket").setSocket(server);
+require("./api/oauth2/strategies/discordStrategy");
+
+const apolloServer = new ApolloServer({
+    typeDefs: [
+        require("./graphql/queries"),
+        require("./graphql/mutations"),
+        require("./graphql/bot/bot.type"),
+        require("./graphql/review/review.type"),
+        require("./graphql/ownerReply/ownerReply.type"),
+        require("./graphql/user/user.type"),
+        require("./graphql/notification/notification.type"),
+        require("./graphql/vote/vote.type"),
+    ],
+    resolvers: [
+        require("./graphql/bot/bot.resolver"),
+        require("./graphql/bot/bot.mutation.resolver"),
+        require("./graphql/review/review.resolver"),
+        require("./graphql/user/user.resolver"),
+        require("./graphql/notification/notification.resolver"),
+        require("./graphql/vote/vote.resolver"),
+    ],
+    context: (req, res) => ({ req, res }),
+    engine: {
+        reportSchema: true,
+        variant: "current",
+        apiKey: process.env.APOLLO_KEY,
+    },
+});
 
 app.use("/api/bots", require("./api/bots"));
 app.use("/api/users", require("./api/users"));
