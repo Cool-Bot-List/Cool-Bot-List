@@ -11,6 +11,9 @@ const Mutations = gql`
         # Approve/Reject a Bot.
         approveBot(id: ID!, method: String!): Bot
 
+        # Update a User
+        updateUser(data: UserUpdatable!): User!
+
         # Create a Review.
         createReview(data: ReviewCreatable): Review
         # Delete a Review.

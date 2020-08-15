@@ -20,6 +20,13 @@ const UserType = gql`
         token: String
         vote: Vote
     }
+    input UserUpdatable {
+        id: ID!
+        tag: String
+        avatarUrl: String
+        bio: String
+        token: String
+    }
 `;
 
 export default UserType;
