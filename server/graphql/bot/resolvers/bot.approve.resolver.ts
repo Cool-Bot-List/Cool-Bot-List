@@ -2,7 +2,6 @@ import { ValidationError } from "apollo-server-express";
 import { botApproveMethods } from "../../../constants/botApproveMethods";
 import Bots from "../../../database/models/Bot";
 import Socket from "../../../WebSocket";
-import IBot from "../../../types/IBot";
 const WebSocket = Socket.getSocket();
 
 const BotApproveResolver = {
