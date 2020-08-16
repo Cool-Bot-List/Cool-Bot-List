@@ -2,6 +2,16 @@ import { gql } from "apollo-server-express";
 
 const ReviewType = gql`
     type Review {
+        # Create a Review.
+        create(data: ReviewCreatable!): Review  
+        # Delete a Review.
+        delete: Review
+         # Like a Review.
+        like(userId: ID!): Review
+        # Dislike a Review.
+        dislike(userId: ID!): Review
+
+
         _id: ID!
         # The userId of the returned Review.
         userId: String
@@ -13,9 +23,10 @@ const ReviewType = gql`
         dislikes: [String!]!
         rating: Float!
         date: String!
+        botId: String
     }
+
     input ReviewCreatable {
-        botId: String!
         userId: String!
         review: String!
         rating: Float!

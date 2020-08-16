@@ -9,7 +9,8 @@ const BotType = gql`
         # Delete a Bot by its id.
         delete: Bot
         # Approve/Reject a Bot.
-        approve(method: String!): Bot
+        approve(method: String!): Bot  
+
 
         id: ID!
         tag: String!
