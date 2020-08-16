@@ -3,7 +3,9 @@ import { gql } from "apollo-server-express";
 const UserType = gql`
     type User {
         # Update a User
-        update(data: UserUpdatable): User!
+        update(data: UserUpdatable): User
+        # Delete a User
+        delete: User
 
         id: ID!
         tag: String!

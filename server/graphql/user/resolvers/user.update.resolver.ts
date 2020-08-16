@@ -14,7 +14,10 @@ const UserUpdateResolver = {
             } catch (err) {
                 return new ValidationError("Something went wrong while saving to the database");
             }
+            // console.log(Socket.getSocket());
+            // console.log(WebSocket);
             WebSocket.emit("user-update", foundUser);
+            // WebSocket.emit("user-update", foundUser);
             return foundUser;
         },
     },
