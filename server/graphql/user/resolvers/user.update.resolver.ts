@@ -1,7 +1,8 @@
-import User from "../../database/models/User";
-import IUser from "../../types/IUser";
+import User from "../../../database/models/User";
+import IUser from "../../../types/IUser";
 import { ValidationError } from "apollo-server-express";
-import Socket from "../../WebSocket";
+import Socket from "../../../WebSocket";
+const WebSocket = Socket.getSocket();
 
 const UserUpdate = {
     Mutation: {
@@ -15,7 +16,10 @@ const UserUpdate = {
             } catch (err) {
                 return new ValidationError("Something went wrong while saving to the database");
             }
+            // console.log(Socket.getSocket());
+            // console.log(WebSocket);
             Socket.getSocket().emit("user-update", foundUser);
+            // WebSocket.emit("user-update", foundUser);
             return foundUser;
         },
     },

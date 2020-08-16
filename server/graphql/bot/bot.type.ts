@@ -2,6 +2,15 @@ import { gql } from "apollo-server-express";
 
 const BotType = gql`
     type Bot {
+        # Create a Bot.
+        create(data: BotCreatable!): Bot
+        # Updates a Bot from the db doesn't need every felid only updates the felids that u specify
+        update(data: BotUpdatable!): Bot
+        # Delete a Bot by its id.
+        delete(id: ID!): Bot
+        # Approve/Reject a Bot.
+        approve(id: ID!, method: String!): Bot
+
         id: ID!
         tag: String!
         avatarUrl: String!

@@ -1,9 +1,9 @@
-import Bots from "../../database/models/Bot";
+import Bots from "../../../database/models/Bot";
 import { ValidationError } from "apollo-server-express";
-import IUser from "../../types/IUser";
-import IVote from "../../types/IVote";
+import IUser from "../../../types/IUser";
+import IVote from "../../../types/IVote";
 
-const BotResolver = {
+const BotGetResolver = {
     Query: {
         //  Get ONE bot based on its id.
         bot: async (_: unknown, { id }: { id: string }) => (await Bots.findOne({ id })) || new ValidationError("A bot was not found!"),
@@ -40,4 +40,4 @@ const BotResolver = {
     },
 };
 
-export default BotResolver;
+export default BotGetResolver;
