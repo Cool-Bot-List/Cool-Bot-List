@@ -13,6 +13,8 @@ const Mutations = gql`
 
         # Update a User
         updateUser(data: UserUpdatable!): User!
+        # Delete a User
+        deleteUser(id: ID!): User!
 
         # Create a Review.
         createReview(data: ReviewCreatable): Review

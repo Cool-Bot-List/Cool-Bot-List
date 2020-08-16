@@ -4,7 +4,7 @@ import { ValidationError } from "apollo-server-express";
 import Socket from "../../WebSocket";
 const WebSocket = Socket.getSocket();
 
-const UserMutationResolver = {
+const UserUpdate = {
     Mutation: {
         updateUser: async (_: unknown, { data }: { data: IUser }) => {
             const { id } = data;
@@ -16,10 +16,13 @@ const UserMutationResolver = {
             } catch (err) {
                 return new ValidationError("Something went wrong while saving to the database");
             }
-            WebSocket.emit("user-update", foundUser);
+            // console.log(Socket.getSocket());
+            // console.log(WebSocket);
+            Socket.getSocket().emit("user-update", foundUser);
+            // WebSocket.emit("user-update", foundUser);
             return foundUser;
         },
     },
 };
 
-export default UserMutationResolver;
+export default UserUpdate;
