@@ -6,6 +6,9 @@ const UserType = gql`
         update(data: UserUpdatable): User
         # Delete a User
         delete: User
+        
+        # Make a token for a User. This will regen the User's token if they already have one.
+        makeToken: User
 
         id: ID!
         tag: String!

@@ -8,6 +8,8 @@ import userGetResolver from "../user/resolvers/user.get.resolver";
 import userUpdateResolver from "../user/resolvers/user.update.resolver";
 import userDelete from "../user/resolvers/user.delete.resolver";
 
+import tokenMakeResolver from "../token/resolvers/token.make.resolver";
+
 import reviewGetResolver from "../review/resolvers/review.get.resolver";
 import reviewCreateResolver from "../review/resolvers/review.create.resolver";
 import reviewDeleteResolver from "../review/resolvers/review.delete.resolver";
@@ -30,6 +32,8 @@ const resolvers = [
     userGetResolver,
     userUpdateResolver,
     userDelete,
+
+    tokenMakeResolver,
 
     reviewGetResolver,
     reviewCreateResolver,
