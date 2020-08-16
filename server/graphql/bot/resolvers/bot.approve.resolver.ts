@@ -2,12 +2,13 @@ import { ValidationError } from "apollo-server-express";
 import { botApproveMethods } from "../../../constants/botApproveMethods";
 import Bots from "../../../database/models/Bot";
 import Socket from "../../../WebSocket";
+import IBot from "../../../types/IBot";
 const WebSocket = Socket.getSocket();
 
 const BotApproveResolver = {
     Bot: {
         // Approve/Reject a bot
-        approve: async (_: unknown, { id, method }: { id: string; method: "approve" | "reject" }) => {
+        approve: async ({ id }: { id: string }, { method }: { method: "approve" | "reject" }) => {
             if (!id || !method) return new ValidationError("Your missing parameters.");
             console.log(method);
             if (method !== botApproveMethods.APPROVE && method !== botApproveMethods.REJECT) return new ValidationError("Invalid method paramter!");

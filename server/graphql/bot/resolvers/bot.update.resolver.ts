@@ -9,9 +9,10 @@ const WebSocket = Socket.getSocket();
 const BotUpdateResolver = {
     Bot: {
         // Updates a bot from the db doesn't need every felid only updates the felids that u specify
-        update: async (_: unknown, { data }: { data: IBot }, { req }: { req: Request }) => {
+        // update: async ({ id }: { id: string }, { data }: { data: IBot }, { req }: { req: Request }) => {
+        update: async ({ id }: { id: string }, { data }: { data: IBot }, { request: req }: { request: Request }) => {
             const { tags } = data;
-            const foundBot1 = await Bots.findOne({ id: data.id });
+            const foundBot1 = await Bots.findOne({ id });
             if (tags) {
                 if (tags.length > 3) return new ValidationError("You cannot have more than 3 tags.");
                 if (tags.length + foundBot1.tags.length > 3) return new ValidationError("You cannot have more than 3 tags");

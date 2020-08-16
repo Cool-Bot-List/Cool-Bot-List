@@ -8,24 +8,19 @@ import http from "http";
 import session from "express-session";
 import passport from "passport";
 import cors from "cors";
-import typeDefs from "./graphql/base/typeDefs";
-import resolvers from "./graphql/base/resolvers";
 import api from "./api/api";
 
 const app = express();
 
 app.use(
     cors({
+        origin: ["http://localhost:3000"],
         credentials: true,
     })
 );
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.use(express.json(), express.urlencoded({ extended: true }));
 app.use(
     session({
         secret: "Testing",
@@ -36,17 +31,24 @@ app.use(
         saveUninitialized: false,
     })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 const server = http.createServer(app);
 import WebSocket from "./WebSocket";
 WebSocket.setSocket(server);
 import "./api/oauth2/strategies/discordStrategy";
+import typeDefs from "./graphql/base/typeDefs";
+import resolvers from "./graphql/base/resolvers";
+import { request } from "./api/oauth2/login";
 
 const apolloServer = new ApolloServer({
     //@ts-ignore
     typeDefs,
     //@ts-ignore
     resolvers,
-    context: ({ req, res }: { req: Request; res: Response }) => ({ req, res }),
+    context: ({ res }: { res: Response }) => ({ request, res }),
     engine: {
         reportSchema: true,
         //@ts-ignore
@@ -54,6 +56,7 @@ const apolloServer = new ApolloServer({
         apiKey: process.env.APOLLO_KEY,
     },
 });
+
 
 app.use("/api/bots", api.bot.route);
 app.use("/api/users", api.user.route);

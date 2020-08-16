@@ -11,12 +11,11 @@ const BotCreateResolver = {
     Bot: {
         // Create a bot
         create: async (
-            _: unknown,
+            { id }: { id: string },
             {
                 data,
             }: {
                 data: {
-                    id: string;
                     prefix: string;
                     description: string;
                     owners: Array<string>;
@@ -29,7 +28,7 @@ const BotCreateResolver = {
                 };
             }
         ) => {
-            const { id, prefix, description, owners, website, helpCommand, supportServer, library } = data;
+            const { prefix, description, owners, website, helpCommand, supportServer, library } = data;
             let { inviteLink, tags } = data;
             if (!tags) tags = [];
             // Check if the tags are valid

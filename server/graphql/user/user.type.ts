@@ -3,7 +3,7 @@ import { gql } from "apollo-server-express";
 const UserType = gql`
     type User {
         # Update a User
-        update(data: UserUpdatable!): User!
+        update(data: UserUpdatable): User!
 
         id: ID!
         tag: String!
@@ -24,7 +24,6 @@ const UserType = gql`
         vote: Vote
     }
     input UserUpdatable {
-        id: ID!
         tag: String
         avatarUrl: String
         bio: String

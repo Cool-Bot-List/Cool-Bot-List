@@ -6,13 +6,11 @@ const WebSocket = Socket.getSocket();
 
 const UserUpdateResolver = {
     User: {
-        update: async (_: unknown, { data }: { data: IUser }) => {
-            const { id } = data;
-
+        // update the user. parent is the user object that is returned
+        update: async (parent: IUser, { data }: { data: IUser }) => {
             let foundUser;
-
             try {
-                foundUser = await User.findOneAndUpdate({ id }, data, { new: true, useFindAndModify: false });
+                foundUser = await User.findOneAndUpdate({ id: parent.id }, data, { new: true, useFindAndModify: false });
             } catch (err) {
                 return new ValidationError("Something went wrong while saving to the database");
             }

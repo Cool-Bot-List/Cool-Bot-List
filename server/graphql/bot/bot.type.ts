@@ -7,9 +7,9 @@ const BotType = gql`
         # Updates a Bot from the db doesn't need every felid only updates the felids that u specify
         update(data: BotUpdatable!): Bot
         # Delete a Bot by its id.
-        delete(id: ID!): Bot
+        delete: Bot
         # Approve/Reject a Bot.
-        approve(id: ID!, method: String!): Bot
+        approve(method: String!): Bot
 
         id: ID!
         tag: String!
@@ -42,7 +42,6 @@ const BotType = gql`
         reviewObj(mongoId: String, index: Int): Review
     }
     input BotCreatable {
-        id: String!
         prefix: String!
         description: String!
         owners: [String!]!
@@ -55,7 +54,6 @@ const BotType = gql`
     }
 
     input BotUpdatable {
-        id: ID!
         tag: String
         avatarUrl: String
         prefix: String
@@ -65,7 +63,7 @@ const BotType = gql`
         helpCommand: String
         supportServer: String
         library: String
-        averageRating: Float!
+        averageRating: Float
         isApproved: Boolean
         votes: Int
         inviteLink: String
