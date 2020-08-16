@@ -14,8 +14,9 @@ jobs:
                   node-version: 12
             - run: npm ci
            # - run: ( cd ./client && npm ci )
+           # - run: ( cd ./client && npm run build )
             - run: ( cd ./server && npm ci )
+            - run: ( npm run build-server )
             - run: ( cd ./discord-bot && npm ci )
-          #  - run: ( cd ./client && npm run build )
             - run: npm run lint            
               
