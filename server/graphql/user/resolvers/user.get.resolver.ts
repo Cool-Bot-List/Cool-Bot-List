@@ -1,10 +1,10 @@
-import Users from "../../database/models/User";
+import Users from "../../../database/models/User";
 import { ValidationError } from "apollo-server-express";
-import IBot from "../../types/IBot";
-import IReview from "../../types/IReview";
-import IOwnerReply from "../../types/IOwnerReply";
+import IBot from "../../../types/IBot";
+import IReview from "../../../types/IReview";
+import IOwnerReply from "../../../types/IOwnerReply";
 
-const UserResolver = {
+const UserGetResolver = {
     Query: {
         //  Get ONE user based on their id.
         user: async (_: unknown, { id }: { id: string }) => {
@@ -49,4 +49,4 @@ const UserResolver = {
     },
 };
 
-export default UserResolver;
+export default UserGetResolver;

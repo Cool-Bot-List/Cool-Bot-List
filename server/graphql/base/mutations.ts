@@ -2,9 +2,6 @@ import { gql } from "apollo-server-express";
 
 const Mutations = gql`
     type Mutation {
-        # Update a User
-        updateUser(data: UserUpdatable!): User!
-
         # Create a Review.
         createReview(data: ReviewCreatable): Review
         # Delete a Review.

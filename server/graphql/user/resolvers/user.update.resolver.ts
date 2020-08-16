@@ -1,12 +1,12 @@
-import User from "../../database/models/User";
-import IUser from "../../types/IUser";
+import User from "../../../database/models/User";
+import IUser from "../../../types/IUser";
 import { ValidationError } from "apollo-server-express";
-import Socket from "../../WebSocket";
+import Socket from "../../../WebSocket";
 const WebSocket = Socket.getSocket();
 
-const UserMutationResolver = {
-    Mutation: {
-        updateUser: async (_: unknown, { data }: { data: IUser }) => {
+const UserUpdateResolver = {
+    User: {
+        update: async (_: unknown, { data }: { data: IUser }) => {
             const { id } = data;
 
             let foundUser;
@@ -22,4 +22,4 @@ const UserMutationResolver = {
     },
 };
 
-export default UserMutationResolver;
+export default UserUpdateResolver;
