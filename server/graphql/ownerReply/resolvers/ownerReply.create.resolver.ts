@@ -12,8 +12,8 @@ const OwnerReplyCreateResolver = {
         // userId - The author of the original review.
         // ownerId - the person that is replying 
         create: async (_: unknown, { data }: { data: { ownerId: string; review: string } }, __: unknown, info: any) => {
-            const foundBot: IBot = info.rootValue.botObj.botObj;
-            const reviewId: IReview = info.rootValue.reviewObj.reviewObj.id;
+            const foundBot: IBot = info.rootValue.botObj;
+            const reviewId: IReview = info.rootValue.reviewObj.id;
             const { ownerId, review } = data;
 
             // Check to make sure it's one of the owners making the request

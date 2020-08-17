@@ -9,7 +9,7 @@ const OwnerReplyLikeResolver = {
     OwnerReply: {
         // Like an OwnerReply.
         like: async (_: unknown, { userId }: { userId: string }, __: unknown, info: any) => {
-            const reviewId = info.rootValue.reviewObj.reviewObj;
+            const reviewId = info.rootValue.reviewObj;
 
             // Check if the user exists
             const foundUser = await Users.findOne({ id: userId });

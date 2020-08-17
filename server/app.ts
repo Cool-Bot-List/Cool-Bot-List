@@ -44,9 +44,10 @@ app.use(passport.session());
 
 const botObj = require("./graphql/bot/resolvers/bot.get.resolver");
 const reviewObj = require("./graphql/review/resolvers/review.get.resolver");
-console.log(reviewObj);
+const userObj = require("./graphql/user/resolvers/user.get.resolver");
+
 const apolloServer = new ApolloServer({
-    rootValue: { botObj, reviewObj },
+    rootValue: { botObj: { botObj }, reviewObj: { reviewObj }, userObj: { userObj } },
     //@ts-ignore
     typeDefs,
     //@ts-ignore

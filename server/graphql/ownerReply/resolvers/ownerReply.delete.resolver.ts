@@ -8,7 +8,7 @@ const OwnerReplyDeleteResolver = {
     OwnerReply: {
         // Delete an OwnerReply.
         delete: async (_: unknown, __: unknown, ___: unknown, info: any) => {
-            const reviewId = info.rootValue.reviewObj.reviewObj;
+            const reviewId = info.rootValue.reviewObj;
             // Make sure the review exists
             const foundReview = await Reviews.findById(reviewId);
             if (!foundReview) return new ValidationError("That review doesn't exist in the database.");

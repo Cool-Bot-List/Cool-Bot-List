@@ -9,7 +9,7 @@ const OwnerReplyDislikeResolver = {
     OwnerReply: {
         // Dislike a OwnerReply.
         dislike: async (_: unknown, { userId }: { userId: string }, __: unknown, info: any) => {
-            const reviewId = info.rootValue.reviewObj.reviewObj.id;
+            const reviewId = info.rootValue.reviewObj.id;
             // Check if the user exists
             const foundUser = await Users.findOne({ id: userId });
             if (!foundUser) return new ValidationError("That user doesn't exist in the database.");

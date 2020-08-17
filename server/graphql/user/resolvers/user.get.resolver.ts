@@ -4,12 +4,15 @@ import IBot from "../../../types/IBot";
 import IReview from "../../../types/IReview";
 import IOwnerReply from "../../../types/IOwnerReply";
 import { Request } from "express";
-
+import IUser from "../../../types/IUser";
+export let userObj: IUser;
 const UserGetResolver = {
     Query: {
         // Get ONE user based on their id.
         user: async (_: unknown, { id }: { id: string }) => {
-            return (await Users.findOne({ id })) || new ValidationError("A user was not found!");
+            userObj = await Users.findOne({ id });
+            module.exports = userObj;
+            return userObj || new ValidationError("A user was not found!");
         },
         // Get ALL users in the db.
         users: async () => await Users.find(),
