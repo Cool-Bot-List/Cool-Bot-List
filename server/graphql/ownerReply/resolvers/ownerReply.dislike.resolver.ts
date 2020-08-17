@@ -9,7 +9,6 @@ const OwnerReplyDislikeResolver = {
     OwnerReply: {
         // Dislike a OwnerReply.
         dislike: async (_: unknown, { userId }: { userId: string }, __: unknown, info: any) => {
-            console.log(userId);
             const reviewId = info.rootValue.reviewObj.reviewObj.id;
             // Check if the user exists
             const foundUser = await Users.findOne({ id: userId });
