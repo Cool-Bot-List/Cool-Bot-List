@@ -8,7 +8,8 @@ const WebSocket = Socket.getSocket();
 const BotDeleteResolver = {
     Bot: {
         // Delete a Bot by its id.
-        delete: async ({ id }: { id: string }, { request: req }: { request: Request }) => {
+        delete: async ({ id }: { id: string }, _: unknown, { req }: { req: Request }) => {
+            console.log(req);
             const foundBot = await Bots.findOne({ id });
             if (!foundBot) {
                 return new ValidationError("That bot doesn't exist in the database!");

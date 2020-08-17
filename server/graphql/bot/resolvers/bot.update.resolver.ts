@@ -10,7 +10,8 @@ const BotUpdateResolver = {
     Bot: {
         // Updates a bot from the db doesn't need every felid only updates the felids that u specify
         // update: async ({ id }: { id: string }, { data }: { data: IBot }, { req }: { req: Request }) => {
-        update: async ({ id }: { id: string }, { data }: { data: IBot }, { request: req }: { request: Request }) => {
+        update: async ({ id }: { id: string }, { data }: { data: IBot }, { req }: { req: Request }) => {
+            console.log(req.user);
             const { tags } = data;
             const foundBot1 = await Bots.findOne({ id });
             if (tags) {
