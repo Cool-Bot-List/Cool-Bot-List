@@ -6,7 +6,7 @@ const ReviewType = gql`
         create(data: ReviewCreatable!): Review  
         # Delete a Review.
         delete: Review
-         # Like a Review.
+        # Like a Review.
         like(userId: ID!): Review
         # Dislike a Review.
         dislike(userId: ID!): Review

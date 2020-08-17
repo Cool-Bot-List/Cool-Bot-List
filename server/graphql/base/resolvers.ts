@@ -8,7 +8,7 @@ import userGetResolver from "../user/resolvers/user.get.resolver";
 import userUpdateResolver from "../user/resolvers/user.update.resolver";
 import userDelete from "../user/resolvers/user.delete.resolver";
 
-import tokenMakeResolver from "../token/resolvers/token.make.resolver";
+import tokenCreateResolver from "../token/resolvers/token.create.resolver";
 
 import reviewGetResolver from "../review/resolvers/review.get.resolver";
 import reviewCreateResolver from "../review/resolvers/review.create.resolver";
@@ -17,6 +17,9 @@ import reviewLikeResolver from "../review/resolvers/review.like.resolver";
 import reviewDislikeResolver from "../review/resolvers/review.dislike.resolver";
 
 import ownerReplyCreate from "../ownerReply/resolvers/ownerReply.create.resolver";
+import ownerReplyDelete from "../ownerReply/resolvers/ownerReply.delete.resolver";
+import ownerReplyLike from "../ownerReply/resolvers/ownerReply.like.resolver";
+import ownerReplyDislikeResolver from "../ownerReply/resolvers/ownerReply.dislike.resolver";
 // import reviewResolver from "../bot/resolvers/bot.create.resolver";
 // import reviewMutationResolver from "../review/review.mutation.resolver";
 // import userResolver from "../user/user.resolver";
@@ -35,7 +38,7 @@ const resolvers = [
     userUpdateResolver,
     userDelete,
 
-    tokenMakeResolver,
+    tokenCreateResolver,
 
     reviewGetResolver,
     reviewCreateResolver,
@@ -44,6 +47,9 @@ const resolvers = [
     reviewDislikeResolver,
 
     ownerReplyCreate,
+    ownerReplyDelete,
+    ownerReplyLike,
+    ownerReplyDislikeResolver,
 
     // reviewResolver,
     // reviewMutationResolver,

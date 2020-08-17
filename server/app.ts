@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Response, Request } from "express";
 import { config } from "dotenv";
 config();
@@ -41,13 +42,11 @@ import resolvers from "./graphql/base/resolvers";
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const botObj = require("./graphql/bot/resolvers/bot.get.resolver");
+const reviewObj = require("./graphql/review/resolvers/review.get.resolver");
+console.log(reviewObj);
 const apolloServer = new ApolloServer({
-    rootValue: botObj,
+    rootValue: { botObj, reviewObj },
     //@ts-ignore
     typeDefs,
     //@ts-ignore

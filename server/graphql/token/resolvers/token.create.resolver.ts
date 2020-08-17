@@ -5,9 +5,9 @@ import IUser from "../../../types/IUser";
 import Socket from "../../../WebSocket";
 const WebSocket = Socket.getSocket();
 
-const TokenMakeResolver = {
+const TokenCreateResolver = {
     User: {
-        makeToken: async ({ id }: IUser) => {
+        createToken: async ({ id }: IUser) => {
             const foundUser = await Users.findOne({ id });
             if (!foundUser) return new ValidationError("A user was not found");
 
@@ -26,4 +26,4 @@ const TokenMakeResolver = {
     },
 };
 
-export default TokenMakeResolver;
+export default TokenCreateResolver;

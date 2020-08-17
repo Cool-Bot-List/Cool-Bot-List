@@ -65,7 +65,7 @@ router.delete("/", async (req, res) => {
     const foundReview = await Reviews.findById(reviewId);
     if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
     // Make sure the owners reply exists
-    if (foundReview.ownerReply.review.length !== 0)
+    if (foundReview.ownerReply.review.length === 0)
         return res.status(404).json({ message: "That owners reply doesn't exist in the database.", error: "Not Found" });
     // Delete the reply
     foundReview.ownerReply.review = "";
@@ -109,7 +109,7 @@ router.put("/like/:userId/:reviewId", async (req, res) => {
             const ownerObject = await Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${foundUser.tag} liked your reply!`, read: false });
             await ownerObject.save();
-            // WebSocket.emit("new-notification", ownerObject);
+            WebSocket.emit("new-notification", ownerObject);
         }
         liked = true;
     } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {

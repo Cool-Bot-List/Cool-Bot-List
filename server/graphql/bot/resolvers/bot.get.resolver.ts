@@ -3,14 +3,14 @@ import { ValidationError } from "apollo-server-express";
 import IUser from "../../../types/IUser";
 import IVote from "../../../types/IVote";
 import IBot from "../../../types/IBot";
-export let botTest: IBot;
+export let botObj: IBot;
 const BotGetResolver = {
     Query: {
         //  Get ONE bot based on its id.
         bot: async (_: unknown, { id }: { id: string }) => {
-            botTest = await Bots.findOne({ id });
-            module.exports = botTest;
-            return botTest || new ValidationError("A bot was not found!");
+            botObj = await Bots.findOne({ id });
+            module.exports = botObj;
+            return botObj || new ValidationError("A bot was not found!");
         },
 
         // Get ALL bots in the db.
