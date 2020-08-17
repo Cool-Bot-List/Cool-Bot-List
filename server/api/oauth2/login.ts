@@ -9,7 +9,7 @@ router.get("/", passport.authenticate("discord"));
 export let request: any;
 router.get("/redirect", passport.authenticate("discord"), async (req, res) => {
     //@ts-ignore
-    if (req.user.newUser as any) {
+    if (req.user.newUser) {
         res.redirect("http://localhost:3000/bio/add");
         //@ts-ignore
         const user = await Users.findOne({ id: req.user.id });
@@ -24,6 +24,7 @@ router.get("/redirect", passport.authenticate("discord"), async (req, res) => {
     }
     console.log("test");
     request = req;
+    module.exports = request;
     res.status(200).json({ message: "Yes" });
 });
 

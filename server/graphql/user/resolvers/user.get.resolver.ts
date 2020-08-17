@@ -13,9 +13,18 @@ const UserGetResolver = {
         // Get ALL users in the db.
         users: async () => await Users.find(),
         // Get currently logged in user
-        me: async (_: unknown, __: unknown, { request: req }: { request: Express.Request }) => {
-            if (!req.user) return new ValidationError("There is no logged in user!");
-            return req.user;
+        me: async (_: unknown, __: unknown, ctx: any) => {
+
+            console.log(ctx.request);
+            console.log(ctx.request.user);
+
+            return;
+            // if (!req.user) return new ValidationError("There is no logged in user!");
+            // console.log(request.user);
+            // console.log(request.session)
+            // //@ts-ignore
+            // console.log(request);
+            // return request.user;
         }
     },
     Bot: {

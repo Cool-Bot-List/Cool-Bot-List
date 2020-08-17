@@ -16,6 +16,7 @@ import reviewDeleteResolver from "../review/resolvers/review.delete.resolver";
 import reviewLikeResolver from "../review/resolvers/review.like.resolver";
 import reviewDislikeResolver from "../review/resolvers/review.dislike.resolver";
 
+import ownerReplyCreate from "../ownerReply/resolvers/ownerReply.create.resolver";
 // import reviewResolver from "../bot/resolvers/bot.create.resolver";
 // import reviewMutationResolver from "../review/review.mutation.resolver";
 // import userResolver from "../user/user.resolver";
@@ -42,6 +43,7 @@ const resolvers = [
     reviewLikeResolver,
     reviewDislikeResolver,
 
+    ownerReplyCreate,
 
     // reviewResolver,
     // reviewMutationResolver,

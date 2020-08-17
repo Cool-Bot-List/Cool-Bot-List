@@ -8,6 +8,8 @@ const Queries = gql`
         bots: [Bot]
         # Get ONE user based on their id.
         user(id: ID!): User
+        # Get logged in user
+        me: User
         # Get ALL users in the db.
         users: [User]
     }
