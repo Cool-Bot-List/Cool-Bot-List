@@ -9,23 +9,23 @@ const WebSocket = Socket.getSocket();
 const OwnerReplyCreateResolver = {
     OwnerReply: {
         create: async (parent: IOwnerReply, { data }: { data: { userId: string; review: string } }, _: unknown, info: any) => {
-            // const botId = info.rootValue.botObj.id;
-            // const { userId, review } = data;
+            const botId = info.rootValue.botObj.id;
+            const { userId, review } = data;
             // const { } = parent;
             // // Check to see if the user exists
             // const foundUser = await Users.findOne({ id: userId });
             // if (!foundUser) return new ValidationError("That user doesn't exist in the database!");
             // // Check if the bot exists
             // const foundBot = await Bots.findOne({ id: botId });
-            // if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });
+            // if (!foundBot) return new ValidationError("That bot doesn't exist in the database.");
             // // Check to make sure it's one of the owners making the request
             // //@ts-ignore
             // if (!foundBot.owners.includes(req.user.id))
-            //     return res.status(401).json({ message: "You don't have permission to perform that action.", error: "Unauthorized" });
+            //     return new ValidationError("You don't have permission to perform that action.");
             // // Make sure the review exists
             // const foundReview = await Reviews.findById(reviewId);
-            // if (!foundReview) return res.status(404).json({ message: "That review doesn't exist in the database.", error: "Not Found" });
-            // if (foundReview.ownerReply.review.length !== 0) return res.status(400).json({ message: "An owner reply already exists!", error: "Bad Request." });
+            // if (!foundReview) return new ValidationError("That review doesn't exist in the database");
+            // if (foundReview.ownerReply.review.length !== 0) return new ValidationError("An owner reply already exists!");
 
             // const userToPushTo = await Users.findOne({ id: foundReview.userId });
             // const owner = await Users.findOne({ id: ownerId });
@@ -35,7 +35,7 @@ const OwnerReplyCreateResolver = {
             // WebSocket.emit("new-notification", userToPushTo);
 
             // // Insert the reply, userId and date
-            // foundReview.ownerReply.review = ownerReply;
+            // foundReview.ownerReply.review = review;
             // foundReview.ownerReply.userId = foundUser.id;
             // foundReview.ownerReply.date = new Date();
 
@@ -44,10 +44,10 @@ const OwnerReplyCreateResolver = {
             //     await userToPushTo.save();
             //     await foundReview.save();
             // } catch (err) {
-            //     res.status(500).json({ message: "Something went wrong and the reply did not post.", error: "Internal Server Error" });
+            //     new ValidationError("Something went wrong and the reply did not post.");
             // }
             // WebSocket.emit("owner-reply", foundReview, owner, userToPushTo);
-            // res.status(200).json({ message: "Your reply has been successfully posted." });
+            // new ValidationError("Your reply has been successfully posted.");
         },
     },
 };

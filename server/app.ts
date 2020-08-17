@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { config } from "dotenv";
 config();
 import "./database/database";
@@ -31,10 +31,6 @@ app.use(
         saveUninitialized: false,
     })
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 const server = http.createServer(app);
 import WebSocket from "./WebSocket";
 WebSocket.setSocket(server);
@@ -42,8 +38,12 @@ import "./api/oauth2/strategies/discordStrategy";
 import typeDefs from "./graphql/base/typeDefs";
 import resolvers from "./graphql/base/resolvers";
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const request = require("./api/oauth2/login");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const botObj = require("./graphql/bot/resolvers/bot.get.resolver");
 const apolloServer = new ApolloServer({
@@ -52,15 +52,15 @@ const apolloServer = new ApolloServer({
     typeDefs,
     //@ts-ignore
     resolvers,
-    context: ({ res }: { res: Response }) => ({ request, res }),
+    context: ({ req, res }: { req: Request, res: Response }) => ({ req, res }),
     engine: {
         reportSchema: true,
         //@ts-ignore
         variant: "current",
         apiKey: process.env.APOLLO_KEY,
     },
+    playground: { settings: { "request.credentials": "include" } },
 });
-
 
 app.use("/api/bots", api.bot.route);
 app.use("/api/users", api.user.route);

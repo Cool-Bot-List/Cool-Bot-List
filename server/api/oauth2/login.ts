@@ -5,8 +5,6 @@ import Users from "../../database/models/User";
 
 
 router.get("/", passport.authenticate("discord"));
-
-export let request: any;
 router.get("/redirect", passport.authenticate("discord"), async (req, res) => {
     //@ts-ignore
     if (req.user.newUser) {
@@ -22,9 +20,6 @@ router.get("/redirect", passport.authenticate("discord"), async (req, res) => {
     } else {
         res.redirect("http://localhost:3000");
     }
-    console.log("test");
-    request = req;
-    module.exports = request;
     res.status(200).json({ message: "Yes" });
 });
 

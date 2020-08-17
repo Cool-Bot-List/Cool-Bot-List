@@ -3,29 +3,19 @@ import { ValidationError } from "apollo-server-express";
 import IBot from "../../../types/IBot";
 import IReview from "../../../types/IReview";
 import IOwnerReply from "../../../types/IOwnerReply";
+import { Request } from "express";
 
 const UserGetResolver = {
     Query: {
-        //  Get ONE user based on their id.
+        // Get ONE user based on their id.
         user: async (_: unknown, { id }: { id: string }) => {
             return (await Users.findOne({ id })) || new ValidationError("A user was not found!");
         },
         // Get ALL users in the db.
         users: async () => await Users.find(),
+
         // Get currently logged in user
-        me: async (_: unknown, __: unknown, ctx: any) => {
-
-            console.log(ctx.request);
-            console.log(ctx.request.user);
-
-            return;
-            // if (!req.user) return new ValidationError("There is no logged in user!");
-            // console.log(request.user);
-            // console.log(request.session)
-            // //@ts-ignore
-            // console.log(request);
-            // return request.user;
-        }
+        me: async (_: unknown, __: unknown, { req }: { req: Request }) => req.user || new ValidationError("There is no logged in user"),
     },
     Bot: {
         // Runs when a Bot is returned and the "ownerObjs" is asked for.
