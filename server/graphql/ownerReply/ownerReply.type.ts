@@ -3,7 +3,7 @@ import { gql } from "apollo-server-express";
 const OwnerReplyType = gql`
     type OwnerReply {
         # Create an ownerReply
-        create(data: OwnerReplyCreatable)
+        create(data: OwnerReplyCreatable): OwnerReply
 
 
         # The userId of the returned Review.
@@ -15,7 +15,7 @@ const OwnerReplyType = gql`
         dislikes: [String!]!
         date: String
     }
-    type OwnerReplyCreatable {
+    input OwnerReplyCreatable {
         userId: String!
         review: String!
     }

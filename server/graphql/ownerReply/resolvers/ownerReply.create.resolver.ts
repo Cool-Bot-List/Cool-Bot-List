@@ -1,19 +1,20 @@
 import IOwnerReply from "../../../types/IOwnerReply";
 import Reviews from "../../../database/models/Review";
 import Users from "../../../database/models/User";
+import Bots from "../../../database/models/Bot";
 import Socket from "../../../WebSocket";
+import { ValidationError } from "apollo-server-express";
 const WebSocket = Socket.getSocket();
 
 const OwnerReplyCreateResolver = {
     OwnerReply: {
-        create: async (parent: IOwnerReply, { data }: {
-            data: { userId: string; review: string }
-        }) => {
+        create: async (parent: IOwnerReply, { data }: { data: { userId: string; review: string } }, _: unknown, info: any) => {
+            const botId = info.rootValue.botObj.id;
             const { userId, review } = data;
             const { } = parent;
             // Check to see if the user exists
             const foundUser = await Users.findOne({ id: userId });
-            if (!foundUser) return res.status(400).json({ message: "That user doesn't exist in the database!", error: "Not Found." });
+            if (!foundUser) return new ValidationError("That user doesn't exist in the database!");
             // Check if the bot exists
             const foundBot = await Bots.findOne({ id: botId });
             if (!foundBot) return res.status(404).json({ message: "That bot doesn't exist in the database.", error: "Not Found." });

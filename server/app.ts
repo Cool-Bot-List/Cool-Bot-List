@@ -41,9 +41,13 @@ WebSocket.setSocket(server);
 import "./api/oauth2/strategies/discordStrategy";
 import typeDefs from "./graphql/base/typeDefs";
 import resolvers from "./graphql/base/resolvers";
-import { request } from "./api/oauth2/login";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const request = require("./api/oauth2/login");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const botObj = require("./graphql/bot/resolvers/bot.get.resolver");
 const apolloServer = new ApolloServer({
+    rootValue: botObj,
     //@ts-ignore
     typeDefs,
     //@ts-ignore
