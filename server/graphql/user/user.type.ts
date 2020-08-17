@@ -24,7 +24,7 @@ const UserType = gql`
         # Get ALL notification objects for the returned User.
         notifications: [Notification!]!
         # Get ONE notification for the returned User by index.
-        notification(index: Int): Bot
+        notification(index: Int): Notification
         token: String
         vote: Vote
     }
