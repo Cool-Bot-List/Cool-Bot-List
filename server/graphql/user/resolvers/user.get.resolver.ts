@@ -12,6 +12,11 @@ const UserGetResolver = {
         },
         // Get ALL users in the db.
         users: async () => await Users.find(),
+        // Get currently logged in user
+        me: async (_: unknown, __: unknown, { request: req }: { request: Express.Request }) => {
+            if (!req.user) return new ValidationError("There is no logged in user!");
+            return req.user;
+        }
     },
     Bot: {
         // Runs when a Bot is returned and the "ownerObjs" is asked for.
