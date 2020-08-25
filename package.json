@@ -7,7 +7,7 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "start": "node server/app.js",
-        "server": "npm run start:dev --prefix nest",
+        "nest": "npm run start:dev --prefix nest",
         "build-nest": "npm run start:prod --prefix nest",
         "start-nest": "npm start --prefix nest",
         "client": "npm start --prefix client",
