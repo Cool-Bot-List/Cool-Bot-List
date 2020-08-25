@@ -1,21 +1,15 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": [
-    "plugin:@typescript-eslint/eslint-plugin",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "prettier/@typescript-eslint"
-  ],
+  "extends": "plugin:@typescript-eslint/recommended",
   "parserOptions": {
     "sourceType": "module",
     "ecmaVersion": 11
   },
-  "env": {
-    "node": true,
-    "jest": true
-  },
   "rules": {
+    "@typescript-eslint/indent": [
+      "error",
+      4
+    ],
     "indent": [
       "error",
       4

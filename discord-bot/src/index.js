@@ -17,7 +17,13 @@ client.on("ready", async () => {
         if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
 
         logChannel.send("a new user was made");
-        const embed = new MessageEmbed().setTitle("a new user was made").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
+        const embed = new MessageEmbed()
+            .setTitle("a new user was made")
+            .addField("id", data.id)
+            .addField("bio", data.bio)
+            .addField("tag", data.tag)
+            .addField("avatarUrl", data.avatarUrl)
+            .setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
@@ -25,7 +31,13 @@ client.on("ready", async () => {
     socket.on("user-update", (data) => {
         if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
         logChannel.send("a user was updated");
-        const embed = new MessageEmbed().setTitle("a user was updated").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
+        const embed = new MessageEmbed()
+            .setTitle("a user was updated")
+            .addField("id", data.id)
+            .addField("bio", data.bio)
+            .addField("tag", data.tag)
+            .addField("avatarUrl", data.avatarUrl)
+            .setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
@@ -33,7 +45,13 @@ client.on("ready", async () => {
     socket.on("user-delete", (data) => {
         if (data.bio === "") data.bio = "was a space (filtered out to this so this message could send";
         logChannel.send("a user was deleted");
-        const embed = new MessageEmbed().setTitle("a user was deleted").addField("id", data.id).addField("bio", data.bio).addField("tag", data.tag).addField("avatarUrl", data.avatarUrl).setAuthor(data.tag, data.avatarUrl);
+        const embed = new MessageEmbed()
+            .setTitle("a user was deleted")
+            .addField("id", data.id)
+            .addField("bio", data.bio)
+            .addField("tag", data.tag)
+            .addField("avatarUrl", data.avatarUrl)
+            .setAuthor(data.tag, data.avatarUrl);
         logChannel.send(embed);
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
@@ -106,12 +124,18 @@ client.on("ready", async () => {
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
     socket.on("new-vote", (user, bot) => {
-        const embed = new MessageEmbed().setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl).setThumbnail(bot.avatarUrl).setDescription(`**Total Votes -** ${bot.votes}`);
+        const embed = new MessageEmbed()
+            .setAuthor(`${user.tag} voted for ${bot.tag}`, user.avatarUrl)
+            .setThumbnail(bot.avatarUrl)
+            .setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
     socket.on("owner-reply", (review, ownerSchema, userSchema) => {
         // eslint-disable-next-line max-len
-        const embed = new MessageEmbed().setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl).setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`).setThumbnail(userSchema.avatarUrl);
+        const embed = new MessageEmbed()
+            .setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl)
+            .setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`)
+            .setThumbnail(userSchema.avatarUrl);
         logChannel.send(embed);
     });
     socket.on("owner-like", (review, user, liked) => {
