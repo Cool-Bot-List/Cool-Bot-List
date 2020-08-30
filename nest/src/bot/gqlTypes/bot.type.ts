@@ -81,6 +81,7 @@ export class BotType {
     /**
      * The total number of votes that this bot has received.
      */
+    @Field()
     votes: number;
     /**
      * An array of tags that the bot has.

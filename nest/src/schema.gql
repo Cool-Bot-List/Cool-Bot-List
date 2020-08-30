@@ -58,6 +58,7 @@ type BotType {
   averageRating: Float
   isApproved: Boolean
   reviews: [ReviewType!]!
+  votes: Float!
   tags: [String!]!
   servers: Float
   users: Float
