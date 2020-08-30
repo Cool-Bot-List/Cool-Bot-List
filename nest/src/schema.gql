@@ -1,0 +1,75 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type NotificationType {
+  read: Boolean!
+  message: String!
+}
+
+type UserType {
+  id: ID!
+  tag: String!
+  avatarUrl: String!
+  bio: String!
+  bots: [BotType!]!
+  newUser: Boolean!
+  notifications: [NotificationType!]!
+  token: String
+  vote: [VoteType!]
+}
+
+type OwnerReplyType {
+  user: UserType!
+  review: String!
+  likes: [UserType!]!
+  dislikes: [UserType!]!
+  date: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ReviewType {
+  botId: BotType!
+  userId: String!
+  review: String!
+  ownerReply: OwnerReplyType!
+  likes: UserType!
+  dislikes: UserType!
+  rating: Float!
+  date: DateTime!
+}
+
+type BotType {
+  id: ID!
+  tag: String!
+  avatarUrl: String!
+  prefix: String!
+  description: String!
+  owners: [UserType!]!
+  website: String!
+  inviteLink: String!
+  helpCommand: String!
+  supportServer: String!
+  library: String!
+  averageRating: Float
+  isApproved: Boolean
+  reviews: [ReviewType!]!
+  votes: Float!
+  tags: [String!]!
+  servers: Float
+  users: Float
+  presence: String
+}
+
+type VoteType {
+  date: DateTime
+  bot: BotType
+}
+
+type Query {
+  guilds: [BotType!]
+}
