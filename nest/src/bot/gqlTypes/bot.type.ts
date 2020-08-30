@@ -32,8 +32,9 @@ export class BotType {
     /**
      * An array of user objects that own this bot.
      */
-    @Field(() => [UserType])
+    @Field(() => [UserType], { nullable: "itemsAndList" })
     owners: UserType[];
+    @Field()
     /**
      * A link to the bot's website.
      * Can also be a github repo.
@@ -80,7 +81,6 @@ export class BotType {
     /**
      * The total number of votes that this bot has received.
      */
-    @Field()
     votes: number;
     /**
      * An array of tags that the bot has.

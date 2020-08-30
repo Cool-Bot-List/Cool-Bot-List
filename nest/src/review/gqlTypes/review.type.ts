@@ -9,12 +9,12 @@ export class ReviewType {
      * The bot object that the review belongs too.
      */
     @Field(() => BotType)
-    botId: BotType;
+    bot: BotType;
     /**
      * The id of the user that made the review.
      */
-    @Field()
-    userId: string;
+    @Field(() => UserType)
+    user: UserType;
     /**
      * The actual review content of the review.
      */

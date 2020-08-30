@@ -25,6 +25,26 @@ export class BotService {
         return this.Bots.findOne({ id });
     }
 
+    public async getOwners(bot: BotType): Promise<User[]> {
+        const owners = [];
+        for (const userId of bot.owners) {
+            owners.push(await this.Users.findOne({ id: userId }));
+        }
+        return owners;
+    }
+
+    public async getOwner(bot: BotType, id: string, index: number): Promise<User | HttpException> {
+        console.log(`index: ${index}`);
+        if (id !== undefined) {
+            const foundOwner = await this.Users.findOne({ id });
+            if (foundOwner) return foundOwner;
+        } else if (index !== undefined) {
+            const foundOwner = await this.Users.findOne({ id: bot.owners[index] });
+            console.log(await this.Users.findOne({ id: bot.owners[index] }));
+            return foundOwner || new HttpException("That User doesn't exist.", HttpStatus.NOT_FOUND);
+        }
+    }
+
     public async create(id: string, data: BotType): Promise<Bot | HttpException> {
         const { prefix, description, owners, website, helpCommand, supportServer, library } = data;
         let { inviteLink, tags } = data;
