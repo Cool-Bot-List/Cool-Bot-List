@@ -12,9 +12,9 @@ export class UserResolver {
         return this.service.getAll();
     }
 
-
     @Query(() => UserType, { nullable: true })
     public user(@Args("id") id: string): Promise<User> {
         return this.service.get(id);
     }
 }
+

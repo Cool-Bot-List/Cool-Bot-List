@@ -48,7 +48,7 @@ export class UserType {
     /**
      * Information about the user's last vote.
      */
-    @Field(() => [VoteType], { nullable: true })
+    @Field(() => VoteType, { nullable: true })
     vote: VoteType;
 
 }

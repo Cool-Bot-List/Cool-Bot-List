@@ -16,7 +16,7 @@ type UserType {
   newUser: Boolean!
   notifications: [NotificationType!]!
   token: String
-  vote: [VoteType!]
+  vote: VoteType
 }
 
 type OwnerReplyType {
@@ -62,7 +62,7 @@ type BotType {
   servers: Float
   users: Float
   presence: String
-  owner(index: Float, id: String): UserType
+  owner(index: Float, id: String): UserType!
 }
 
 type VoteType {

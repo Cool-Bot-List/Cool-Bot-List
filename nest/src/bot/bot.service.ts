@@ -34,13 +34,11 @@ export class BotService {
     }
 
     public async getOwner(bot: BotType, id: string, index: number): Promise<User | HttpException> {
-        console.log(`index: ${index}`);
         if (id !== undefined) {
             const foundOwner = await this.Users.findOne({ id });
             if (foundOwner) return foundOwner;
         } else if (index !== undefined) {
             const foundOwner = await this.Users.findOne({ id: bot.owners[index] });
-            console.log(await this.Users.findOne({ id: bot.owners[index] }));
             return foundOwner || new HttpException("That User doesn't exist.", HttpStatus.NOT_FOUND);
         }
     }

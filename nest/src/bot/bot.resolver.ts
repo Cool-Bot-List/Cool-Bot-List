@@ -25,7 +25,7 @@ export class BotResolver {
         return this.service.getOwners(bot);
     }
 
-    @ResolveField("owner", () => UserType, { nullable: true })
+    @ResolveField("owner", () => UserType)
     public owner(
         @Parent() bot: BotType, @Args("id", { nullable: true }) id: string, @Args("index", { nullable: true }) index: number
     ): Promise<User | HttpException> {
