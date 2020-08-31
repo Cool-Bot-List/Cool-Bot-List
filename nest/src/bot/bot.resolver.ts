@@ -5,6 +5,8 @@ import { Bot } from "./bot.schema";
 import { UserType } from "src/user/gqlTypes/user.type";
 import { User } from "src/user/user.schema";
 import { HttpException } from "@nestjs/common";
+import { ReviewType } from "src/review/gqlTypes/review.type";
+import { Review } from "src/review/review.schema";
 
 @Resolver(() => BotType)
 export class BotResolver {
@@ -20,7 +22,7 @@ export class BotResolver {
         return this.service.get(id);
     }
 
-    @ResolveField("owners", () => [UserType], { nullable: true })
+    @ResolveField("owners", () => [UserType])
     public owners(@Parent() bot: BotType): Promise<User[]> {
         return this.service.getOwners(bot);
     }
@@ -32,4 +34,15 @@ export class BotResolver {
         return this.service.getOwner(bot, id, index);
     }
 
+    @ResolveField("reviews", () => ReviewType)
+    public reviews(@Parent() bot: BotType): Promise<Review[]> {
+        return this.service.getReviews(bot);
+    }
+
+    @ResolveField("review", () => ReviewType, { nullable: true })
+    public review(
+        @Parent() bot: BotType, @Args("mongoId", { nullable: true }) mongoId: string, @Args("index", { nullable: true }) index: number
+    ): Promise<Review | HttpException> {
+        return this.service.getReview(bot, mongoId, index);
+    }
 }

@@ -26,6 +26,6 @@ export class OwnerReplyType {
     /**
      * The date this ownerReply was made.
      */
-    @Field()
+    @Field({ nullable: true })
     date: Date;
 }

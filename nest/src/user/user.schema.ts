@@ -1,7 +1,7 @@
 import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
-import { VoteType } from "src/vote/gqlTypes/vote.type";
 import { NotificationType } from "src/notification/gqlTypes/notification.type";
 import { Document } from "mongoose";
+import { Vote } from "src/vote/interfaces/vote.interface";
 
 @Schema()
 export class User extends Document {
@@ -49,9 +49,10 @@ export class User extends Document {
      * Information about the user's last vote.
      */
     @Prop({
-        default: { date: null, bot: null },
+        date: { required: false, default: "" },
+        bot: { required: false, default: "" },
     })
-    vote: VoteType;
+    vote: Vote;
 
 }
 

@@ -7,6 +7,7 @@ import { User } from "../user/user.schema";
 import { BOT_TAGS } from "./interfaces/botTags.enum";
 import { getBotInviteLink } from "./util/getBotInviteLink.util";
 import { getBotData } from "./util/getBotData.util";
+import { Review } from "src/review/review.schema";
 
 @Injectable()
 export class BotService {
@@ -14,7 +15,9 @@ export class BotService {
         @InjectModel(Bot.name)
         private Bots: Model<Bot>,
         @InjectModel(User.name)
-        private Users: Model<User>
+        private Users: Model<User>,
+        @InjectModel(Review.name)
+        private Reviews: Model<Review>
     ) { }
 
     public async getAll(): Promise<Bot[]> {
@@ -35,11 +38,22 @@ export class BotService {
 
     public async getOwner(bot: BotType, id: string, index: number): Promise<User | HttpException> {
         if (id !== undefined) {
-            const foundOwner = await this.Users.findOne({ id });
-            if (foundOwner) return foundOwner;
+            return await this.Users.findOne({ id }) || new HttpException("That User doesn't exist.", HttpStatus.NOT_FOUND);
         } else if (index !== undefined) {
-            const foundOwner = await this.Users.findOne({ id: bot.owners[index] });
-            return foundOwner || new HttpException("That User doesn't exist.", HttpStatus.NOT_FOUND);
+            return await this.Users.findOne({ id: bot.owners[index] }) || new HttpException("That User doesn't exist.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public async getReviews(bot: BotType): Promise<Review[]> {
+        return this.Reviews.find({ botId: bot.id });
+    }
+
+    public async getReview(bot: BotType, mongoId: string, index: number): Promise<Review | HttpException> {
+        if (mongoId !== undefined) {
+            return await this.Reviews.findOne({ botId: bot.id, _id: mongoId })
+                || new HttpException("That review doesn't exist.", HttpStatus.NOT_FOUND);
+        } else if (index !== undefined) {
+            return (await this.Reviews.find({ botId: bot.id }))[index] || new HttpException("That review doesn't exist.", HttpStatus.NOT_FOUND);
         }
     }
 

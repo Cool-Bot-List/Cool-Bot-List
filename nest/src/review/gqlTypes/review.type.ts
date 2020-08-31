@@ -1,10 +1,15 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { OwnerReplyType } from "./ownerReply.type";
 import { BotType } from "src/bot/gqlTypes/bot.type";
 import { UserType } from "src/user/gqlTypes/user.type";
 
 @ObjectType()
 export class ReviewType {
+    /**
+     * The mongodb object's _id.
+     */
+    @Field(() => ID)
+    _id: string;
     /**
      * The bot object that the review belongs too.
      */

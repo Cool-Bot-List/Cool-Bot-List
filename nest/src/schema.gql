@@ -7,6 +7,16 @@ type NotificationType {
   message: String!
 }
 
+type VoteType {
+  date: DateTime
+  bot: BotType
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type UserType {
   id: ID!
   tag: String!
@@ -24,15 +34,11 @@ type OwnerReplyType {
   review: String!
   likes: [UserType!]!
   dislikes: [UserType!]!
-  date: DateTime!
+  date: DateTime
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type ReviewType {
+  _id: ID!
   bot: BotType!
   user: UserType!
   review: String!
@@ -64,11 +70,7 @@ type BotType {
   users: Float
   presence: String
   owner(index: Float, id: String): UserType!
-}
-
-type VoteType {
-  date: DateTime
-  bot: BotType
+  review(index: Float, mongoId: String): ReviewType
 }
 
 type Query {
