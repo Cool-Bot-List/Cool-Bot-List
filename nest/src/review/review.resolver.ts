@@ -20,4 +20,9 @@ export class ReviewResolver {
     public user(@Parent() review: Review): Promise<User> {
         return this.service.getUser(review);
     }
+
+    @ResolveField("likes", () => [UserType])
+    public likes(@Parent() review: Review): Promise<User[]> {
+        return this.service.usersThatLiked(review);
+    }
 }
