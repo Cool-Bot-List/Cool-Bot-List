@@ -17,7 +17,12 @@ export class ReviewService {
     ) { }
 
     public async getBot(review: Review): Promise<Bot> {
-        return await this.Bots.findOne({ id: review.botId });
+        return this.Bots.findOne({ id: review.botId });
+    }
+
+    public async getUser(review: Review): Promise<User> {
+        console.log(await this.Users.findOne({ id: review.userId }));
+        return this.Users.findOne({ id: review.userId });
     }
 
 }
