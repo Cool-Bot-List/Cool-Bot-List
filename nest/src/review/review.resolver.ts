@@ -9,6 +9,7 @@ import { User } from "src/user/user.schema";
 
 @Resolver(() => ReviewType)
 export class ReviewResolver {
+
     constructor(private service: ReviewService) { }
 
     @ResolveField("bot", () => BotType)
@@ -21,8 +22,8 @@ export class ReviewResolver {
         return this.service.getUser(review);
     }
 
-    @ResolveField("likes", () => [UserType])
+    @ResolveField("likes", () => [UserType], { nullable: true })
     public likes(@Parent() review: Review): Promise<User[]> {
-        return this.service.usersThatLiked(review);
+        return this.service.getUsersThatLiked(review);
     }
 }

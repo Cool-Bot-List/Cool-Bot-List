@@ -43,8 +43,8 @@ type ReviewType {
   user: UserType!
   review: String!
   ownerReply: OwnerReplyType!
-  likes: UserType!
-  dislikes: UserType!
+  likes: [UserType!]!
+  dislikes: [UserType!]!
   rating: Float!
   date: DateTime!
 }

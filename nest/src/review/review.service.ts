@@ -24,14 +24,11 @@ export class ReviewService {
         return await this.Users.findOne({ id: review.userId });
     }
 
-    public async usersThatLiked(review: Review): Promise<User[]> {
+    public async getUsersThatLiked(review: Review): Promise<User[]> {
         const users: User[] = [];
-        console.log(users);
-        for (const id of review.userId) {
-            console.log(await this.Users.findOne({ id }));
+        for (const id of review.likes) {
             users.push(await this.Users.findOne({ id }));
         }
-
         return users;
     }
 }

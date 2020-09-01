@@ -33,12 +33,12 @@ export class ReviewType {
     /**
      * An array of user objects that have liked this review.
      */
-    @Field(() => UserType)
+    @Field(() => [UserType])
     likes: UserType[];
     /**
      * An array of user objects that have disliked this review.
      */
-    @Field(() => UserType)
+    @Field(() => [UserType])
     dislikes: UserType[];
     /**
      * The rating of this review
