@@ -22,8 +22,13 @@ export class ReviewResolver {
         return this.service.getUser(review);
     }
 
-    @ResolveField("likes", () => [UserType], { nullable: true })
+    @ResolveField("likes", () => [UserType])
     public likes(@Parent() review: Review): Promise<User[]> {
         return this.service.getUsersThatLiked(review);
+    }
+
+    @ResolveField("dislikes", () => [UserType])
+    public dislikes(@Parent() review: Review): Promise<User[]> {
+        return this.service.getUsersThatDisliked(review);
     }
 }

@@ -31,4 +31,12 @@ export class ReviewService {
         }
         return users;
     }
+
+    public async getUsersThatDisliked(review: Review): Promise<User[]> {
+        const users: User[] = [];
+        for (const id of review.dislikes) {
+            users.push(await this.Users.findOne({ id }));
+        }
+        return users;
+    }
 }
