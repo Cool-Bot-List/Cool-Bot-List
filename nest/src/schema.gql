@@ -42,7 +42,7 @@ type ReviewType {
   bot: BotType!
   user: UserType!
   review: String!
-  ownerReply: OwnerReplyType!
+  ownerReply: OwnerReplyType
   likes: [UserType!]!
   dislikes: [UserType!]!
   rating: Float!

@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { OwnerReplyType } from "./ownerReply.type";
+import { OwnerReplyType } from "../../owner-reply/gqlTypes/owner-reply.type";
 import { BotType } from "src/bot/gqlTypes/bot.type";
 import { UserType } from "src/user/gqlTypes/user.type";
 
@@ -28,7 +28,7 @@ export class ReviewType {
     /**
      * The owners reply to the review.
      */
-    @Field(() => OwnerReplyType)
+    @Field(() => OwnerReplyType, { nullable: true })
     ownerReply: OwnerReplyType;
     /**
      * An array of user objects that have liked this review.

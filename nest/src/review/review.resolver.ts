@@ -6,6 +6,8 @@ import { Review } from "./review.schema";
 import { ReviewType } from "./gqlTypes/review.type";
 import { UserType } from "src/user/gqlTypes/user.type";
 import { User } from "src/user/user.schema";
+import { OwnerReplyType } from "src/owner-reply/gqlTypes/owner-reply.type";
+import { OwnerReply } from "src/owner-reply/interfaces/ownerReply.interface";
 
 @Resolver(() => ReviewType)
 export class ReviewResolver {
@@ -30,5 +32,10 @@ export class ReviewResolver {
     @ResolveField("dislikes", () => [UserType])
     public dislikes(@Parent() review: Review): Promise<User[]> {
         return this.service.getUsersThatDisliked(review);
+    }
+
+    @ResolveField("ownerReply", () => OwnerReplyType, { nullable: true })
+    public ownerReply(@Parent() review: Review): Promise<OwnerReply> {
+        return this.service.getOwnerReply(review);
     }
 }

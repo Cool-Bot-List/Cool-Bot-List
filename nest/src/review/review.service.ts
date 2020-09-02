@@ -4,6 +4,7 @@ import { Review } from "./review.schema";
 import { Model } from "mongoose";
 import { User } from "src/user/user.schema";
 import { Bot } from "src/bot/bot.schema";
+import { OwnerReply } from "src/owner-reply/interfaces/ownerReply.interface";
 
 @Injectable()
 export class ReviewService {
@@ -21,7 +22,7 @@ export class ReviewService {
     }
 
     public async getUser(review: Review): Promise<User> {
-        return await this.Users.findOne({ id: review.userId });
+        return this.Users.findOne({ id: review.userId });
     }
 
     public async getUsersThatLiked(review: Review): Promise<User[]> {
@@ -38,5 +39,10 @@ export class ReviewService {
             users.push(await this.Users.findOne({ id }));
         }
         return users;
+    }
+
+    public async getOwnerReply(review: Review): Promise<OwnerReply> {
+        if (review.ownerReply === undefined || review.ownerReply.review.length === 0) return null;
+        return review.ownerReply;
     }
 }
