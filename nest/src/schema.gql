@@ -27,6 +27,7 @@ type UserType {
   notifications: [NotificationType!]!
   token: String
   vote: VoteType
+  bot(id: String!): BotType
 }
 
 type OwnerReplyType {

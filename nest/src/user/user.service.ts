@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { User } from "./user.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
@@ -28,6 +28,11 @@ export class UserService {
             bots.push(await this.Bots.findOne({ id }));
         }
         return bots;
+    }
+
+    public async getBot(user: User, id: string): Promise<Bot | HttpException> {
+        if (!user.bots.includes(id)) return null;
+        return await this.Bots.findOne({ id });
     }
 
     public async getVote(user: User): Promise<Vote> {
