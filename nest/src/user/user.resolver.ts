@@ -4,6 +4,8 @@ import { UserType } from "./gqlTypes/user.type";
 import { User } from "./user.schema";
 import { VoteType } from "src/vote/gqlTypes/vote.type";
 import { Vote } from "src/vote/interfaces/vote.interface";
+import { BotType } from "src/bot/gqlTypes/bot.type";
+import { Bot } from "src/bot/bot.schema";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -17,6 +19,11 @@ export class UserResolver {
     @Query(() => UserType, { nullable: true })
     public user(@Args("id") id: string): Promise<User> {
         return this.service.get(id);
+    }
+
+    @ResolveField("bots", () => [BotType])
+    public bots(@Parent() user: User): Promise<Bot[]> {
+        return this.service.getBots(user);
     }
 
     @ResolveField("vote", () => VoteType, { nullable: true })

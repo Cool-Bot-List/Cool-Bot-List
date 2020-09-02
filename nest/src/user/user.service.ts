@@ -22,6 +22,14 @@ export class UserService {
         return this.Users.findOne({ id });
     }
 
+    public async getBots(user: User): Promise<Bot[]> {
+        const bots: Bot[] = [];
+        for (const id of user.bots) {
+            bots.push(await this.Bots.findOne({ id }));
+        }
+        return bots;
+    }
+
     public async getVote(user: User): Promise<Vote> {
         if (user.vote.bot === null || user.vote.date === null) return null;
         return user.vote;
