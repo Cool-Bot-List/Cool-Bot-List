@@ -49,8 +49,8 @@ export class User extends Document {
      * Information about the user's last vote.
      */
     @Prop({
-        date: { required: false, default: "" },
-        bot: { required: false, default: "" },
+        date: { type: Date, required: false, default: "" },
+        bot: { type: String, required: false, default: "" },
     })
     vote: Vote;
 

@@ -1,7 +1,9 @@
-import { Resolver, Query, Args } from "@nestjs/graphql";
+import { Resolver, Query, Args, ResolveField, Parent } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { UserType } from "./gqlTypes/user.type";
 import { User } from "./user.schema";
+import { VoteType } from "src/vote/gqlTypes/vote.type";
+import { Vote } from "src/vote/interfaces/vote.interface";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -15,6 +17,11 @@ export class UserResolver {
     @Query(() => UserType, { nullable: true })
     public user(@Args("id") id: string): Promise<User> {
         return this.service.get(id);
+    }
+
+    @ResolveField("vote", () => VoteType, { nullable: true })
+    public vote(@Parent() user: User): Promise<Vote> {
+        return this.service.getVote(user);
     }
 }
 

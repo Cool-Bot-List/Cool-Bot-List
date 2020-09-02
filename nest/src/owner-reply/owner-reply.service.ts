@@ -5,8 +5,6 @@ import { Review } from "src/review/review.schema";
 import { User } from "src/user/user.schema";
 import { OwnerReply } from "./interfaces/ownerReply.interface";
 
-import { promises as fs } from "fs";
-
 
 @Injectable()
 export class OwnerReplyService {
