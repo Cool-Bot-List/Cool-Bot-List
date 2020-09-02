@@ -1,12 +1,12 @@
 import { Resolver, ResolveField, Parent } from "@nestjs/graphql";
 import { ReviewService } from "./review.service";
-import { BotType } from "src/bot/gqlTypes/bot.type";
+import { BotType } from "src/bot/gql-types/bot.type";
 import { Bot } from "src/bot/bot.schema";
 import { Review } from "./review.schema";
-import { ReviewType } from "./gqlTypes/review.type";
-import { UserType } from "src/user/gqlTypes/user.type";
+import { ReviewType } from "./gql-types/review.type";
+import { UserType } from "src/user/gql-types/user.type";
 import { User } from "src/user/user.schema";
-import { OwnerReplyType } from "src/owner-reply/gqlTypes/owner-reply.type";
+import { OwnerReplyType } from "src/owner-reply/gql-types/owner-reply.type";
 import { OwnerReply } from "src/owner-reply/interfaces/ownerReply.interface";
 
 @Resolver(() => ReviewType)

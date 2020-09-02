@@ -1,5 +1,5 @@
 import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
-import { NotificationType } from "src/notification/gqlTypes/notification.type";
+import { NotificationType } from "src/notification/gql-types/notification.type";
 import { Document } from "mongoose";
 import { Vote } from "src/vote/interfaces/vote.interface";
 

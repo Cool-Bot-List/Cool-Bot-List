@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { Model } from "mongoose";
 import { Bot } from "./bot.schema";
 import { InjectModel } from "@nestjs/mongoose";
-import { BotType } from "./gqlTypes/bot.type";
+import { BotType } from "./gql-types/bot.type";
 import { User } from "../user/user.schema";
 import { BOT_TAGS } from "./interfaces/botTags.enum";
 import { getBotInviteLink } from "./util/getBotInviteLink.util";

@@ -1,11 +1,11 @@
 import { Resolver, Query, Args, ResolveField, Parent } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
-import { BotType } from "./gqlTypes/bot.type";
+import { BotType } from "./gql-types/bot.type";
 import { Bot } from "./bot.schema";
-import { UserType } from "src/user/gqlTypes/user.type";
+import { UserType } from "src/user/gql-types/user.type";
 import { User } from "src/user/user.schema";
 import { HttpException } from "@nestjs/common";
-import { ReviewType } from "src/review/gqlTypes/review.type";
+import { ReviewType } from "src/review/gql-types/review.type";
 import { Review } from "src/review/review.schema";
 
 @Resolver(() => BotType)

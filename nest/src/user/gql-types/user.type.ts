@@ -1,7 +1,7 @@
 import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { VoteType } from "src/vote/gqlTypes/vote.type";
-import { NotificationType } from "src/notification/gqlTypes/notification.type";
-import { BotType } from "src/bot/gqlTypes/bot.type";
+import { VoteType } from "src/vote/gql-types/vote.type";
+import { NotificationType } from "src/notification/gql-types/notification.type";
+import { BotType } from "src/bot/gql-types/bot.type";
 
 @ObjectType()
 export class UserType {

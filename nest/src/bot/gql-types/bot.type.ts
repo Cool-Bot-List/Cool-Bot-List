@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { UserType } from "src/user/gqlTypes/user.type";
-import { ReviewType } from "src/review/gqlTypes/review.type";
+import { UserType } from "src/user/gql-types/user.type";
+import { ReviewType } from "src/review/gql-types/review.type";
 
 @ObjectType()
 export class BotType {
@@ -32,7 +32,7 @@ export class BotType {
     /**
      * An array of user objects that own this bot.
      */
-    @Field(() => [UserType], { nullable: "itemsAndList" })
+    @Field(() => [UserType])
     owners: UserType[];
     @Field()
     /**

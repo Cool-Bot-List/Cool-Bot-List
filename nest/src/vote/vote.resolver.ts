@@ -1,8 +1,8 @@
 import { Resolver, ResolveField, Parent } from "@nestjs/graphql";
-import { BotType } from "src/bot/gqlTypes/bot.type";
+import { BotType } from "src/bot/gql-types/bot.type";
 import { Bot } from "src/bot/bot.schema";
 import { VoteService } from "./vote.service";
-import { VoteType } from "./gqlTypes/vote.type";
+import { VoteType } from "./gql-types/vote.type";
 
 @Resolver(() => VoteType)
 export class VoteResolver {

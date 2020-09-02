@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "@nestjs/graphql";
-import { BotType } from "src/bot/gqlTypes/bot.type";
+import { BotType } from "src/bot/gql-types/bot.type";
 
 @ObjectType()
 export class VoteType {

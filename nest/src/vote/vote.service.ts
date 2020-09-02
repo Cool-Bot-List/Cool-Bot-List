@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Bot } from "src/bot/bot.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { VoteType } from "./gqlTypes/vote.type";
+import { VoteType } from "./gql-types/vote.type";
 
 @Injectable()
 export class VoteService {

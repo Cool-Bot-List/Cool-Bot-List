@@ -56,7 +56,7 @@ type BotType {
   avatarUrl: String!
   prefix: String!
   description: String!
-  owners: [UserType]
+  owners: [UserType!]!
   website: String!
   inviteLink: String!
   helpCommand: String!

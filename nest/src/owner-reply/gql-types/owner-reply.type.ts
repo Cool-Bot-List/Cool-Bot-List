@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "@nestjs/graphql";
-import { UserType } from "src/user/gqlTypes/user.type";
+import { UserType } from "src/user/gql-types/user.type";
 
 @ObjectType()
 export class OwnerReplyType {
