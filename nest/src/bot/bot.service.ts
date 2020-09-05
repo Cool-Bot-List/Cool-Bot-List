@@ -1,14 +1,15 @@
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { Model } from "mongoose";
-import { Bot } from "./bot.schema";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { BotType } from "./gql-types/bot.type";
-import { User } from "../user/user.schema";
-import { BOT_TAGS } from "./constants/botTags.enum";
-import { getBotInviteLink } from "./util/getBotInviteLink.util";
-import { getBotData } from "./util/getBotData.util";
+import { Model } from "mongoose";
+import { EventsGateway } from "src/events/events.gateway";
 import { Review } from "src/review/review.schema";
+import { User } from "../user/user.schema";
+import { Bot } from "./bot.schema";
+import { BOT_TAGS } from "./constants/botTags.enum";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
+import { BotType } from "./gql-types/bot.type";
+import { getBotData } from "./util/getBotData.util";
+import { getBotInviteLink } from "./util/getBotInviteLink.util";
 
 @Injectable()
 export class BotService {
@@ -18,7 +19,8 @@ export class BotService {
         @InjectModel(User.name)
         private Users: Model<User>,
         @InjectModel(Review.name)
-        private Reviews: Model<Review>
+        private Reviews: Model<Review>,
+        private events: EventsGateway
     ) { }
 
     public async getAll(): Promise<Bot[]> {
@@ -104,7 +106,7 @@ export class BotService {
                 return new HttpException("Something went wrong and the bot did not save to the database!", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-        // WebSocket.emit("new-bot", newBot);
+        this.events.emitNewBot(newBot);
         return newBot;
     }
 
