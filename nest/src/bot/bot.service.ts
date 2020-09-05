@@ -4,7 +4,7 @@ import { Bot } from "./bot.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { BotType } from "./gql-types/bot.type";
 import { User } from "../user/user.schema";
-import { BOT_TAGS } from "./interfaces/botTags.enum";
+import { BOT_TAGS } from "./constants/botTags.enum";
 import { getBotInviteLink } from "./util/getBotInviteLink.util";
 import { getBotData } from "./util/getBotData.util";
 import { Review } from "src/review/review.schema";
