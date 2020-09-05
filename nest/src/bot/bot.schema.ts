@@ -37,7 +37,7 @@ export class Bot extends Document {
      * A link to the bot's website.
      * Can also be a github repo.
      */
-    @Prop()
+    @Prop({ required: false })
     website: string;
     /**
      * The invite link for this bot.
@@ -53,7 +53,7 @@ export class Bot extends Document {
     /**
      * A discord invite to the support server of the bot.
      */
-    @Prop()
+    @Prop({ required: false })
     supportServer: string;
     /**
      * The library this bot was written it.

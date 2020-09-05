@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, ResolveField, Parent } from "@nestjs/graphql";
+import { Resolver, Query, Args, ResolveField, Parent, Mutation } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
 import { BotType } from "./gql-types/bot.type";
 import { Bot } from "./bot.schema";
@@ -7,6 +7,7 @@ import { User } from "src/user/user.schema";
 import { HttpException } from "@nestjs/common";
 import { ReviewType } from "src/review/gql-types/review.type";
 import { Review } from "src/review/review.schema";
+import { BotCreatable } from "./gql-types/bot-creatable.input";
 
 @Resolver(() => BotType)
 export class BotResolver {
@@ -44,5 +45,11 @@ export class BotResolver {
         @Parent() bot: BotType, @Args("mongoId", { nullable: true }) mongoId: string, @Args("index", { nullable: true }) index: number
     ): Promise<Review | HttpException> {
         return this.service.getReview(bot, mongoId, index);
+    }
+
+
+    @Mutation(() => BotType)
+    public createBot(@Args("botCreatable") data: BotCreatable): Promise<Bot | HttpException> {
+        return this.service.create(data);
     }
 }

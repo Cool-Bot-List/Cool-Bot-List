@@ -34,7 +34,6 @@ export class BotType {
      */
     @Field(() => [UserType])
     owners: UserType[];
-    @Field()
     /**
      * A link to the bot's website.
      * Can also be a github repo.
@@ -45,7 +44,7 @@ export class BotType {
      * The invite link for this bot.
      * Can be given by the user or the bot list can generate a link with no permissions.
      */
-    @Field()
+    @Field({ nullable: true })
     inviteLink: string;
     /**
      * The help command of the bot.
@@ -55,7 +54,7 @@ export class BotType {
     /**
      * A discord invite to the support server of the bot.
      */
-    @Field()
+    @Field({ nullable: true })
     supportServer: string;
     /**
      * The library this bot was written it.
@@ -96,18 +95,18 @@ export class BotType {
      */
     @Field({ nullable: true })
     servers: number;
-    @Field({ nullable: true })
     /**
      * The total amount of users that are in the bot's cache.
      * This data is sent via the wrapper and API token.
      * For more info on the wrapper see https://github.com/Cool-Bot-List/core
      */
-    users: number;
     @Field({ nullable: true })
+    users: number;
     /**
      * The current presence of the bot (online, dnd, away, ect).
      * This data is sent via the wrapper and API token.
      * For more info on the wrapper see https://github.com/Cool-Bot-List/core
      */
+    @Field({ nullable: true })
     presence: string;
 }

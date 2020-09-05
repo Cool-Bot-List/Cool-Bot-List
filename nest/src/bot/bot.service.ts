@@ -8,6 +8,7 @@ import { BOT_TAGS } from "./interfaces/botTags.enum";
 import { getBotInviteLink } from "./util/getBotInviteLink.util";
 import { getBotData } from "./util/getBotData.util";
 import { Review } from "src/review/review.schema";
+import { BotCreatable } from "./gql-types/bot-creatable.input";
 
 @Injectable()
 export class BotService {
@@ -57,9 +58,13 @@ export class BotService {
         }
     }
 
-    public async create(id: string, data: BotType): Promise<Bot | HttpException> {
-        const { prefix, description, owners, website, helpCommand, supportServer, library } = data;
+    public async create(data: BotCreatable): Promise<Bot | HttpException> {
+        const { id, prefix, description, owners, website, helpCommand, supportServer, library } = data;
         let { inviteLink, tags } = data;
+
+        const bot = await this.Bots.findOne({ id });
+        if (bot) return new HttpException("This bot already exists!", HttpStatus.BAD_REQUEST);
+
         if (!tags) tags = [];
         if (tags.length > 3) return new HttpException("You cannot have more than 3 tags.", HttpStatus.BAD_REQUEST);
         for (const t of tags) {
@@ -75,17 +80,22 @@ export class BotService {
             )
                 return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
         }
+
+        const doOwnersExist = owners.some(id => this.Users.findOne({ id }));
+        if (!doOwnersExist) return new HttpException("One or more of the owner's don't exist", HttpStatus.BAD_REQUEST);
+
         if (!inviteLink) inviteLink = getBotInviteLink(id);
-        const bot = await this.Bots.findOne({ id });
-        const botApiData = await getBotData(id);
-        const { tag, avatarUrl } = botApiData;
-        if (bot) return new HttpException("This bot already exists!", HttpStatus.BAD_REQUEST);
+        const { tag, avatarUrl } = await getBotData(id);
+
+        const areLinksValid = this.checkLinks({ website: website, supportServer, inviteLink });
+        if (!areLinksValid) return new HttpException("One or more links are not valid", HttpStatus.BAD_REQUEST);
+
         const newBot = new this.Bots({
             id, tag, avatarUrl, prefix, description, owners, website, inviteLink, helpCommand, supportServer, library, tags,
         });
 
-        for (const owner of owners) {
-            const users = await this.Users.findOne({ id: owner });
+        for (const ownerId of owners) {
+            const users = await this.Users.findOne({ id: ownerId });
             users.bots.push(id);
             try {
                 await users.save();
@@ -98,5 +108,21 @@ export class BotService {
         return newBot;
     }
 
+    private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
+        const validEndings = [".com", ".org", ".net", ".io"];
+        console.log(links);
 
+        if (links.inviteLink && !links.inviteLink.startsWith("https://discord")) return false;
+        if (links.supportServer && !links.supportServer.startsWith("https://discord")) return false;
+
+        for (const link of Object.values(links)) {
+            if (link) {
+                if (!link.startsWith("https://")) return false;
+                for (const e of validEndings) {
+                    if (link.endsWith(e)) return true;
+                    else return false;
+                }
+            }
+        }
+    }
 }

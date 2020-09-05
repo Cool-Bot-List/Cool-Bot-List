@@ -58,9 +58,9 @@ type BotType {
   description: String!
   owners: [UserType!]!
   website: String!
-  inviteLink: String!
+  inviteLink: String
   helpCommand: String!
-  supportServer: String!
+  supportServer: String
   library: String!
   averageRating: Float
   isApproved: Boolean
@@ -79,4 +79,21 @@ type Query {
   bot(id: String!): BotType
   users: [UserType!]
   user(id: String!): UserType
+}
+
+type Mutation {
+  createBot(botCreatable: BotCreatable!): BotType!
+}
+
+input BotCreatable {
+  id: ID!
+  prefix: String!
+  description: String!
+  owners: [String!]!
+  website: String
+  helpCommand: String!
+  supportServer: String
+  library: String!
+  inviteLink: String
+  tags: [String!]
 }

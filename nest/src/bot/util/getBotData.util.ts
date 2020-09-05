@@ -7,11 +7,6 @@ axios.defaults.headers.common["Authorization"] = `Bot ${process.env.BOT_TOKEN}`;
 
 /**
  *  Get the tag and avatar url of a bot based on its id.
- *
- * @typedef BotData - An object with the bot tag and avatar url
- * @property tag - The tag of the bot.
- * @property avatarUrl - The url to the bots avatar.
- *
  * @param botId - The discord id of the bot.
  */
 export const getBotData = async (botId: string): Promise<BotDataResponse> => {

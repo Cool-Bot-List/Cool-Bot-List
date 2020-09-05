@@ -6,6 +6,7 @@ import { Vote } from "src/vote/interfaces/vote.interface";
 import { UserType } from "./gql-types/user.type";
 import { User } from "./user.schema";
 import { UserService } from "./user.service";
+import { HttpException } from "@nestjs/common";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -27,7 +28,7 @@ export class UserResolver {
     }
 
     @ResolveField("bot", () => BotType, { nullable: true })
-    public bot(@Parent() user: User, @Args("id") id: string): Promise<Bot> {
+    public bot(@Parent() user: User, @Args("id") id: string): Promise<Bot | HttpException> {
         return this.service.getBot(user, id);
     }
 

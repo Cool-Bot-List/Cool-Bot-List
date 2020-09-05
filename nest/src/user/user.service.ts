@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { User } from "./user.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
@@ -30,8 +30,8 @@ export class UserService {
         return bots;
     }
 
-    public async getBot(user: User, id: string): Promise<Bot> {
-        if (!user.bots.includes(id)) return null;
+    public async getBot(user: User, id: string): Promise<Bot | HttpException> {
+        if (!user.bots.includes(id)) return new HttpException("Doesn't exist on the user's bots.", HttpStatus.NOT_FOUND);
         return await this.Bots.findOne({ id });
     }
 
