@@ -83,7 +83,7 @@ export class Bot extends Document {
     votes: number;
     /**
      * An array of tags that the bot has.
-     * See constants/botTags.ts for more info.
+     * See constants/bot-tags.enum.ts for more info.
      */
     @Prop({ default: [], required: false })
     tags: string[];

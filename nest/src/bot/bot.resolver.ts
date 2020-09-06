@@ -8,6 +8,7 @@ import { HttpException } from "@nestjs/common";
 import { ReviewType } from "src/review/gql-types/review.type";
 import { Review } from "src/review/review.schema";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
+import { BotUpdatable } from "./gql-types/bot-updatable.input";
 
 @Resolver(() => BotType)
 export class BotResolver {
@@ -47,9 +48,13 @@ export class BotResolver {
         return this.service.getReview(bot, mongoId, index);
     }
 
-
     @Mutation(() => BotType)
     public createBot(@Args("botCreatable") data: BotCreatable): Promise<Bot | HttpException> {
         return this.service.create(data);
+    }
+
+    @Mutation(() => BotType)
+    public updateBot(@Args("botUpdatable") data: BotUpdatable): Promise<Bot | HttpException> {
+        return this.service.update(data);
     }
 }

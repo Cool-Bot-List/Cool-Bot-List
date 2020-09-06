@@ -5,11 +5,12 @@ import { EventsGateway } from "src/events/events.gateway";
 import { Review } from "src/review/review.schema";
 import { User } from "../user/user.schema";
 import { Bot } from "./bot.schema";
-import { BOT_TAGS } from "./constants/botTags.enum";
+import { BOT_TAGS } from "./constants/bot-tags.enum";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
 import { BotType } from "./gql-types/bot.type";
 import { getBotData } from "./util/getBotData.util";
 import { getBotInviteLink } from "./util/getBotInviteLink.util";
+import { BotUpdatable } from "./gql-types/bot-updatable.input";
 
 @Injectable()
 export class BotService {
@@ -108,6 +109,39 @@ export class BotService {
         }
         this.events.emitNewBot(newBot);
         return newBot;
+    }
+
+    public async update(data: BotUpdatable, user?: User): Promise<Bot | HttpException> {
+        const { tags } = data;
+        const foundBot = await this.Bots.findOne({ id: data.id });
+        if (!foundBot) return new HttpException("That bot doesn't exist", HttpStatus.NOT_FOUND);
+
+        // if (!foundBot.owners.some((id) => id === user.id))
+        //     return new HttpException("You don't have permission to perform that action.", HttpStatus.BAD_REQUEST);
+
+        if (tags) {
+            if (tags.length > 3) return new HttpException("You cannot have more than 3 tags.", HttpStatus.BAD_REQUEST);
+            for (const t of tags) {
+                if (
+                    t !== BOT_TAGS.MODERATION &&
+                    t !== BOT_TAGS.MUSIC &&
+                    t !== BOT_TAGS.LEVELING &&
+                    t !== BOT_TAGS.FUN &&
+                    t !== BOT_TAGS.UTILITY &&
+                    t !== BOT_TAGS.DASHBOARD &&
+                    t !== BOT_TAGS.CUSTOMIZABLE &&
+                    t !== BOT_TAGS.ECONOMY
+                )
+                    return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
+            }
+            foundBot.tags = tags;
+        }
+
+        await foundBot.updateOne(data, { new: true });
+
+        const updatedBot = await this.Bots.findOne({ id: data.id });
+        this.events.emitBotUpdate(updatedBot);
+        return updatedBot;
     }
 
     private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
