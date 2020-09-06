@@ -1,7 +1,7 @@
-import { getTag } from "./getTag.util";
+import { getTag } from "./get-tag.util";
 import axios from "axios";
-import BotDataResponse from "../interfaces/botDataResponse.interface";
-import { getAvatarUrl } from "./getAvatarUrl.util";
+import BotDataResponse from "../interfaces/bot-data-response.interface";
+import { getAvatarUrl } from "./get-avatar-url.util";
 
 axios.defaults.headers.common["Authorization"] = `Bot ${process.env.BOT_TOKEN}`;
 

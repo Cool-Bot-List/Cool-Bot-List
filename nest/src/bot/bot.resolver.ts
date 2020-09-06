@@ -9,6 +9,7 @@ import { ReviewType } from "src/review/gql-types/review.type";
 import { Review } from "src/review/review.schema";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
 import { BotUpdatable } from "./gql-types/bot-updatable.input";
+import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-resolvable.interface";
 
 @Resolver(() => BotType)
 export class BotResolver {
@@ -62,4 +63,10 @@ export class BotResolver {
     public deleteBot(@Args("id") id: string): Promise<Bot | HttpException> {
         return this.service.delete(id);
     }
+
+    @Mutation(() => BotType)
+    public approveBot(@Args("id") id: string, @Args("method") method: BotApproveMethodResolvable): Promise<Bot | HttpException> {
+        return this.service.approve(id, method);
+    }
+
 }

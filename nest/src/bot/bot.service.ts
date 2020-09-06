@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -8,9 +9,11 @@ import { Bot } from "./bot.schema";
 import { BOT_TAGS } from "./constants/bot-tags.enum";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
 import { BotType } from "./gql-types/bot.type";
-import { getBotData } from "./util/getBotData.util";
-import { getBotInviteLink } from "./util/getBotInviteLink.util";
+import { getBotData } from "./util/get-bot-data.util";
+import { getBotInviteLink } from "./util/get-bot-invite-link.util";
 import { BotUpdatable } from "./gql-types/bot-updatable.input";
+import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-resolvable.interface";
+import { BotApproveMethods } from "./constants/bot-approve-methods.enum";
 
 @Injectable()
 export class BotService {
@@ -25,11 +28,11 @@ export class BotService {
     ) { }
 
     public async getAll(): Promise<Bot[]> {
-        return this.Bots.find();
+        return this.Bots.find({ isApproved: true });
     }
 
     public async get(id: string): Promise<Bot> {
-        return this.Bots.findOne({ id });
+        return this.Bots.findOne({ id, isApproved: true });
     }
 
     public async getOwners(bot: BotType): Promise<User[]> {
@@ -90,7 +93,7 @@ export class BotService {
         if (!inviteLink) inviteLink = getBotInviteLink(id);
         const { tag, avatarUrl } = await getBotData(id);
 
-        const areLinksValid = this.checkLinks({ website: website, supportServer, inviteLink });
+        const areLinksValid = this.checkLinks({ website, supportServer, inviteLink });
         if (!areLinksValid) return new HttpException("One or more links are not valid", HttpStatus.BAD_REQUEST);
 
         const newBot = new this.Bots({
@@ -112,12 +115,15 @@ export class BotService {
     }
 
     public async update(data: BotUpdatable, user?: User): Promise<Bot | HttpException> {
-        const { tags } = data;
+        const { tags, website, supportServer, inviteLink } = data;
         const foundBot = await this.Bots.findOne({ id: data.id });
         if (!foundBot) return new HttpException("That bot doesn't exist", HttpStatus.NOT_FOUND);
 
         // if (!foundBot.owners.some((id) => id === user.id))
         //     return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
+
+        const areLinksValid = this.checkLinks({ website: website, supportServer, inviteLink });
+        if (!areLinksValid) return new HttpException("One or more links are not valid", HttpStatus.BAD_REQUEST);
 
         if (tags) {
             if (tags.length > 3) return new HttpException("You cannot have more than 3 tags.", HttpStatus.BAD_REQUEST);
@@ -165,9 +171,31 @@ export class BotService {
         return foundBot;
     }
 
+    public async approve(id: string, method: BotApproveMethodResolvable): Promise<Bot | HttpException> {
+        if (method !== BotApproveMethods.APPROVE && method !== BotApproveMethods.REJECT)
+            return new HttpException("Invalid method.", HttpStatus.BAD_REQUEST);
+
+        const foundBot = await this.Bots.findOne({ id });
+        if (!foundBot) return new HttpException("That bot doesn't exist in the database!", HttpStatus.NOT_FOUND);
+
+        switch (method) {
+            case BotApproveMethods.APPROVE:
+                foundBot.isApproved = true;
+                await foundBot.save();
+                this.events.emitBotUpdate(foundBot);
+                break;
+
+            case BotApproveMethods.REJECT:
+                foundBot.isApproved = false;
+                await foundBot.deleteOne();
+                this.events.emitBotDelete(foundBot);
+                break;
+        }
+        return foundBot;
+    }
+
     private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
         const validEndings = [".com", ".org", ".net", ".io"];
-        console.log(links);
 
         if (links.inviteLink && !links.inviteLink.startsWith("https://discord")) return false;
         if (links.supportServer && !links.supportServer.startsWith("https://discord")) return false;
@@ -176,7 +204,8 @@ export class BotService {
             if (link) {
                 if (!link.startsWith("https://")) return false;
                 for (const e of validEndings) {
-                    if (link.endsWith(e)) return true;
+                    console.log(link);
+                    if (link.includes(e)) return true;
                     else return false;
                 }
             }
