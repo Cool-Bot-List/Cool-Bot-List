@@ -117,7 +117,7 @@ export class BotService {
         if (!foundBot) return new HttpException("That bot doesn't exist", HttpStatus.NOT_FOUND);
 
         // if (!foundBot.owners.some((id) => id === user.id))
-        //     return new HttpException("You don't have permission to perform that action.", HttpStatus.BAD_REQUEST);
+        //     return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
 
         if (tags) {
             if (tags.length > 3) return new HttpException("You cannot have more than 3 tags.", HttpStatus.BAD_REQUEST);
@@ -144,6 +144,27 @@ export class BotService {
         return updatedBot;
     }
 
+    public async delete(id: string, user?: User): Promise<Bot | HttpException> {
+        const foundBot = await this.Bots.findOne({ id });
+        if (!foundBot) return new HttpException("That bot doesn't exist in the database!", HttpStatus.NOT_FOUND);
+
+        // if (!foundBot.owners.some((id) => id === user.id)) return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
+        const owners = (await this.Users.find()).filter((u) => u.bots.includes(id));
+
+        for (const owner of owners) {
+            const users = await this.Users.findOne({ id: owner.id });
+            users.bots.splice(users.bots.findIndex(e => e === owner.id), 1);
+            try {
+                await users.save();
+                await foundBot.deleteOne();
+            } catch (err) {
+                return new HttpException("Something went wrong and the bot did not delete from the database!", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        this.events.emitBotDelete(foundBot);
+        return foundBot;
+    }
+
     private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
         const validEndings = [".com", ".org", ".net", ".io"];
         console.log(links);
@@ -160,5 +181,6 @@ export class BotService {
                 }
             }
         }
+        return true;
     }
 }

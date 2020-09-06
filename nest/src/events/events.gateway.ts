@@ -17,4 +17,8 @@ export class EventsGateway {
         return this.socket.emit("bot-update", bot);
     }
 
+    public emitBotDelete(bot: Bot): SocketIO.Namespace {
+        return this.socket.emit("bot-delete", bot);
+    }
+
 }

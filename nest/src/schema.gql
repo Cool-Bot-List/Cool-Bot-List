@@ -84,6 +84,7 @@ type Query {
 type Mutation {
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
+  deleteBot(id: String!): BotType!
 }
 
 input BotCreatable {

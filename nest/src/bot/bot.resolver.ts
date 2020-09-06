@@ -57,4 +57,9 @@ export class BotResolver {
     public updateBot(@Args("botUpdatable") data: BotUpdatable): Promise<Bot | HttpException> {
         return this.service.update(data);
     }
+
+    @Mutation(() => BotType)
+    public deleteBot(@Args("id") id: string): Promise<Bot | HttpException> {
+        return this.service.delete(id);
+    }
 }
