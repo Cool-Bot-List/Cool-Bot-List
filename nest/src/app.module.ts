@@ -9,6 +9,7 @@ import { UserModule } from "./user/user.module";
     imports: [
         GraphQLModule.forRoot({
             autoSchemaFile: "src/schema.gql",
+            path: "/api/graphql",
         }),
         MongooseModule.forRoot(process.env.MONGO_URI),
         BotModule,

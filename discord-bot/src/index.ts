@@ -1,16 +1,17 @@
-require("dotenv").config();
-const { Client, MessageEmbed } = require("discord.js");
-const io = require("socket.io-client");
+import "dotenv/config";
+import * as io from "socket.io-client";
+import { Client, MessageEmbed, TextChannel } from "discord.js";
+import request, { gql } from "graphql-request";
+
 const client = new Client();
-const axios = require("axios").default;
-require("dotenv").config();
 client.login(process.env.BOT_TOKEN);
 
 const socket = io("http://localhost:5000");
+const BASE_URL = "http://localhost:5000/api/graphql";
 
 client.on("ready", async () => {
     console.log("Discord Bot has logged in.");
-    const logChannel = await client.channels.cache.get("735286894421606400");
+    const logChannel = <TextChannel>client.channels.cache.get("735286894421606400");
 
     socket.on("new-user", (data) => {
         console.log("on new-user triggered");
@@ -58,8 +59,17 @@ client.on("ready", async () => {
     });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
-        const user = r.data;
+        const query = gql`
+        query($id: String!) {
+            user(id: $id) {
+                tag,
+                avatarUrl
+             }
+        }
+        `;
+        const r = await request(BASE_URL, query, { id: owners[0] });
+        const user = r.user;
+        console.log(r);
         const embed = new MessageEmbed().setTitle("A New Bot Was Made").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -76,8 +86,15 @@ client.on("ready", async () => {
     });
     socket.on("bot-update", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
-        const user = r.data;
+        const query = gql`
+        query($id: String!){
+            user(id: $id) {
+                tag,
+                avatarUrl
+            }
+        }`;
+        const r = await request(BASE_URL, query, { id: owners[0] });
+        const user = r.user;
         const embed = new MessageEmbed().setTitle("A Bot Was Updated").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -94,8 +111,16 @@ client.on("ready", async () => {
     });
     socket.on("bot-delete", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
-        const r = await axios.get(`http://localhost:5000/api/users/${owners[0]}`);
-        const user = r.data;
+        const query = gql`
+       query($id: String!) {
+            user(id: $id) {
+                tag,
+                avatarUrl
+            }
+        }
+        `;
+        const r = await request(BASE_URL, query, { id: owners[0] });
+        const user = r.user;
         const embed = new MessageEmbed().setTitle("A Bot Was Deleted").setAuthor(`${user.tag}(first element is owners array)`, user.avatarUrl);
         let embedDescription = "";
         if (id) embedDescription += `id: ${id}\n\n`;
@@ -153,8 +178,16 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("owner-reply-delete", async (review) => {
-        const r = axios.get(`http://localhost:5000/api/users/${review.ownerReply.userId}`);
-        const user = (await r).data;
+        const query = gql`
+        query($id: String!) {
+            user(id: $id) {
+                tag,
+                avatarUrl
+              }
+        }
+        `;
+        const r = await request(BASE_URL, query, { id: review.ownerReply.userId });
+        const user = r.user;
         const embed = new MessageEmbed()
             .setTitle("An owner-reply was deleted")
             .setAuthor(user.tag, user.avatarUrl)
@@ -163,8 +196,16 @@ client.on("ready", async () => {
     });
     socket.on("new-review", async (data) => {
         const { userId, review, rating, botId } = data;
-        const r = await axios.get(`http://localhost:5000/api/users/${userId}`);
-        const user = r.data;
+        const query = gql` 
+            query($id: String!) {
+                user(id: $userId) {
+                tag,
+                avatarUrl
+            }
+        }
+        `;
+        const r = await request(BASE_URL, query, { userId });
+        const user = r.user;
         const embed = new MessageEmbed().setTitle("A new review was made").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
@@ -177,8 +218,17 @@ client.on("ready", async () => {
     });
     socket.on("review-delete", async (data) => {
         const { userId, review, rating, botId } = data;
-        const r = await axios.get(`http://localhost:5000/api/users/${userId}`);
-        const user = r.data;
+        const query = gql` 
+       query($id: String!) {
+            user(id: $userId) {
+                tag,
+                avatarUrl
+            }
+        }
+      
+        `;
+        const r = await request(BASE_URL, query, { userId });
+        const user = r.user;
         const embed = new MessageEmbed().setTitle("A review was deleted").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
         let embedDescription = "";
         if (userId) embedDescription += `userId: ${userId}\n\n`;
