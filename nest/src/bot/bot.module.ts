@@ -7,6 +7,7 @@ import { BotSchema, Bot } from "./bot.schema";
 import { User, UserSchema } from "src/user/user.schema";
 import { Review, ReviewSchema } from "src/review/review.schema";
 import { EventsModule } from "src/events/events.module";
+import { NotificationModule } from "src/notification/notification.module";
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { EventsModule } from "src/events/events.module";
         ]),
         ReviewModule,
         EventsModule,
+        NotificationModule,
     ],
     providers: [BotResolver, BotService],
 })

@@ -14,6 +14,7 @@ import { getBotInviteLink } from "./util/get-bot-invite-link.util";
 import { BotUpdatable } from "./gql-types/bot-updatable.input";
 import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-resolvable.interface";
 import { BotApproveMethods } from "./constants/bot-approve-methods.enum";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class BotService {
@@ -24,7 +25,8 @@ export class BotService {
         private Users: Model<User>,
         @InjectModel(Review.name)
         private Reviews: Model<Review>,
-        private events: EventsGateway
+        private events: EventsGateway,
+        private notificationService: NotificationService
     ) { }
 
     public async getAll(): Promise<Bot[]> {
@@ -182,12 +184,14 @@ export class BotService {
             case BotApproveMethods.APPROVE:
                 foundBot.isApproved = true;
                 await foundBot.save();
+                this.notificationService.handleBotApprove(foundBot);
                 this.events.emitBotUpdate(foundBot);
                 break;
 
             case BotApproveMethods.REJECT:
                 foundBot.isApproved = false;
                 await foundBot.deleteOne();
+                this.notificationService.handleBotReject(foundBot);
                 this.events.emitBotDelete(foundBot);
                 break;
         }
