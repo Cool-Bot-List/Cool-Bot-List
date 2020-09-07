@@ -47,8 +47,8 @@ export class EventsGateway {
         return this.socket.emit("review-like", review, user, userToPushTo, like);
     }
 
-    public emitReviewDislike(review: Review, user: User, userToPushTo: User, like: boolean): SocketIO.Namespace {
-        return this.socket.emit("review-dislike", review, user, userToPushTo, like);
+    public emitReviewDislike(review: Review, user: User, userToPushTo: User, dislike: boolean): SocketIO.Namespace {
+        return this.socket.emit("review-dislike", review, user, userToPushTo, dislike);
     }
 
     public emitReviewDelete(review: Review): SocketIO.Namespace {
@@ -65,5 +65,9 @@ export class EventsGateway {
 
     public emitOwnerReplyLike(review: Review, user: User, like: boolean): SocketIO.Namespace {
         return this.socket.emit("owner-reply-like", review, user, like);
+    }
+
+    public emitOwnerReplyDislike(review: Review, user: User, dislike: boolean): SocketIO.Namespace {
+        return this.socket.emit("owner-reply-dislike", review, user, dislike);
     }
 }

@@ -42,4 +42,9 @@ export class OwnerReplyResolver {
         return this.service.like(reviewId, userId);
     }
 
+    @Mutation(() => OwnerReplyType)
+    public dislikeOwnerReply(@Args("reviewId") reviewId: string, @Args("userId") userId: string): Promise<OwnerReply | HttpException> {
+        return this.service.dislike(reviewId, userId);
+    }
+
 }

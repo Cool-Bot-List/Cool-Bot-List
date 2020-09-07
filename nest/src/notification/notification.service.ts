@@ -80,4 +80,11 @@ export class NotificationService {
         this.events.emitNewNotification(u);
         return u;
     }
+
+    public async handleOwnerReplyDislike(owner: User, disliker: User): Promise<User> {
+        owner.notifications.push({ message: `${disliker.tag} disliked your reply! 👎`, read: false });
+        const u = await this.rmDuplicates(owner);
+        this.events.emitNewNotification(u);
+        return u;
+    }
 }
