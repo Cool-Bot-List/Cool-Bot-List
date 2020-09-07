@@ -58,4 +58,8 @@ export class EventsGateway {
     public emitNewOwnerReply(review: Review, owner: User, userToPushTo: User): SocketIO.Namespace {
         return this.socket.emit("new-owner-reply", review, owner, userToPushTo);
     }
+
+    public emitOwnerReplyUpdate(review: Review, owner: User): SocketIO.Namespace {
+        return this.socket.emit("owner-reply-update", review, owner);
+    }
 }

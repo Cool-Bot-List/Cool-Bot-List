@@ -156,21 +156,27 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("new-owner-reply", (review, ownerSchema, userSchema) => {
-        // eslint-disable-next-line max-len
         const embed = new MessageEmbed()
             .setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl)
             .setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`)
             .setThumbnail(userSchema.avatarUrl);
         logChannel.send(embed);
     });
-    socket.on("owner-like", (review, user, liked) => {
+    socket.on("owner-reply-update", (review, owner) => {
+        const embed = new MessageEmbed()
+            .setAuthor("An owner-reply was updated")
+            .setDescription(`Review - ${review.review}\nReply - ${review.ownerReply.review}`)
+            .setThumbnail(owner.avatarUrl);
+        logChannel.send(embed);
+    });
+    socket.on("owner-reply-like", (review, user, liked) => {
         const embed = new MessageEmbed()
             .setAuthor(`${user.tag} ${liked ? "liked" : "unliked"} "Owners" reply!`, user.avatarUrl)
             .setThumbnail("https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png") // place holder
             .setDescription(`Total Likes - ${review.ownerReply.likes.length}`);
         logChannel.send(embed);
     });
-    socket.on("owner-dislike", (review, user, disliked) => {
+    socket.on("owner-reply-dislike", (review, user, disliked) => {
         const embed = new MessageEmbed()
             .setAuthor(`${user.tag} ${disliked ? "disliked" : "un-disliked"} "Owners" reply!`, user.avatarUrl)
             .setThumbnail("https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png") // place holder

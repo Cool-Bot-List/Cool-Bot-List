@@ -19,4 +19,8 @@ export interface OwnerReply {
      * The date this ownerReply was made.
      */
     date: Date;
+    /**
+     * If this ownerReply was edited then it will have a edited property of the date it was edited on.
+     */
+    edited: Date;
 }

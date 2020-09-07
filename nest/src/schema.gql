@@ -36,6 +36,7 @@ type OwnerReplyType {
   likes: [UserType!]!
   dislikes: [UserType!]!
   date: DateTime
+  edited: DateTime
 }
 
 type ReviewType {
@@ -90,6 +91,7 @@ type Mutation {
   dislikeReview(userId: String!, mongoId: String!): ReviewType!
   deleteReview(mongoId: String!): ReviewType!
   createOwnerReply(ownerReplyCreatable: OwnerReplyCreatable!): OwnerReplyType!
+  updateOwnerReply(ownerReply: String!, reviewId: String!): OwnerReplyType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!

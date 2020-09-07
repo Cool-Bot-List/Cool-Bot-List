@@ -31,4 +31,10 @@ export class OwnerReplyResolver {
     public createOwnerReply(@Args("ownerReplyCreatable") data: OwnerReplyCreatable): Promise<OwnerReply | HttpException> {
         return this.service.create(data);
     }
+
+    @Mutation(() => OwnerReplyType)
+    public updateOwnerReply(@Args("reviewId") reviewId: string, @Args("ownerReply") ownerReply: string): Promise<OwnerReply | HttpException> {
+        return this.service.update(reviewId, ownerReply);
+    }
+
 }

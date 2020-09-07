@@ -28,4 +28,6 @@ export class OwnerReplyType {
      */
     @Field({ nullable: true })
     date: Date;
+    @Field({ nullable: true })
+    edited: Date;
 }

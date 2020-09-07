@@ -28,6 +28,7 @@ export class Review extends Document {
         likes: { type: Array, default: [], required: false },
         dislikes: { type: Array, default: [], required: false },
         date: { type: Date, default: "", required: false },
+        edited: { type: Date, required: false },
     })
     ownerReply: OwnerReply;
     /**

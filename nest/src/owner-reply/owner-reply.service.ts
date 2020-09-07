@@ -78,5 +78,15 @@ export class OwnerReplyService {
         return foundReview.ownerReply;
     }
 
+    public async update(reviewId: string, newReview: string): Promise<OwnerReply | HttpException> {
+        const review = await this.Reviews.findById(reviewId);
+        if (!review) return new HttpException("A review was not found.", HttpStatus.NOT_FOUND);
+
+        review.ownerReply.review = newReview;
+        review.ownerReply.edited = new Date();
+        this.events.emitOwnerReplyUpdate(review, (await this.Users.findOne({ id: review.ownerReply.userId })));
+        return await review.save();
+    }
+
 
 }
