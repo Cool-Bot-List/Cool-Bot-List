@@ -22,6 +22,10 @@ export class UserService {
         return this.Users.findOne({ id });
     }
 
+    public getMe(user: User): User | HttpException {
+        return user || new HttpException("A user is not logged in.", HttpStatus.NOT_FOUND);
+    }
+
     public async getBots(user: User): Promise<Bot[]> {
         const bots: Bot[] = [];
         for (const id of user.bots) {

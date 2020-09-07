@@ -1,4 +1,4 @@
-import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Parent, Query, ResolveField, Resolver, Context } from "@nestjs/graphql";
 import { Bot } from "src/bot/bot.schema";
 import { BotType } from "src/bot/gql-types/bot.type";
 import { VoteType } from "src/vote/gql-types/vote.type";
@@ -20,6 +20,11 @@ export class UserResolver {
     @Query(() => UserType, { nullable: true })
     public user(@Args("id") id: string): Promise<User> {
         return this.service.get(id);
+    }
+
+    @Query(() => UserType)
+    public me(@Context("req") { user }: { user: User }): User | HttpException {
+        return this.service.getMe(user);
     }
 
     @ResolveField("bots", () => [BotType])

@@ -79,6 +79,7 @@ type Query {
   bot(id: String!): BotType
   users: [UserType!]
   user(id: String!): UserType
+  me: UserType!
 }
 
 type Mutation {
