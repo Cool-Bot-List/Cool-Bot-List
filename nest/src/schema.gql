@@ -83,10 +83,18 @@ type Query {
 }
 
 type Mutation {
+  createReview(reviewCreatable: ReviewCreatable!): ReviewType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
   approveBot(method: String!, id: String!): BotType!
+}
+
+input ReviewCreatable {
+  botId: String!
+  userId: String!
+  review: String!
+  rating: Float!
 }
 
 input BotCreatable {

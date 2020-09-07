@@ -189,14 +189,14 @@ export class BotService {
             case BotApproveMethods.APPROVE:
                 foundBot.isApproved = true;
                 await foundBot.save();
-                this.notificationService.handleBotApprove(foundBot);
+                await this.notificationService.handleBotApprove(foundBot);
                 this.events.emitBotUpdate(foundBot);
                 break;
 
             case BotApproveMethods.REJECT:
                 foundBot.isApproved = false;
                 await foundBot.deleteOne();
-                this.notificationService.handleBotReject(foundBot);
+                await this.notificationService.handleBotReject(foundBot);
                 this.events.emitBotDelete(foundBot);
                 break;
         }

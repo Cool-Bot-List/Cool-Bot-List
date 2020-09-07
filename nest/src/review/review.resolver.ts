@@ -1,4 +1,4 @@
-import { Resolver, ResolveField, Parent } from "@nestjs/graphql";
+import { Resolver, ResolveField, Parent, Mutation, Args } from "@nestjs/graphql";
 import { ReviewService } from "./review.service";
 import { BotType } from "src/bot/gql-types/bot.type";
 import { Bot } from "src/bot/bot.schema";
@@ -8,6 +8,8 @@ import { UserType } from "src/user/gql-types/user.type";
 import { User } from "src/user/user.schema";
 import { OwnerReplyType } from "src/owner-reply/gql-types/owner-reply.type";
 import { OwnerReply } from "src/owner-reply/interfaces/ownerReply.interface";
+import { ReviewCreatable } from "./gql-types/review-creatable.input";
+import { HttpException } from "@nestjs/common";
 
 @Resolver(() => ReviewType)
 export class ReviewResolver {
@@ -37,5 +39,10 @@ export class ReviewResolver {
     @ResolveField("ownerReply", () => OwnerReplyType, { nullable: true })
     public ownerReply(@Parent() review: Review): Promise<OwnerReply> {
         return this.service.getOwnerReply(review);
+    }
+
+    @Mutation(() => ReviewType)
+    public createReview(@Args("reviewCreatable") data: ReviewCreatable): Promise<ReviewCreatable | HttpException> {
+        return this.service.create(data);
     }
 }

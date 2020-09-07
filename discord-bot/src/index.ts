@@ -197,10 +197,10 @@ client.on("ready", async () => {
     socket.on("new-review", async (data) => {
         const { userId, review, rating, botId } = data;
         const query = gql` 
-            query($id: String!) {
+            query($userId: String!) {
                 user(id: $userId) {
-                tag,
-                avatarUrl
+                    tag,
+                    avatarUrl
             }
         }
         `;
@@ -219,7 +219,7 @@ client.on("ready", async () => {
     socket.on("review-delete", async (data) => {
         const { userId, review, rating, botId } = data;
         const query = gql` 
-       query($id: String!) {
+       query($userId: String!) {
             user(id: $userId) {
                 tag,
                 avatarUrl

@@ -2,6 +2,7 @@ import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server } from "socket.io";
 import { Bot } from "src/bot/bot.schema";
 import { User } from "src/user/user.schema";
+import { Review } from "src/review/review.schema";
 
 @WebSocketGateway()
 export class EventsGateway {
@@ -34,4 +35,7 @@ export class EventsGateway {
         return this.socket.emit("user-update", user);
     }
 
+    public emitNewReview(review: Review): SocketIO.Namespace {
+        return this.socket.emit("new-review", review);
+    }
 }
