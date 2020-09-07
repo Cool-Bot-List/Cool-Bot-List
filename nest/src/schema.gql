@@ -88,6 +88,7 @@ type Mutation {
   updateReview(review: String!, mongoId: String!): ReviewType!
   likeReview(userId: String!, mongoId: String!): ReviewType!
   dislikeReview(userId: String!, mongoId: String!): ReviewType!
+  deleteReview(mongoId: String!): ReviewType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!

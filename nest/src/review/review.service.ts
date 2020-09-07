@@ -175,4 +175,43 @@ export class ReviewService {
         this.events.emitReviewDislike(foundReview, foundUser, userToPushTo, dislike);
         return foundReview;
     }
+
+    public async delete(reviewId: string): Promise<Review | HttpException> {
+        const foundReview = await this.Reviews.findById(reviewId);
+        if (!foundReview) return new HttpException("The review doesn't exist.", HttpStatus.NOT_FOUND);
+        const { botId } = foundReview;
+
+        const foundBot = await this.Bots.findOne({ id: botId });
+        if (!foundBot) return new HttpException("That bot doesn't exist in the database.", HttpStatus.NOT_FOUND);
+        const { reviews } = foundBot;
+        reviews.splice(
+            reviews.findIndex((element) => element === reviewId),
+            1
+        );
+
+        try {
+            await foundBot.save();
+            await foundReview.deleteOne();
+            const ratings = [];
+            const updatedBot = await this.Bots.findOne({ id: botId });
+            const { reviews } = updatedBot;
+
+            for (const review of reviews) {
+                const foundReview = await this.Reviews.findById(review);
+                ratings.push(foundReview.rating);
+            }
+
+            let averageRating;
+            if (ratings.length === 1) averageRating = ratings[0];
+            else if (ratings.length === 0) averageRating = null;
+            else averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+            foundBot.averageRating = averageRating;
+            await foundBot.save();
+        } catch (err) {
+            console.log(err);
+            return new HttpException("Something went wrong and the review did not delete from the db.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        this.events.emitReviewDelete(foundReview);
+        return foundReview;
+    }
 }

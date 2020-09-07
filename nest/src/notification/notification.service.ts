@@ -14,7 +14,8 @@ export class NotificationService {
     ) { }
 
     private async rmDuplicates(user: User): Promise<User> {
-        user.notifications = [...new Set(user.notifications)];
+        console.log(user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i));
+        user.notifications = user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i);
         return await user.save();
     }
 
@@ -22,8 +23,9 @@ export class NotificationService {
         for (const id of bot.owners) {
             const user = await this.Users.findOne({ id });
             user.notifications.push({ message: `Your bot, ${bot.tag}, was approved. 🤖`, read: false });
-            this.events.emitNewNotification(user);
-            return this.rmDuplicates(user);
+            const u = await this.rmDuplicates(user);
+            this.events.emitNewNotification(u);
+            return u;
         }
     }
 
@@ -31,8 +33,9 @@ export class NotificationService {
         for (const id of bot.owners) {
             const user = await this.Users.findOne({ id });
             user.notifications.push({ message: `Your bot, ${bot.tag}, was rejected. 😢`, read: false });
-            this.events.emitNewNotification(user);
-            return this.rmDuplicates(user);
+            const u = await this.rmDuplicates(user);
+            this.events.emitNewNotification(u);
+            return u;
         }
     }
 
@@ -40,9 +43,11 @@ export class NotificationService {
         for (const owner of bot.owners) {
             const ownerObject = await this.Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars! ⭐`, read: false });
-            this.events.emitNewNotification(ownerObject);
+
             try {
-                return await this.rmDuplicates(ownerObject);
+                const u = await this.rmDuplicates(ownerObject);
+                this.events.emitNewNotification(u);
+                return u;
             } catch (err) {
                 return new HttpException("Something went wrong and the owners were not notified of the reviews.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -51,13 +56,15 @@ export class NotificationService {
 
     public async handleReviewLike(reviewOwner: User, liker: User): Promise<User | HttpException> {
         reviewOwner.notifications.push({ message: `${liker.tag} liked your review! 👍`, read: false });
-        this.events.emitNewNotification(reviewOwner);
-        return await this.rmDuplicates(reviewOwner);
+        const u = await this.rmDuplicates(reviewOwner);
+        this.events.emitNewNotification(u);
+        return u;
     }
 
     public async handleReviewDislike(reviewOwner: User, disliker: User): Promise<User | HttpException> {
         reviewOwner.notifications.push({ message: `${disliker.tag} disliked your review 👎.`, read: false });
-        this.events.emitNewNotification(reviewOwner);
-        return await this.rmDuplicates(reviewOwner);
+        const u = await this.rmDuplicates(reviewOwner);
+        this.events.emitNewNotification(u);
+        return u;
     }
 }

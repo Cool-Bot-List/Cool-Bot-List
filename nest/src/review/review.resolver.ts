@@ -60,4 +60,9 @@ export class ReviewResolver {
     public dislikeReview(@Args("mongoId") mongoId: string, @Args("userId") userId: string): Promise<Review | HttpException> {
         return this.service.dislike(mongoId, userId);
     }
+
+    @Mutation(() => ReviewType)
+    public deleteReview(@Args("mongoId") mongoId: string): Promise<Review | HttpException> {
+        return this.service.delete(mongoId);
+    }
 }
