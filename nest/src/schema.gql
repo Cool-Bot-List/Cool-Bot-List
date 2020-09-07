@@ -84,6 +84,7 @@ type Query {
 
 type Mutation {
   createReview(reviewCreatable: ReviewCreatable!): ReviewType!
+  updateReview(review: String!, mongoId: String!): ReviewType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!

@@ -51,7 +51,7 @@ export class ReviewService {
         return review.ownerReply;
     }
 
-    public async create(data: ReviewCreatable): Promise<ReviewCreatable | HttpException> {
+    public async create(data: ReviewCreatable): Promise<Review | HttpException> {
         const { botId, userId, review, rating } = data;
 
         if (rating > 5) return new HttpException("You can't have a rating over 5 stars!", HttpStatus.BAD_REQUEST);
@@ -93,5 +93,14 @@ export class ReviewService {
         }
         this.events.emitNewReview(newReview);
         return newReview;
+    }
+
+    public async update(mongoId: string, newReview: string): Promise<Review | HttpException> {
+        const review = await this.Reviews.findById(mongoId);
+        if (!review) return new HttpException("A review was not found.", HttpStatus.NOT_FOUND);
+
+        review.review = newReview;
+        this.events.emitReviewUpdate(review);
+        return await review.save();
     }
 }

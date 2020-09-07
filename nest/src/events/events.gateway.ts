@@ -38,4 +38,8 @@ export class EventsGateway {
     public emitNewReview(review: Review): SocketIO.Namespace {
         return this.socket.emit("new-review", review);
     }
+
+    public emitReviewUpdate(review: Review): SocketIO.Namespace {
+        return this.socket.emit("review-update", review);
+    }
 }

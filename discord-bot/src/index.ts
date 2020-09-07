@@ -216,6 +216,28 @@ client.on("ready", async () => {
         logChannel.send(embed);
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
     });
+    socket.on("review-update", async (data) => {
+        const { userId, review, rating, botId } = data;
+        const query = gql` 
+            query($userId: String!) {
+                user(id: $userId) {
+                    tag,
+                    avatarUrl
+            }
+        }
+        `;
+        const r = await request(BASE_URL, query, { userId });
+        const user = r.user;
+        const embed = new MessageEmbed().setTitle("A review was updated.").setAuthor(`${user.tag}(review author)`, user.avatarUrl);
+        let embedDescription = "";
+        if (userId) embedDescription += `userId: ${userId}\n\n`;
+        if (botId) embedDescription += `botId: ${botId}\n\n`;
+        if (review) embedDescription += `review: ${review}\n\n`;
+        if (rating) embedDescription += `rating: ${rating}\n\n`;
+        embed.setDescription(embedDescription);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``, { split: true });
+    });
     socket.on("review-delete", async (data) => {
         const { userId, review, rating, botId } = data;
         const query = gql` 

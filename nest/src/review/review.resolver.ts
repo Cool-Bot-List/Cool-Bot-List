@@ -42,7 +42,12 @@ export class ReviewResolver {
     }
 
     @Mutation(() => ReviewType)
-    public createReview(@Args("reviewCreatable") data: ReviewCreatable): Promise<ReviewCreatable | HttpException> {
+    public createReview(@Args("reviewCreatable") data: ReviewCreatable): Promise<Review | HttpException> {
         return this.service.create(data);
+    }
+
+    @Mutation(() => ReviewType)
+    public updateReview(@Args("mongoId") mongoId: string, @Args("review") review: string): Promise<Review | HttpException> {
+        return this.service.update(mongoId, review);
     }
 }
