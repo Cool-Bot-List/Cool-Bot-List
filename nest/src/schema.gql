@@ -77,6 +77,8 @@ type BotType {
 }
 
 type Query {
+  reviews: [ReviewType!]!
+  review(mongoId: String!): ReviewType!
   bots: [BotType!]
   bot(id: String!): BotType
   users: [UserType!]

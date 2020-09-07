@@ -22,6 +22,14 @@ export class ReviewService {
         private events: EventsGateway
     ) { }
 
+    public async getAll(): Promise<Review[] | HttpException> {
+        return this.Reviews.find() || new HttpException("There are no reviews in the database.", HttpStatus.NOT_FOUND);
+    }
+
+    public async get(id: string): Promise<Review | HttpException> {
+        return this.Reviews.findById(id) || new HttpException("A review was not found.", HttpStatus.NOT_FOUND);
+    }
+
     public async getBot(review: Review): Promise<Bot> {
         return this.Bots.findOne({ id: review.botId });
     }

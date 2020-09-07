@@ -1,5 +1,5 @@
 import { HttpException } from "@nestjs/common";
-import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
+import { Args, Mutation, Parent, ResolveField, Resolver, Query } from "@nestjs/graphql";
 import { Bot } from "src/bot/bot.schema";
 import { BotType } from "src/bot/gql-types/bot.type";
 import { OwnerReplyType } from "src/owner-reply/gql-types/owner-reply.type";
@@ -15,6 +15,16 @@ import { ReviewService } from "./review.service";
 export class ReviewResolver {
 
     constructor(private service: ReviewService) { }
+
+    @Query(() => [ReviewType])
+    public reviews(): Promise<Review[] | HttpException> {
+        return this.service.getAll();
+    }
+
+    @Query(() => ReviewType)
+    public review(@Args("mongoId") mongoId: string): Promise<Review | HttpException> {
+        return this.service.get(mongoId);
+    }
 
     @ResolveField("bot", () => BotType)
     public bot(@Parent() review: Review): Promise<Bot> {
