@@ -26,4 +26,12 @@ export class EventsGateway {
         return this.socket.emit("new-notification", user);
     }
 
+    public emitNewUser(user: User): SocketIO.Namespace {
+        return this.socket.emit("new-user", user);
+    }
+
+    public emitUserUpdate(user: User): SocketIO.Namespace {
+        return this.socket.emit("user-update", user);
+    }
+
 }

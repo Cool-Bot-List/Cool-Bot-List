@@ -16,7 +16,7 @@ export class NotificationService {
     public async handleBotApprove(bot: Bot): Promise<User> {
         for (const id of bot.owners) {
             const user = await this.Users.findOne({ id });
-            user.notifications.push({ message: `Your bot ${bot.tag} was approved 🤖.`, read: false });
+            user.notifications.push({ message: `Your bot, ${bot.tag}, was approved 🤖.`, read: false });
             this.events.emitNewNotification(user);
             return await user.save();
         }
@@ -25,7 +25,7 @@ export class NotificationService {
     public async handleBotReject(bot: Bot): Promise<User> {
         for (const id of bot.owners) {
             const user = await this.Users.findOne({ id });
-            user.notifications.push({ message: `Your bot ${bot.tag} was rejected 😢.`, read: false });
+            user.notifications.push({ message: `Your bot, ${bot.tag}, was rejected 😢.`, read: false });
             this.events.emitNewNotification(user);
             return await user.save();
         }

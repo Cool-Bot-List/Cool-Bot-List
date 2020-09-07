@@ -1,4 +1,4 @@
-import { Resolver, Query, Args, ResolveField, Parent, Mutation } from "@nestjs/graphql";
+import { Resolver, Query, Args, ResolveField, Parent, Mutation, Context } from "@nestjs/graphql";
 import { BotService } from "./bot.service";
 import { BotType } from "./gql-types/bot.type";
 import { Bot } from "./bot.schema";
@@ -55,13 +55,14 @@ export class BotResolver {
     }
 
     @Mutation(() => BotType)
-    public updateBot(@Args("botUpdatable") data: BotUpdatable): Promise<Bot | HttpException> {
-        return this.service.update(data);
+    public updateBot(@Args("botUpdatable") data: BotUpdatable, @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
+        console.log("mutation", user);
+        return this.service.update(data, user);
     }
 
     @Mutation(() => BotType)
-    public deleteBot(@Args("id") id: string): Promise<Bot | HttpException> {
-        return this.service.delete(id);
+    public deleteBot(@Args("id") id: string, @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
+        return this.service.delete(id, user);
     }
 
     @Mutation(() => BotType)
