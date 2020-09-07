@@ -54,4 +54,8 @@ export class EventsGateway {
     public emitReviewDelete(review: Review): SocketIO.Namespace {
         return this.socket.emit("review-delete", review);
     }
+
+    public emitNewOwnerReply(review: Review, owner: User, userToPushTo: User): SocketIO.Namespace {
+        return this.socket.emit("new-owner-reply", review, owner, userToPushTo);
+    }
 }

@@ -155,7 +155,7 @@ client.on("ready", async () => {
             .setDescription(`**Total Votes -** ${bot.votes}`);
         logChannel.send(embed);
     });
-    socket.on("owner-reply", (review, ownerSchema, userSchema) => {
+    socket.on("new-owner-reply", (review, ownerSchema, userSchema) => {
         // eslint-disable-next-line max-len
         const embed = new MessageEmbed()
             .setAuthor(`${ownerSchema.tag} replied to ${userSchema.tag}'s review!`, ownerSchema.avatarUrl)

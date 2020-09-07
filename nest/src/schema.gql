@@ -89,6 +89,7 @@ type Mutation {
   likeReview(userId: String!, mongoId: String!): ReviewType!
   dislikeReview(userId: String!, mongoId: String!): ReviewType!
   deleteReview(mongoId: String!): ReviewType!
+  createOwnerReply(ownerReplyCreatable: OwnerReplyCreatable!): OwnerReplyType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
@@ -100,6 +101,12 @@ input ReviewCreatable {
   userId: String!
   review: String!
   rating: Float!
+}
+
+input OwnerReplyCreatable {
+  ownerId: String!
+  reviewId: String!
+  review: String!
 }
 
 input BotCreatable {

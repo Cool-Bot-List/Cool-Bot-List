@@ -14,7 +14,6 @@ export class NotificationService {
     ) { }
 
     private async rmDuplicates(user: User): Promise<User> {
-        console.log(user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i));
         user.notifications = user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i);
         return await user.save();
     }
@@ -54,15 +53,22 @@ export class NotificationService {
         }
     }
 
-    public async handleReviewLike(reviewOwner: User, liker: User): Promise<User | HttpException> {
+    public async handleReviewLike(reviewOwner: User, liker: User): Promise<User> {
         reviewOwner.notifications.push({ message: `${liker.tag} liked your review! 👍`, read: false });
         const u = await this.rmDuplicates(reviewOwner);
         this.events.emitNewNotification(u);
         return u;
     }
 
-    public async handleReviewDislike(reviewOwner: User, disliker: User): Promise<User | HttpException> {
+    public async handleReviewDislike(reviewOwner: User, disliker: User): Promise<User> {
         reviewOwner.notifications.push({ message: `${disliker.tag} disliked your review 👎.`, read: false });
+        const u = await this.rmDuplicates(reviewOwner);
+        this.events.emitNewNotification(u);
+        return u;
+    }
+
+    public async handleOwnerReplyCreation(reviewOwner: User, botOwner: User): Promise<User> {
+        reviewOwner.notifications.push({ message: `${botOwner.tag} has replied to your review!`, read: false });
         const u = await this.rmDuplicates(reviewOwner);
         this.events.emitNewNotification(u);
         return u;

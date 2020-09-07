@@ -162,18 +162,26 @@ export class BotService {
 
         if (!foundBot.owners.some((id) => id === user.id))
             return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
-        const owners = (await this.Users.find()).filter((u) => u.bots.includes(id));
 
-        for (const owner of owners) {
-            const users = await this.Users.findOne({ id: owner.id });
-            users.bots.splice(users.bots.findIndex(e => e === owner.id), 1);
-            try {
-                await users.save();
-                await foundBot.deleteOne();
-            } catch (err) {
-                return new HttpException("Something went wrong and the bot did not delete from the database!", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        for (const id of foundBot.owners) {
+            let users: User[];
+            const user = await this.Users.findOne({ id });
+            users.push(user);
+            user.bots.splice(user.bots.findIndex(e => e === id), 1);
+            await user.save();
         }
+
+        for (const id of foundBot.reviews) {
+            const review = await this.Reviews.findById(id);
+            await review.deleteOne();
+        }
+
+        try {
+            await foundBot.deleteOne();
+        } catch (err) {
+            return new HttpException("Something went wrong and the bot did not delete from the database!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
         this.events.emitBotDelete(foundBot);
         return foundBot;
     }
