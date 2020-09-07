@@ -49,4 +49,10 @@ export class NotificationService {
         this.events.emitNewNotification(reviewOwner);
         return await reviewOwner.save();
     }
+
+    public async handleReviewDislike(reviewOwner: User, disliker: User): Promise<User | HttpException> {
+        reviewOwner.notifications.push({ message: `${disliker.tag} disliked your review 👎.`, read: false });
+        this.events.emitNewNotification(reviewOwner);
+        return await reviewOwner.save();
+    }
 }

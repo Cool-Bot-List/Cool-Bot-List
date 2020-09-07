@@ -55,4 +55,9 @@ export class ReviewResolver {
     public likeReview(@Args("mongoId") mongoId: string, @Args("userId") userId: string): Promise<Review | HttpException> {
         return this.service.like(mongoId, userId);
     }
+
+    @Mutation(() => ReviewType)
+    public dislikeReview(@Args("mongoId") mongoId: string, @Args("userId") userId: string): Promise<Review | HttpException> {
+        return this.service.dislike(mongoId, userId);
+    }
 }

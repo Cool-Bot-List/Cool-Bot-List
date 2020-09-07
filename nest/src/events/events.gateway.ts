@@ -46,4 +46,8 @@ export class EventsGateway {
     public emitReviewLike(review: Review, user: User, userToPushTo: User, like: boolean): SocketIO.Namespace {
         return this.socket.emit("review-like", review, user, userToPushTo, like);
     }
+
+    public emitReviewDislike(review: Review, user: User, userToPushTo: User, like: boolean): SocketIO.Namespace {
+        return this.socket.emit("review-dislike", review, user, userToPushTo, like);
+    }
 }

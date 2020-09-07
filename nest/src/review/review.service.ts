@@ -140,4 +140,39 @@ export class ReviewService {
         this.events.emitReviewLike(foundReview, foundUser, userToPushTo, like);
         return foundReview;
     }
+
+    public async dislike(reviewId: string, userId: string): Promise<Review | HttpException> {
+        const foundReview = await this.Reviews.findById(reviewId);
+        const foundUser = await this.Users.findOne({ id: userId });
+        if (!foundReview || !foundUser) return new HttpException("A user or a review does not exist", HttpStatus.NOT_FOUND);
+
+        const userToPushTo = await this.Users.findOne({ id: foundReview.userId });
+        let dislike = null;
+        if (!foundReview.dislikes.includes(foundUser.id)) {
+            foundReview.dislikes.push(foundUser.id);
+            // Remove the like of the user if like.
+            if (foundReview.likes.includes(foundUser.id)) {
+                foundReview.likes.splice(
+                    foundReview.likes.findIndex((element) => element === foundUser.id),
+                    1
+                );
+                dislike = true;
+            }
+            await this.notificationService.handleReviewDislike(userToPushTo, foundUser);
+        } else if (foundReview.dislikes.includes(foundUser.id)) {
+            foundReview.dislikes.splice(
+                foundReview.dislikes.findIndex((element) => element === foundUser.id),
+                1
+            );
+            dislike = false;
+        }
+        try {
+            await userToPushTo.save();
+            await foundReview.save();
+        } catch (err) {
+            return new HttpException("Something went wrong and the review did not handle dislikes in the db.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        this.events.emitReviewDislike(foundReview, foundUser, userToPushTo, dislike);
+        return foundReview;
+    }
 }
