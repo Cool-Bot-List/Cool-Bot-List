@@ -42,4 +42,8 @@ export class EventsGateway {
     public emitReviewUpdate(review: Review): SocketIO.Namespace {
         return this.socket.emit("review-update", review);
     }
+
+    public emitReviewLike(review: Review, user: User, userToPushTo: User, like: boolean): SocketIO.Namespace {
+        return this.socket.emit("review-like", review, user, userToPushTo, like);
+    }
 }

@@ -100,7 +100,44 @@ export class ReviewService {
         if (!review) return new HttpException("A review was not found.", HttpStatus.NOT_FOUND);
 
         review.review = newReview;
+        review.edited = new Date();
         this.events.emitReviewUpdate(review);
         return await review.save();
+    }
+
+    public async like(reviewId: string, userId: string): Promise<Review | HttpException> {
+        const foundReview = await this.Reviews.findById(reviewId);
+        const foundUser = await this.Users.findOne({ id: userId });
+        if (!foundReview || !foundUser) return new HttpException("A user or a review does not exist", HttpStatus.NOT_FOUND);
+
+        const userToPushTo = await this.Users.findOne({ id: foundReview.userId });
+        let like = null;
+        if (!foundReview.likes.includes(foundUser.id)) {
+            foundReview.likes.push(foundUser.id);
+            // Remove the dislike of the user if dislike
+
+            if (foundReview.dislikes.includes(foundUser.id)) {
+                foundReview.dislikes.splice(
+                    foundReview.dislikes.findIndex((element) => element === foundUser.id),
+                    1
+                );
+            }
+            await this.notificationService.handleReviewLike(userToPushTo, foundUser);
+            like = true;
+        } else if (foundReview.likes.includes(foundUser.id)) {
+            foundReview.likes.splice(
+                foundReview.likes.findIndex((element) => element === foundUser.id),
+                1
+            );
+            like = false;
+        }
+        try {
+            await userToPushTo.save();
+            await foundReview.save();
+        } catch (err) {
+            return new HttpException("Something went wrong and the review did not handle likes in the database.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        this.events.emitReviewLike(foundReview, foundUser, userToPushTo, like);
+        return foundReview;
     }
 }

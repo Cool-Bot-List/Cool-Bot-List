@@ -50,4 +50,9 @@ export class ReviewType {
      */
     @Field()
     date: Date;
+    /**
+     * If this review was edited then this date will exist.
+     */
+    @Field({ nullable: true })
+    edited: Date;
 }

@@ -50,6 +50,8 @@ export class Review extends Document {
     */
     @Prop({ default: new Date(), required: false })
     date: Date;
+    @Prop({ required: false })
+    edited: Date;
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);

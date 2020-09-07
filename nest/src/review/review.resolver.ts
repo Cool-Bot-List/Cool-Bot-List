@@ -1,15 +1,15 @@
-import { Resolver, ResolveField, Parent, Mutation, Args } from "@nestjs/graphql";
-import { ReviewService } from "./review.service";
-import { BotType } from "src/bot/gql-types/bot.type";
+import { HttpException } from "@nestjs/common";
+import { Args, Mutation, Parent, ResolveField, Resolver } from "@nestjs/graphql";
 import { Bot } from "src/bot/bot.schema";
-import { Review } from "./review.schema";
-import { ReviewType } from "./gql-types/review.type";
-import { UserType } from "src/user/gql-types/user.type";
-import { User } from "src/user/user.schema";
+import { BotType } from "src/bot/gql-types/bot.type";
 import { OwnerReplyType } from "src/owner-reply/gql-types/owner-reply.type";
 import { OwnerReply } from "src/owner-reply/interfaces/ownerReply.interface";
+import { UserType } from "src/user/gql-types/user.type";
+import { User } from "src/user/user.schema";
 import { ReviewCreatable } from "./gql-types/review-creatable.input";
-import { HttpException } from "@nestjs/common";
+import { ReviewType } from "./gql-types/review.type";
+import { Review } from "./review.schema";
+import { ReviewService } from "./review.service";
 
 @Resolver(() => ReviewType)
 export class ReviewResolver {
@@ -49,5 +49,10 @@ export class ReviewResolver {
     @Mutation(() => ReviewType)
     public updateReview(@Args("mongoId") mongoId: string, @Args("review") review: string): Promise<Review | HttpException> {
         return this.service.update(mongoId, review);
+    }
+
+    @Mutation(() => ReviewType)
+    public likeReview(@Args("mongoId") mongoId: string, @Args("userId") userId: string): Promise<Review | HttpException> {
+        return this.service.like(mongoId, userId);
     }
 }

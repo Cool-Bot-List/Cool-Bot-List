@@ -31,16 +31,22 @@ export class NotificationService {
         }
     }
 
-    public async handleReviewCreation(bot: Bot, reviewer: User, rating: number): Promise<Bot | HttpException> {
+    public async handleReviewCreation(bot: Bot, reviewer: User, rating: number): Promise<User | HttpException> {
         for (const owner of bot.owners) {
             const ownerObject = await this.Users.findOne({ id: owner });
             ownerObject.notifications.push({ message: `${reviewer.tag} just rated your bot ${rating} stars! ⭐`, read: false });
             this.events.emitNewNotification(ownerObject);
             try {
-                await ownerObject.save();
+                return await ownerObject.save();
             } catch (err) {
                 return new HttpException("Something went wrong and the owners were not notified of the reviews.", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    public async handleReviewLike(reviewOwner: User, liker: User): Promise<User | HttpException> {
+        reviewOwner.notifications.push({ message: `${liker.tag} liked your review! 👍`, read: false });
+        this.events.emitNewNotification(reviewOwner);
+        return await reviewOwner.save();
     }
 }
