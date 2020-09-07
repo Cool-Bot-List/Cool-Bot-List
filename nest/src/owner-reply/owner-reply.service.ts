@@ -47,6 +47,7 @@ export class OwnerReplyService {
         const { ownerId, reviewId, review } = data;
         const foundReview = await this.Reviews.findById(reviewId);
         if (!foundReview) return new HttpException("Review doesn't exist", HttpStatus.NOT_FOUND);
+        if (foundReview.ownerReply.review.length > 0) return new HttpException("Owner Reply already exists.", HttpStatus.BAD_REQUEST);
 
         const foundBot = await this.Bots.findOne({ id: foundReview.botId });
 
@@ -159,5 +160,22 @@ export class OwnerReplyService {
         return foundReview.ownerReply;
     }
 
+    public async delete(reviewId: string): Promise<OwnerReply | HttpException> {
+        const foundReview = await this.Reviews.findById(reviewId);
+
+        if (!foundReview) return new HttpException("The review doesn't exist.", HttpStatus.NOT_FOUND);
+        if (foundReview.ownerReply.review.length === 0) return new HttpException("The ownerReply doesn't exist", HttpStatus.NOT_FOUND);
+
+        foundReview.ownerReply.userId = "";
+        foundReview.ownerReply.review = "";
+        foundReview.ownerReply.likes = [];
+        foundReview.ownerReply.dislikes = [];
+        foundReview.ownerReply.date = null;
+        foundReview.ownerReply.edited = null;
+
+        await foundReview.save();
+        this.events.emitOwnerReplyDelete(foundReview);
+        return foundReview.ownerReply;
+    }
 
 }

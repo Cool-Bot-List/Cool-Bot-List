@@ -47,4 +47,9 @@ export class OwnerReplyResolver {
         return this.service.dislike(reviewId, userId);
     }
 
+    @Mutation(() => OwnerReplyType)
+    public deleteOwnerReply(@Args("reviewId") reviewId: string): Promise<OwnerReply | HttpException> {
+        return this.service.delete(reviewId);
+    }
+
 }

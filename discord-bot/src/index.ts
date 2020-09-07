@@ -184,19 +184,8 @@ client.on("ready", async () => {
         logChannel.send(embed);
     });
     socket.on("owner-reply-delete", async (review) => {
-        const query = gql`
-        query($id: String!) {
-            user(id: $id) {
-                tag,
-                avatarUrl
-              }
-        }
-        `;
-        const r = await request(BASE_URL, query, { id: review.ownerReply.userId });
-        const user = r.user;
         const embed = new MessageEmbed()
             .setTitle("An owner-reply was deleted")
-            .setAuthor(user.tag, user.avatarUrl)
             .setDescription(`\`\`\`js\n${JSON.stringify(review, null, 4)}\`\`\``);
         logChannel.send(embed);
     });

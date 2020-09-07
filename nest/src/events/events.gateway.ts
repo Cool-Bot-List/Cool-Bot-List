@@ -70,4 +70,9 @@ export class EventsGateway {
     public emitOwnerReplyDislike(review: Review, user: User, dislike: boolean): SocketIO.Namespace {
         return this.socket.emit("owner-reply-dislike", review, user, dislike);
     }
+
+    public emitOwnerReplyDelete(review: Review): SocketIO.Namespace {
+        return this.socket.emit("owner-reply-delete", review);
+    }
+
 }
