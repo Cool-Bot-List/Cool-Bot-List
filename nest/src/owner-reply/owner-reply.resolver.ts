@@ -37,4 +37,9 @@ export class OwnerReplyResolver {
         return this.service.update(reviewId, ownerReply);
     }
 
+    @Mutation(() => OwnerReplyType)
+    public likeOwnerReply(@Args("reviewId") reviewId: string, @Args("userId") userId: string): Promise<OwnerReply | HttpException> {
+        return this.service.like(reviewId, userId);
+    }
+
 }

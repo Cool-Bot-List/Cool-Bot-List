@@ -88,5 +88,41 @@ export class OwnerReplyService {
         return await review.save();
     }
 
+    public async like(reviewId: string, userId: string): Promise<OwnerReply | HttpException> {
+        const foundReview = await this.Reviews.findById(reviewId);
+        const foundUser = await this.Users.findOne({ id: userId });
+        if (!foundReview || !foundUser) return new HttpException("A user or a review does not exist", HttpStatus.NOT_FOUND);
+
+        const userToPushTo = await this.Users.findOne({ id: foundReview.ownerReply.userId });
+        let like = null;
+        if (!foundReview.ownerReply.likes.includes(foundUser.id)) {
+            foundReview.ownerReply.likes.push(foundUser.id);
+            // Remove the dislike of the user if dislike
+
+            if (foundReview.ownerReply.dislikes.includes(foundUser.id)) {
+                foundReview.ownerReply.dislikes.splice(
+                    foundReview.ownerReply.dislikes.findIndex((element) => element === foundUser.id),
+                    1
+                );
+            }
+            await this.notificationService.handleOwnerReplyLike(userToPushTo, foundUser);
+            like = true;
+        } else if (foundReview.ownerReply.likes.includes(foundUser.id)) {
+            foundReview.ownerReply.likes.splice(
+                foundReview.ownerReply.likes.findIndex((element) => element === foundUser.id),
+                1
+            );
+            like = false;
+        }
+        try {
+            await userToPushTo.save();
+            await foundReview.save();
+        } catch (err) {
+            return new HttpException("Something went wrong and the review did not handle likes in the database.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        this.events.emitOwnerReplyLike(foundReview, foundUser, like);
+        return foundReview.ownerReply;
+    }
+
 
 }

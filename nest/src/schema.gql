@@ -94,6 +94,7 @@ type Mutation {
   deleteReview(mongoId: String!): ReviewType!
   createOwnerReply(ownerReplyCreatable: OwnerReplyCreatable!): OwnerReplyType!
   updateOwnerReply(ownerReply: String!, reviewId: String!): OwnerReplyType!
+  likeOwnerReply(userId: String!, reviewId: String!): OwnerReplyType!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!

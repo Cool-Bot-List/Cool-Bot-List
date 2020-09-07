@@ -73,4 +73,11 @@ export class NotificationService {
         this.events.emitNewNotification(u);
         return u;
     }
+
+    public async handleOwnerReplyLike(owner: User, liker: User): Promise<User> {
+        owner.notifications.push({ message: `${liker.tag} liked your reply! 👍`, read: false });
+        const u = await this.rmDuplicates(owner);
+        this.events.emitNewNotification(u);
+        return u;
+    }
 }
