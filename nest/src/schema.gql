@@ -98,6 +98,7 @@ type Mutation {
   dislikeOwnerReply(userId: String!, reviewId: String!): OwnerReplyType!
   deleteOwnerReply(reviewId: String!): OwnerReplyType!
   updateNotification(method: String!, indexOrMessage: String!, userId: String!): NotificationType!
+  updateAllNotifications(method: String!, userId: String!): [NotificationType!]!
   createBot(botCreatable: BotCreatable!): BotType!
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!

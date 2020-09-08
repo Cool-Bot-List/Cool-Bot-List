@@ -44,6 +44,23 @@ export class NotificationService {
         return user.notifications[notiIndex];
     }
 
+    public async updateAll(userId: string, method: string): Promise<NotificationType[] | HttpException> {
+        const user = await this.Users.findOne({ id: userId });
+        if (!user) return new HttpException("User not found.", HttpStatus.NOT_FOUND);
+
+        switch (method) {
+            case NotificationUpdateMethods.READ:
+                for (const n of user.notifications) n.read = true;
+                break;
+            case NotificationUpdateMethods.UNREAD:
+                for (const n of user.notifications) n.read = false;
+        }
+
+        await user.save();
+        this.events.emitNotificationUpdate(user);
+        return user.notifications;
+    }
+
     private async rmDuplicates(user: User): Promise<User> {
         user.notifications = user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i);
         return await user.save();

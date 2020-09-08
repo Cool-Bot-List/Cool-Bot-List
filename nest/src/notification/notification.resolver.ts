@@ -13,4 +13,9 @@ export class NotificationResolver {
     ): Promise<NotificationType | HttpException> {
         return this.service.update(userId, indexOrMessage, method);
     }
+
+    @Mutation(() => [NotificationType])
+    public updateAllNotifications(@Args("userId") userId: string, @Args("method") method: string): Promise<NotificationType[] | HttpException> {
+        return this.service.updateAll(userId, method);
+    }
 }
