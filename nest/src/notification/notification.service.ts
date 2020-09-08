@@ -1,9 +1,12 @@
+/* eslint-disable indent */
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { User } from "src/user/user.schema";
 import { Model } from "mongoose";
 import { Bot } from "src/bot/bot.schema";
 import { EventsGateway } from "src/events/events.gateway";
+import { NotificationUpdateMethods } from "./constants/notification-update-methods.enum";
+import { NotificationType } from "./gql-types/notification.type";
 
 @Injectable()
 export class NotificationService {
@@ -12,6 +15,34 @@ export class NotificationService {
         private Users: Model<User>,
         private events: EventsGateway
     ) { }
+
+    public async update(
+        userId: string,
+        notificationQuery: string,
+        method: string
+    ): Promise<NotificationType | HttpException> {
+
+        const user = await this.Users.findOne({ id: userId });
+        if (!user) return new HttpException("User not found.", HttpStatus.NOT_FOUND);
+
+        const foundIndex = user.notifications.findIndex(n => n.message === notificationQuery);
+        const notiIndex = foundIndex === -1 ? parseInt(notificationQuery) : foundIndex;
+
+        if (!notiIndex) return new HttpException("A notification was not found.", HttpStatus.NOT_FOUND);
+
+        switch (method) {
+            case NotificationUpdateMethods.READ:
+                user.notifications[notiIndex].read = true;
+                break;
+            case NotificationUpdateMethods.UNREAD:
+                user.notifications[notiIndex].read = false;
+                break;
+        }
+
+        await user.save();
+        this.events.emitNotificationUpdate(user);
+        return user.notifications[notiIndex];
+    }
 
     private async rmDuplicates(user: User): Promise<User> {
         user.notifications = user.notifications.filter((e, i, a) => a.findIndex(t => (t.message === e.message)) === i);

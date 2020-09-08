@@ -38,7 +38,7 @@ export class User extends Document {
     /**
     * An array of all the notifications for the user.
     */
-    @Prop({ default: [], required: false })
+    @Prop({ type: Array, default: [], required: false })
     notifications: NotificationType[];
     /**
      * The token used to access the api for this user.
