@@ -1,4 +1,4 @@
-import { Args, Parent, Query, ResolveField, Resolver, Context } from "@nestjs/graphql";
+import { Args, Parent, Query, ResolveField, Resolver, Context, Mutation } from "@nestjs/graphql";
 import { Bot } from "src/bot/bot.schema";
 import { BotType } from "src/bot/gql-types/bot.type";
 import { VoteType } from "src/vote/gql-types/vote.type";
@@ -7,6 +7,7 @@ import { UserType } from "./gql-types/user.type";
 import { User } from "./user.schema";
 import { UserService } from "./user.service";
 import { HttpException } from "@nestjs/common";
+import { UserUpdatable } from "./gql-types/user-updatable.type";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -40,6 +41,11 @@ export class UserResolver {
     @ResolveField("vote", () => VoteType, { nullable: true })
     public vote(@Parent() user: User): Promise<Vote> {
         return this.service.getVote(user);
+    }
+
+    @Mutation(() => UserType)
+    public updateUser(@Args("userUpdatable") userUpdatable: UserUpdatable): Promise<User | HttpException> {
+        return this.service.update(userUpdatable);
     }
 }
 

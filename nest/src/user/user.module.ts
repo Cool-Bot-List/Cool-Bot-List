@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { VoteModule } from "src/vote/vote.module";
-import { NotificationModule } from "src/notification/notification.module";
 import { UserResolver } from "./user.resolver";
 import { UserService } from "./user.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "./user.schema";
 import { Bot, BotSchema } from "src/bot/bot.schema";
+import { EventsModule } from "src/events/events.module";
 
 @Module({
     imports: [
@@ -14,7 +14,7 @@ import { Bot, BotSchema } from "src/bot/bot.schema";
             { name: Bot.name, schema: BotSchema },
         ]),
         VoteModule,
-        NotificationModule,
+        EventsModule,
     ],
     providers: [UserResolver, UserService],
 })

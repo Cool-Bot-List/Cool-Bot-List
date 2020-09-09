@@ -103,6 +103,7 @@ type Mutation {
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
   approveBot(method: String!, id: String!): BotType!
+  updateUser(userUpdatable: UserUpdatable!): UserType!
 }
 
 input ReviewCreatable {
@@ -151,4 +152,12 @@ input BotUpdatable {
   users: Float
   presence: String
   reviews: [String!]
+}
+
+input UserUpdatable {
+  id: String!
+  tag: String
+  avatarUrl: String
+  bio: String
+  newUser: Boolean
 }

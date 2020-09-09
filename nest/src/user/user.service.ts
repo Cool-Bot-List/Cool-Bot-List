@@ -4,6 +4,8 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Bot } from "src/bot/bot.schema";
 import { Vote } from "src/vote/interfaces/vote.interface";
+import { UserUpdatable } from "./gql-types/user-updatable.type";
+import { EventsGateway } from "src/events/events.gateway";
 
 @Injectable()
 export class UserService {
@@ -11,7 +13,8 @@ export class UserService {
         @InjectModel(User.name)
         private Users: Model<User>,
         @InjectModel(Bot.name)
-        private Bots: Model<Bot>
+        private Bots: Model<Bot>,
+        private events: EventsGateway
     ) { }
 
     public async getAll(): Promise<User[]> {
@@ -42,5 +45,16 @@ export class UserService {
     public async getVote(user: User): Promise<Vote> {
         if (user.vote.bot === null || user.vote.date === null) return null;
         return user.vote;
+    }
+
+    public async update(data: UserUpdatable): Promise<User | HttpException> {
+        let foundUser: User;
+        try {
+            foundUser = await this.Users.findOneAndUpdate({ id: data.id }, data, { new: true });
+        } catch (err) {
+            return new HttpException("User not found.", HttpStatus.NOT_FOUND);
+        }
+        this.events.emitUserUpdate(foundUser);
+        return foundUser;
     }
 }
