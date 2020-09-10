@@ -1,7 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { PassportModule } from "@nestjs/passport";
-import { SessionModule } from "nestjs-session";
 import { User, UserSchema } from "src/user/user.schema";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -15,17 +14,6 @@ import { LoginAuthGuard } from "./login-auth.guard";
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
         ]),
-        SessionModule.forRoot({
-            session: {
-                secret: "Testing",
-                cookie: {
-                    maxAge: 60 * 1000 * 60 * 24,
-                },
-                resave: false,
-                saveUninitialized: false,
-            },
-
-        }),
         PassportModule.register({ session: true }),
         EventsModule,
     ],
