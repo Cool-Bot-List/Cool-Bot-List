@@ -164,7 +164,7 @@ export class BotService {
             return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
 
         for (const id of foundBot.owners) {
-            let users: User[];
+            let users: User[] = [];
             const user = await this.Users.findOne({ id });
             users.push(user);
             user.bots.splice(user.bots.findIndex(e => e === id), 1);
