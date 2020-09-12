@@ -164,7 +164,7 @@ export class BotService {
             return new HttpException("You don't have permission to perform that action.", HttpStatus.UNAUTHORIZED);
 
         for (const id of foundBot.owners) {
-            let users: User[] = [];
+            const users: User[] = [];
             const user = await this.Users.findOne({ id });
             users.push(user);
             user.bots.splice(user.bots.findIndex(e => e === id), 1);
@@ -186,9 +186,12 @@ export class BotService {
         return foundBot;
     }
 
-    public async approve(id: string, method: BotApproveMethodResolvable): Promise<Bot | HttpException> {
+    public async approve(id: string, method: BotApproveMethodResolvable, user: User): Promise<Bot | HttpException> {
         if (method !== BotApproveMethods.APPROVE && method !== BotApproveMethods.REJECT)
             return new HttpException("Invalid method.", HttpStatus.BAD_REQUEST);
+
+        if (!user) return new HttpException("Please log in.", HttpStatus.BAD_REQUEST);
+        if (!user.isAdmin) return new HttpException("You don't have permission to do that action", HttpStatus.UNAUTHORIZED);
 
         const foundBot = await this.Bots.findOne({ id });
         if (!foundBot) return new HttpException("That bot doesn't exist in the database!", HttpStatus.NOT_FOUND);

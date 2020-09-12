@@ -66,8 +66,9 @@ export class BotResolver {
     }
 
     @Mutation(() => BotType)
-    public approveBot(@Args("id") id: string, @Args("method") method: BotApproveMethodResolvable): Promise<Bot | HttpException> {
-        return this.service.approve(id, method);
+    public approveBot(@Args("id") id: string, @Args("method") method: BotApproveMethodResolvable,
+        @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
+        return this.service.approve(id, method, user);
     }
 
 }

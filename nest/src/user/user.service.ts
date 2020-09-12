@@ -102,6 +102,9 @@ export class UserService {
     }
 
     public async makeAdmin(id: string, method: AdminMethodResolvable): Promise<User | HttpException> {
+        if (method !== AdminMethods.ADD && method !== AdminMethods.REMOVE)
+            return new HttpException("Invalid method.", HttpStatus.BAD_REQUEST);
+
         const user = await this.Users.findOne({ id });
         if (!user) return new HttpException("User not found.", HttpStatus.NOT_FOUND);
 
