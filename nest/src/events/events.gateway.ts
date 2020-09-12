@@ -39,6 +39,10 @@ export class EventsGateway {
         return this.socket.emit("user-update", user);
     }
 
+    public emitUserDelete(user: User): SocketIO.Namespace {
+        return this.socket.emit("user-delete", user);
+    }
+
     public emitNewReview(review: Review): SocketIO.Namespace {
         return this.socket.emit("new-review", review);
     }

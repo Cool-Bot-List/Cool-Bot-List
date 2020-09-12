@@ -47,5 +47,10 @@ export class UserResolver {
     public updateUser(@Args("userUpdatable") userUpdatable: UserUpdatable): Promise<User | HttpException> {
         return this.service.update(userUpdatable);
     }
+
+    @Mutation(() => UserType)
+    public deleteUser(@Args("id") id: string): Promise<User | HttpException> {
+        return this.service.delete(id);
+    }
 }
 

@@ -6,6 +6,10 @@ import { Bot } from "src/bot/bot.schema";
 import { Vote } from "src/vote/interfaces/vote.interface";
 import { UserUpdatable } from "./gql-types/user-updatable.type";
 import { EventsGateway } from "src/events/events.gateway";
+import { BotService } from "src/bot/bot.service";
+import { Review } from "src/review/review.schema";
+import { ReviewService } from "src/review/review.service";
+import { OwnerReplyService } from "src/owner-reply/owner-reply.service";
 
 @Injectable()
 export class UserService {
@@ -14,7 +18,12 @@ export class UserService {
         private Users: Model<User>,
         @InjectModel(Bot.name)
         private Bots: Model<Bot>,
-        private events: EventsGateway
+        @InjectModel(Review.name)
+        private Reviews: Model<Review>,
+        private events: EventsGateway,
+        private botService: BotService,
+        private reviewService: ReviewService,
+        private ownerReplyService: OwnerReplyService
     ) { }
 
     public async getAll(): Promise<User[]> {
@@ -56,5 +65,33 @@ export class UserService {
         }
         this.events.emitUserUpdate(foundUser);
         return foundUser;
+    }
+
+    public async delete(id: string): Promise<User | HttpException> {
+        const user = await this.Users.findOne({ id });
+        if (!user) return new HttpException("User not found.", HttpStatus.NOT_FOUND);
+
+        // Handle the bots of the deleted user.
+        for (const botId of user.bots) {
+            const bot = await this.Bots.findOne({ id: botId });
+
+            // If the only owner of the bot is the deleted user then delete the bot.
+            if (bot.owners.includes(user.id) && bot.owners.length === 1)
+                await this.botService.delete(botId, user);
+
+            // Remove the deleted user from the owners array.
+            bot.owners.splice(bot.owners.findIndex(oId => oId === user.id), 1);
+        }
+
+        // Delete all of the deleted user's reviews.
+        const userMadeReviews = (await this.Reviews.find()).filter(r => r.userId === user.id);
+        for (const r of userMadeReviews) this.reviewService.delete(r._id);
+
+        // Delete all of the deleted user's owner replies.
+        const userMadeOwnerRepliesReviews = (await this.Reviews.find()).filter(r => r.ownerReply.userId === user.id);
+        for (const r of userMadeOwnerRepliesReviews) this.ownerReplyService.delete(r._id);
+
+        this.events.emitUserDelete(user);
+        return await user.deleteOne();
     }
 }
