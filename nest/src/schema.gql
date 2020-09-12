@@ -103,6 +103,7 @@ type Mutation {
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
   approveBot(method: String!, id: String!): BotType!
+  voteBot(userId: String!, botId: String!): VoteType!
   updateUser(userUpdatable: UserUpdatable!): UserType!
   deleteUser(id: String!): UserType!
 }

@@ -83,4 +83,8 @@ export class EventsGateway {
         return this.socket.emit("owner-reply-delete", review);
     }
 
+    public emitNewVote(user: User, bot: Bot): SocketIO.Namespace {
+        return this.socket.emit("new-vote", user, bot);
+    }
+
 }
