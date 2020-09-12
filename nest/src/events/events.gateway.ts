@@ -87,4 +87,8 @@ export class EventsGateway {
         return this.socket.emit("new-vote", user, bot);
     }
 
+    public emitNewToken(user: User): SocketIO.Namespace {
+        return this.socket.emit("new-token", user);
+    }
+
 }

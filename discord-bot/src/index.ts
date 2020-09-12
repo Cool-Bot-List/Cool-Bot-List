@@ -270,4 +270,11 @@ client.on("ready", async () => {
             .setDescription(`**Review -** ${review.review}\n**Total Dislikes -** ${review.dislikes.length}`);
         logChannel.send(embed);
     });
+    socket.once("new-token", user => {
+        const embed = new MessageEmbed()
+            .setAuthor(`A new token for ${user.tag} was created.`, user.avatarUrl)
+            .setThumbnail(user.avatarUrl)
+            .addField("Token", user.token);
+        logChannel.send(embed);
+    });
 });

@@ -106,6 +106,7 @@ type Mutation {
   voteBot(userId: String!, botId: String!): VoteType!
   updateUser(userUpdatable: UserUpdatable!): UserType!
   deleteUser(id: String!): UserType!
+  createToken(id: String!): String!
 }
 
 input ReviewCreatable {

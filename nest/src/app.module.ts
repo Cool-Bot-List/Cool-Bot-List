@@ -5,6 +5,7 @@ import { BotModule } from "./bot/bot.module";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { Request, Response } from "express";
+import { TokenModule } from './token/token.module';
 
 
 @Module({
@@ -23,6 +24,7 @@ import { Request, Response } from "express";
         AuthModule,
         BotModule,
         UserModule,
+        TokenModule,
     ],
 })
 export class AppModule { }
