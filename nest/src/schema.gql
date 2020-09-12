@@ -103,10 +103,11 @@ type Mutation {
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
   approveBot(method: String!, id: String!): BotType!
+  createToken(id: String!): String!
   voteBot(userId: String!, botId: String!): VoteType!
   updateUser(userUpdatable: UserUpdatable!): UserType!
   deleteUser(id: String!): UserType!
-  createToken(id: String!): String!
+  updateMyBot(botUpdatable: PublicApiBotUpdatable!): String!
 }
 
 input ReviewCreatable {
@@ -163,4 +164,22 @@ input UserUpdatable {
   avatarUrl: String
   bio: String
   newUser: Boolean
+}
+
+input PublicApiBotUpdatable {
+  client: ClientType!
+  presence: PresenceType!
+  sendTotalGuilds: Boolean!
+  sendTotalUsers: Boolean!
+  sendPresence: Boolean!
+}
+
+input ClientType {
+  user: String!
+  guilds: [String!]!
+  users: [String!]!
+}
+
+input PresenceType {
+  status: String!
 }

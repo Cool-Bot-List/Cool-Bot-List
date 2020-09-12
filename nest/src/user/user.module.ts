@@ -6,6 +6,7 @@ import { EventsModule } from "src/events/events.module";
 import { OwnerReplyModule } from "src/owner-reply/owner-reply.module";
 import { ReviewModule } from "src/review/review.module";
 import { Review, ReviewSchema } from "src/review/review.schema";
+import { TokenModule } from "src/token/token.module";
 import { VoteModule } from "src/vote/vote.module";
 import { UserResolver } from "./user.resolver";
 import { User, UserSchema } from "./user.schema";
@@ -18,6 +19,7 @@ import { UserService } from "./user.service";
             { name: Bot.name, schema: BotSchema },
             { name: Review.name, schema: ReviewSchema },
         ]),
+        TokenModule,
         VoteModule,
         EventsModule,
         BotModule,
