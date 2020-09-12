@@ -36,6 +36,10 @@ export class UserService {
         return this.Users.findOne({ id });
     }
 
+    public async getAdmins(): Promise<User[]> {
+        return this.Users.find({ isAdmin: true });
+    }
+
     public getMe(user: User): User | HttpException {
         return user || new HttpException("A user is not logged in.", HttpStatus.NOT_FOUND);
     }

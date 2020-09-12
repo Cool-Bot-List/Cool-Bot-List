@@ -84,6 +84,7 @@ type Query {
   bot(id: String!): BotType
   users: [UserType!]
   user(id: String!): UserType
+  admins: [UserType!]
   me: UserType!
 }
 

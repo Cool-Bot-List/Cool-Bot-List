@@ -24,6 +24,11 @@ export class UserResolver {
         return this.service.get(id);
     }
 
+    @Query(() => [UserType], { nullable: true })
+    public admins(): Promise<User[]> {
+        return this.service.getAdmins();
+    }
+
     @Query(() => UserType)
     public me(@Context("req") { user }: { user: User }): User | HttpException {
         return this.service.getMe(user);
