@@ -8,6 +8,7 @@ import { User } from "./user.schema";
 import { UserService } from "./user.service";
 import { HttpException } from "@nestjs/common";
 import { UserUpdatable } from "./gql-types/user-updatable.type";
+import { AdminMethodResolvable } from "./constants/admin-methods.enum";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -51,6 +52,11 @@ export class UserResolver {
     @Mutation(() => UserType)
     public deleteUser(@Args("id") id: string): Promise<User | HttpException> {
         return this.service.delete(id);
+    }
+
+    @Mutation(() => UserType)
+    public makeAdmin(@Args("id") id: string, @Args("method") method: AdminMethodResolvable): Promise<User | HttpException> {
+        return this.service.makeAdmin(id, method);
     }
 }
 

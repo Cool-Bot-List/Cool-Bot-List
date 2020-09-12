@@ -27,6 +27,7 @@ type UserType {
   notifications: [NotificationType!]!
   token: String
   vote: VoteType
+  isAdmin: Boolean!
   bot(id: String!): BotType
 }
 
@@ -107,6 +108,7 @@ type Mutation {
   voteBot(userId: String!, botId: String!): VoteType!
   updateUser(userUpdatable: UserUpdatable!): UserType!
   deleteUser(id: String!): UserType!
+  makeAdmin(method: String!, id: String!): UserType!
   updateMyBot(botUpdatable: PublicApiBotUpdatable!): String!
 }
 

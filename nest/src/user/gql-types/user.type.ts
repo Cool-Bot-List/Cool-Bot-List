@@ -50,5 +50,10 @@ export class UserType {
      */
     @Field(() => VoteType, { nullable: true })
     vote: VoteType;
+    /**
+     * Weather this user is a admin.
+     */
+    @Field()
+    isAdmin: boolean;
 
 }

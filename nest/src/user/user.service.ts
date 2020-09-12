@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { User } from "./user.schema";
 import { Model } from "mongoose";
@@ -10,6 +11,7 @@ import { BotService } from "src/bot/bot.service";
 import { Review } from "src/review/review.schema";
 import { ReviewService } from "src/review/review.service";
 import { OwnerReplyService } from "src/owner-reply/owner-reply.service";
+import { AdminMethodResolvable, AdminMethods } from "./constants/admin-methods.enum";
 
 @Injectable()
 export class UserService {
@@ -93,5 +95,22 @@ export class UserService {
 
         this.events.emitUserDelete(user);
         return await user.deleteOne();
+    }
+
+    public async makeAdmin(id: string, method: AdminMethodResolvable): Promise<User | HttpException> {
+        const user = await this.Users.findOne({ id });
+        if (!user) return new HttpException("User not found.", HttpStatus.NOT_FOUND);
+
+        switch (method) {
+            case AdminMethods.ADD:
+                user.isAdmin = true;
+                break;
+            case AdminMethods.REMOVE:
+                user.isAdmin = false;
+                break;
+        }
+
+        this.events.emitUserUpdate(user);
+        return await user.save();
     }
 }
