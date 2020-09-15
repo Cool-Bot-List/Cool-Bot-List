@@ -48,27 +48,25 @@ export class PublicApiService {
         return "Successfully updated the bot's stats.";
     }
 
+
     public async validateRequest(req: Request): Promise<boolean> {
         const jwtHeader = req.headers.authorization;
         const token = jwtHeader && jwtHeader.split(" ")[1];
 
         if (!token) {
-            new HttpException("Please provide a token.", HttpStatus.BAD_REQUEST);
-            return false;
+            throw new HttpException("Please provide a token.", HttpStatus.BAD_REQUEST);
         }
 
         const decodedData = <{ user: { id: string } }>jwt.verify(token, process.env.JWT_SECRET);
 
         if (!decodedData) {
-            new HttpException("The token is invalid.", HttpStatus.FORBIDDEN);
-            return false;
+            throw new HttpException("The token is invalid.", HttpStatus.FORBIDDEN);
         }
 
         const { id } = decodedData.user;
         const foundUser = await this.Users.findOne({ id });
         if (token !== foundUser!.token) {
-            new HttpException("The token is invalid.", HttpStatus.FORBIDDEN);
-            return false;
+            throw new HttpException("The token is invalid.", HttpStatus.FORBIDDEN);
         }
         return true;
     }

@@ -15,6 +15,7 @@ import { BotUpdatable } from "./gql-types/bot-updatable.input";
 import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-resolvable.interface";
 import { BotApproveMethods } from "./constants/bot-approve-methods.enum";
 import { NotificationService } from "src/notification/notification.service";
+import { BotSearchable } from "./gql-types/bot-searchable.input";
 
 @Injectable()
 export class BotService {
@@ -30,11 +31,15 @@ export class BotService {
     ) { }
 
     public async getAll(): Promise<Bot[]> {
-        return this.Bots.find({ isApproved: true });
+        return this.Bots.find();
     }
 
     public async get(id: string): Promise<Bot> {
-        return this.Bots.findOne({ id, isApproved: true });
+        return this.Bots.findOne({ id });
+    }
+
+    public async searchForBot(query: BotSearchable): Promise<Bot[]> {
+
     }
 
     public async getOwners(bot: BotType): Promise<User[]> {

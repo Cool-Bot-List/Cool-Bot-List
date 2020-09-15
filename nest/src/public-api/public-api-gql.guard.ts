@@ -7,8 +7,7 @@ export class PublicApiGqlGuard implements CanActivate {
     constructor(private service: PublicApiService) { }
 
     public canActivate(context: ExecutionContext): Promise<boolean> {
-        const ctx = GqlExecutionContext.create(context);
-        const request = ctx.getContext().req;
+        const request = GqlExecutionContext.create(context).getContext().req;
         return this.service.validateRequest(request);
     }
 }

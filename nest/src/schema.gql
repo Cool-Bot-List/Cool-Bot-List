@@ -82,10 +82,33 @@ type Query {
   review(mongoId: String!): ReviewType!
   bots: [BotType!]
   bot(id: String!): BotType
+  searchForBot(query: BotSearchable!): BotType
   users: [UserType!]
   user(id: String!): UserType
   admins: [UserType!]
   me: UserType!
+}
+
+input BotSearchable {
+  id: String
+  tag: String
+  avatarUrl: String
+  prefix: String
+  description: String
+  owners: [String!]
+  website: String
+  inviteLink: String
+  helpCommand: String
+  supportServer: String
+  library: String
+  averageRating: Float
+  isApproved: Boolean
+  reviews: [String!]
+  votes: Float
+  tags: [String!]
+  servers: Float
+  users: Float
+  presence: String
 }
 
 type Mutation {
