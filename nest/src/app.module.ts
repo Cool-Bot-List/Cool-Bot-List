@@ -13,7 +13,7 @@ import { PublicApiModule } from "./public-api/public-api.module";
         GraphQLModule.forRoot({
             autoSchemaFile: "src/schema.gql",
             path: "/api/graphql",
-            context: ({ req, res }: { req: Request, res: Response }) => ({ req, res }),
+            context: ({ req, res }: { req: Request; res: Response }) => ({ req, res }),
             playground: {
                 settings: {
                     "request.credentials": "include",

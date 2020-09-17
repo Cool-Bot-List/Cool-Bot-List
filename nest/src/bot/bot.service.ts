@@ -219,7 +219,7 @@ export class BotService {
         return foundBot;
     }
 
-    private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
+    private checkLinks(links: { website: string; supportServer: string; inviteLink: string }): boolean {
         const validEndings = [".com", ".org", ".net", ".io"];
 
         if (links.inviteLink && !links.inviteLink.startsWith("https://discord")) return false;
