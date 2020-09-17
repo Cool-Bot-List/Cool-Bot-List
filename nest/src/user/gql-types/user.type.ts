@@ -53,7 +53,7 @@ export class UserType {
     /**
      * Weather this user is a admin.
      */
-    @Field()
+    @Field({ nullable: true })
     isAdmin: boolean;
 
 }

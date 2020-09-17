@@ -38,9 +38,9 @@ export class BotService {
         return this.Bots.findOne({ id });
     }
 
-    public async searchForBot(query: BotSearchable): Promise<Bot[]> {
+    // public async searchForBot(query: BotSearchable): Promise<Bot[]> {
 
-    }
+    // }
 
     public async getOwners(bot: BotType): Promise<User[]> {
         const owners = [];

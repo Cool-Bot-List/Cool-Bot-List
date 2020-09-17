@@ -9,9 +9,9 @@
         "nest": "npm run start:dev --prefix nest",
         "build-nest": "npm run start:prod --prefix nest",
         "start-nest": "npm start --prefix nest",
-        "client": "npm start --prefix client",
+        "frontend": "npm start --prefix frontend",
         "bot": "npm run dev --prefix discord-bot",
-        "dev": "concurrently \"npm run nest\" \"npm run client\" \"npm run bot\""
+        "dev": "concurrently \"npm run nest\" \"npm run frontend\" \"npm run bot\""
     },
     "dependencies": {
         "concurrently": "^5.3.0",
