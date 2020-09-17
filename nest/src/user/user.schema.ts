@@ -53,7 +53,11 @@ export class User extends Document {
         bot: { type: String, required: false, default: "" },
     })
     vote: Vote;
-
+    /**
+     * Weather this user is an admin.
+     */
+    @Prop({ required: false })
+    isAdmin: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

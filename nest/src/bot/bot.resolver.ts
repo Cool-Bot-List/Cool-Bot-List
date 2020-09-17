@@ -10,6 +10,7 @@ import { Review } from "src/review/review.schema";
 import { BotCreatable } from "./gql-types/bot-creatable.input";
 import { BotUpdatable } from "./gql-types/bot-updatable.input";
 import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-resolvable.interface";
+import { BotSearchable } from "./gql-types/bot-searchable.input";
 
 @Resolver(() => BotType)
 export class BotResolver {
@@ -23,6 +24,12 @@ export class BotResolver {
     @Query(() => BotType, { nullable: true })
     public bot(@Args("id") id: string): Promise<Bot> {
         return this.service.get(id);
+    }
+
+    @Query(() => [BotType], { nullable: true })
+    //@ts-ignore
+    public searchForBot(@Args("query") query: BotSearchable): Promise<Bot[]> {
+        // return this.service.searchForBot(query);
     }
 
     @ResolveField("owners", () => [UserType])
@@ -66,8 +73,9 @@ export class BotResolver {
     }
 
     @Mutation(() => BotType)
-    public approveBot(@Args("id") id: string, @Args("method") method: BotApproveMethodResolvable): Promise<Bot | HttpException> {
-        return this.service.approve(id, method);
+    public approveBot(@Args("id") id: string, @Args("method") method: BotApproveMethodResolvable,
+        @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
+        return this.service.approve(id, method, user);
     }
 
 }

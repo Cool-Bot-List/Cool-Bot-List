@@ -19,5 +19,6 @@ import { NotificationModule } from "src/notification/notification.module";
         NotificationModule,
     ],
     providers: [OwnerReplyResolver, OwnerReplyService],
+    exports: [OwnerReplyService],
 })
 export class OwnerReplyModule { }

@@ -2,9 +2,17 @@ import "dotenv/config";
 import * as io from "socket.io-client";
 import { Client, MessageEmbed, TextChannel } from "discord.js";
 import request, { gql } from "graphql-request";
+// import { CoolBotList } from "coolbotlist.js";
 
 const client = new Client();
 client.login(process.env.BOT_TOKEN);
+
+// const cbl = new CoolBotList({
+//     client,
+//     token: "saf",
+//     presence: "dnd",
+// });
+// cbl.send();
 
 const socket = io("http://localhost:5000");
 const BASE_URL = "http://localhost:5000/api/graphql";
@@ -268,6 +276,13 @@ client.on("ready", async () => {
             .setAuthor(`${user.tag} ${dislike ? "disliked" : "un-disliked"} ${reviewer.tag}'s review!`, user.avatarUrl)
             .setThumbnail(reviewer.avatarUrl)
             .setDescription(`**Review -** ${review.review}\n**Total Dislikes -** ${review.dislikes.length}`);
+        logChannel.send(embed);
+    });
+    socket.once("new-token", user => {
+        const embed = new MessageEmbed()
+            .setAuthor(`A new token for ${user.tag} was created.`, user.avatarUrl)
+            .setThumbnail(user.avatarUrl)
+            .addField("Token", user.token);
         logChannel.send(embed);
     });
 });

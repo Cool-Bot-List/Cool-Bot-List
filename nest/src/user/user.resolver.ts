@@ -1,4 +1,4 @@
-import { Args, Parent, Query, ResolveField, Resolver, Context } from "@nestjs/graphql";
+import { Args, Parent, Query, ResolveField, Resolver, Context, Mutation } from "@nestjs/graphql";
 import { Bot } from "src/bot/bot.schema";
 import { BotType } from "src/bot/gql-types/bot.type";
 import { VoteType } from "src/vote/gql-types/vote.type";
@@ -7,6 +7,8 @@ import { UserType } from "./gql-types/user.type";
 import { User } from "./user.schema";
 import { UserService } from "./user.service";
 import { HttpException } from "@nestjs/common";
+import { UserUpdatable } from "./gql-types/user-updatable.type";
+import { AdminMethodResolvable } from "./constants/admin-methods.enum";
 
 @Resolver(() => UserType)
 export class UserResolver {
@@ -20,6 +22,11 @@ export class UserResolver {
     @Query(() => UserType, { nullable: true })
     public user(@Args("id") id: string): Promise<User> {
         return this.service.get(id);
+    }
+
+    @Query(() => [UserType], { nullable: true })
+    public admins(): Promise<User[]> {
+        return this.service.getAdmins();
     }
 
     @Query(() => UserType)
@@ -40,6 +47,21 @@ export class UserResolver {
     @ResolveField("vote", () => VoteType, { nullable: true })
     public vote(@Parent() user: User): Promise<Vote> {
         return this.service.getVote(user);
+    }
+
+    @Mutation(() => UserType)
+    public updateUser(@Args("userUpdatable") userUpdatable: UserUpdatable): Promise<User | HttpException> {
+        return this.service.update(userUpdatable);
+    }
+
+    @Mutation(() => UserType)
+    public deleteUser(@Args("id") id: string): Promise<User | HttpException> {
+        return this.service.delete(id);
+    }
+
+    @Mutation(() => UserType)
+    public makeAdmin(@Args("id") id: string, @Args("method") method: AdminMethodResolvable): Promise<User | HttpException> {
+        return this.service.makeAdmin(id, method);
     }
 }
 

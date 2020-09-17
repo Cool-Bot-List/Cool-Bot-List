@@ -12,6 +12,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "coolbotlist.js": "^1.0.1",
         "discord.js": "^12.2.0",
         "dotenv": "^8.2.0",
         "graphql": "^15.3.0",

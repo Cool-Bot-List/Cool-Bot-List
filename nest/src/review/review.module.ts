@@ -21,5 +21,6 @@ import { EventsModule } from "src/events/events.module";
         EventsModule,
     ],
     providers: [ReviewResolver, ReviewService],
+    exports: [ReviewService],
 })
 export class ReviewModule { }

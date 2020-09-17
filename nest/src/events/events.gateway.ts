@@ -39,6 +39,10 @@ export class EventsGateway {
         return this.socket.emit("user-update", user);
     }
 
+    public emitUserDelete(user: User): SocketIO.Namespace {
+        return this.socket.emit("user-delete", user);
+    }
+
     public emitNewReview(review: Review): SocketIO.Namespace {
         return this.socket.emit("new-review", review);
     }
@@ -77,6 +81,14 @@ export class EventsGateway {
 
     public emitOwnerReplyDelete(review: Review): SocketIO.Namespace {
         return this.socket.emit("owner-reply-delete", review);
+    }
+
+    public emitNewVote(user: User, bot: Bot): SocketIO.Namespace {
+        return this.socket.emit("new-vote", user, bot);
+    }
+
+    public emitNewToken(user: User): SocketIO.Namespace {
+        return this.socket.emit("new-token", user);
     }
 
 }

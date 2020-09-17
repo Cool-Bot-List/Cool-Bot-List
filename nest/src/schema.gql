@@ -27,6 +27,7 @@ type UserType {
   notifications: [NotificationType!]!
   token: String
   vote: VoteType
+  isAdmin: Boolean
   bot(id: String!): BotType
 }
 
@@ -81,9 +82,16 @@ type Query {
   review(mongoId: String!): ReviewType!
   bots: [BotType!]
   bot(id: String!): BotType
+  searchForBot(query: BotSearchable!): [BotType!]
   users: [UserType!]
   user(id: String!): UserType
+  admins: [UserType!]
   me: UserType!
+}
+
+input BotSearchable {
+  name: String
+  hasTags: [String!]
 }
 
 type Mutation {
@@ -103,6 +111,12 @@ type Mutation {
   updateBot(botUpdatable: BotUpdatable!): BotType!
   deleteBot(id: String!): BotType!
   approveBot(method: String!, id: String!): BotType!
+  createToken(id: String!): String!
+  voteBot(userId: String!, botId: String!): VoteType!
+  updateUser(userUpdatable: UserUpdatable!): UserType!
+  deleteUser(id: String!): UserType!
+  makeAdmin(method: String!, id: String!): UserType!
+  updateMyBot(botUpdatable: PublicApiBotUpdatable!): String!
 }
 
 input ReviewCreatable {
@@ -151,4 +165,30 @@ input BotUpdatable {
   users: Float
   presence: String
   reviews: [String!]
+}
+
+input UserUpdatable {
+  id: String!
+  tag: String
+  avatarUrl: String
+  bio: String
+  newUser: Boolean
+}
+
+input PublicApiBotUpdatable {
+  client: ClientType!
+  presence: PresenceType!
+  sendTotalGuilds: Boolean!
+  sendTotalUsers: Boolean!
+  sendPresence: Boolean!
+}
+
+input ClientType {
+  user: String!
+  guilds: [String!]!
+  users: [String!]!
+}
+
+input PresenceType {
+  status: String!
 }

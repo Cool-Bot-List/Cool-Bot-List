@@ -21,5 +21,6 @@ import { NotificationModule } from "src/notification/notification.module";
         NotificationModule,
     ],
     providers: [BotResolver, BotService],
+    exports: [BotService],
 })
 export class BotModule { }
