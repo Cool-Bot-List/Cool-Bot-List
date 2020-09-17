@@ -2,9 +2,17 @@ import "dotenv/config";
 import * as io from "socket.io-client";
 import { Client, MessageEmbed, TextChannel } from "discord.js";
 import request, { gql } from "graphql-request";
+// import { CoolBotList } from "coolbotlist.js";
 
 const client = new Client();
 client.login(process.env.BOT_TOKEN);
+
+// const cbl = new CoolBotList({
+//     client,
+//     token: "saf",
+//     presence: "dnd",
+// });
+// cbl.send();
 
 const socket = io("http://localhost:5000");
 const BASE_URL = "http://localhost:5000/api/graphql";
