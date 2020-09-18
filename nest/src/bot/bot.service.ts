@@ -229,7 +229,6 @@ export class BotService {
             if (link) {
                 if (!link.startsWith("https://")) return false;
                 for (const e of validEndings) {
-                    console.log(link);
                     if (link.includes(e)) return true;
                     else return false;
                 }

@@ -216,7 +216,6 @@ export class ReviewService {
             foundBot.averageRating = averageRating;
             await foundBot.save();
         } catch (err) {
-            console.log(err);
             return new HttpException("Something went wrong and the review did not delete from the db.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         this.events.emitReviewDelete(foundReview);
