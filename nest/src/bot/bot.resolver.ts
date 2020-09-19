@@ -27,9 +27,8 @@ export class BotResolver {
     }
 
     @Query(() => [BotType], { nullable: true })
-    //@ts-ignore
-    public searchForBot(@Args("query") query: BotSearchable): Promise<Bot[]> {
-        // return this.service.searchForBot(query);
+    public searchForBot(@Args("query") query: BotSearchable): Promise<Bot[] | HttpException> {
+        return this.service.searchForBot(query);
     }
 
     @ResolveField("owners", () => [UserType])

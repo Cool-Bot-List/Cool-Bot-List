@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable indent */
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -16,6 +17,8 @@ import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-reso
 import { BotApproveMethods } from "./constants/bot-approve-methods.enum";
 import { NotificationService } from "src/notification/notification.service";
 import { BotSearchable } from "./gql-types/bot-searchable.input";
+import { BotLibraries } from "./constants/bot-libraries.enum";
+import { BotPresence } from "./constants/bot-presence.enum";
 
 @Injectable()
 export class BotService {
@@ -38,9 +41,29 @@ export class BotService {
         return this.Bots.findOne({ id });
     }
 
-    // public async searchForBot(query: BotSearchable): Promise<Bot[]> {
+    public async searchForBot(query: BotSearchable): Promise<Bot[] | HttpException> {
+        if (query.library && query.library !== BotLibraries.DISCORDJS && query.library !== BotLibraries.DISCORDPY && query.library !== BotLibraries.DISCORDNET && query.library !== BotLibraries.DSHARPPLUS && query.library !== BotLibraries.JDA && query.library !== BotLibraries.JAVACORD && query.library !== BotLibraries.ERIS)
+            return new HttpException("Library is invalid. ", HttpStatus.BAD_REQUEST);
+        if (query.presence && query.presence !== BotPresence.ONLINE && query.presence !== BotPresence.DND && query.presence !== BotPresence.AWAY && query.presence !== BotPresence.INVISIBLE && query.presence !== BotPresence.MOBILE)
+            return new HttpException("Presence is invalid.", HttpStatus.BAD_REQUEST);
 
-    // }
+        let bots = await this.Bots.find({ isApproved: true });
+        if (query.tag) bots = bots.filter(b => b.tag.toLowerCase().includes(query.tag.toLowerCase()));
+        if (query.tags) {
+            let filteredBots: Bot[];
+            for (const t of query.tags)
+                filteredBots = bots.filter(b => b.tags.includes(t));
+            bots = filteredBots;
+        }
+
+        if (query.library) bots = bots.filter(b => b.library.toLowerCase().includes(query.library.toLowerCase()));
+        if (query.minServers) bots = bots.filter(b => b.servers >= query.minServers);
+        if (query.minUsers) bots = bots.filter(b => b.users >= query.minUsers);
+        if (query.presence) bots = bots.filter(b => b.presence && b.presence.toLowerCase().includes(query.presence.toLowerCase()));
+
+        if (bots.length === 0) return new HttpException("A bot was not found.", HttpStatus.NOT_FOUND);
+        return bots;
+    }
 
     public async getOwners(bot: BotType): Promise<User[]> {
         const owners = [];
