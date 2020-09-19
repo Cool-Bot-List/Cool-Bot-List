@@ -4,9 +4,9 @@ import { RateLimitService } from "./rate-limit.service";
 
 @Injectable()
 export class RateLimitGuard implements CanActivate {
-  constructor(private service: RateLimitService) { }
+    constructor(private service: RateLimitService) { }
 
-  public canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    return this.service.validate(context.switchToHttp().getRequest());
-  }
+    public canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+        return this.service.validate(context.switchToHttp().getRequest());
+    }
 }
