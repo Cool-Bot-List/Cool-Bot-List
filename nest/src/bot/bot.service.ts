@@ -46,6 +46,20 @@ export class BotService {
             return new HttpException("Library is invalid. ", HttpStatus.BAD_REQUEST);
         if (query.presence && query.presence !== BotPresence.ONLINE && query.presence !== BotPresence.DND && query.presence !== BotPresence.AWAY && query.presence !== BotPresence.INVISIBLE && query.presence !== BotPresence.MOBILE)
             return new HttpException("Presence is invalid.", HttpStatus.BAD_REQUEST);
+        if (query.tags)
+            for (const t of query.tags) {
+                if (
+                    t !== BOT_TAGS.MODERATION &&
+                    t !== BOT_TAGS.MUSIC &&
+                    t !== BOT_TAGS.LEVELING &&
+                    t !== BOT_TAGS.FUN &&
+                    t !== BOT_TAGS.UTILITY &&
+                    t !== BOT_TAGS.DASHBOARD &&
+                    t !== BOT_TAGS.CUSTOMIZABLE &&
+                    t !== BOT_TAGS.ECONOMY
+                )
+                    return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
+            }
 
         let bots = await this.Bots.find({ isApproved: true });
         if (query.tag) bots = bots.filter(b => b.tag.toLowerCase().includes(query.tag.toLowerCase()));
@@ -116,6 +130,9 @@ export class BotService {
             )
                 return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
         }
+
+        if (library && library !== BotLibraries.DISCORDJS && library !== BotLibraries.DISCORDPY && library !== BotLibraries.DISCORDNET && library !== BotLibraries.DSHARPPLUS && library !== BotLibraries.JDA && library !== BotLibraries.JAVACORD && library !== BotLibraries.ERIS)
+            return new HttpException("Library is invalid. ", HttpStatus.BAD_REQUEST);
 
         const doOwnersExist = owners.some(id => this.Users.findOne({ id }));
         if (!doOwnersExist) return new HttpException("One or more of the owner's don't exist", HttpStatus.BAD_REQUEST);
