@@ -15,5 +15,5 @@ jobs:
             - run: npm ci
             - run: npm run lint
             - run: ( cd ./nest && npm ci && npm run build )
-            - run: ( cd ./frontend && npm ci && npm run build )
+            - run: ( cd ./frontend && npm ci && npm i eslint && npm run build )
             - run: ( cd ./discord-bot && npm ci )
