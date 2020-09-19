@@ -14,6 +14,6 @@ jobs:
                   node-version: 12
             - run: npm ci
             - run: npm run lint
-            - run: ( cd ./nest && npm ci && npm run build && npm run start:prod MONGO_URI=${{ secrets.MONGO_URI }} )
+            - run: ( cd ./nest && npm ci && npm run build )
             - run: ( cd ./frontend && npm ci && npm run build )
             - run: ( cd ./discord-bot && npm ci )
