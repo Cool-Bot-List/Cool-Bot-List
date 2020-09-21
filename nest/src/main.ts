@@ -3,7 +3,10 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as session from "express-session";
 import * as passport from "passport";
-console.log(process.env);
+import { environment } from "./environment/environment";
+
+console.log(process.env.NODE_ENV);
+console.log(environment);
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix("api");
@@ -20,6 +23,6 @@ async function bootstrap(): Promise<void> {
     app.use(passport.initialize());
     app.use(passport.session());
 
-    await app.listen(5000);
+    await app.listen(environment.PORT);
 }
 bootstrap();
