@@ -62,7 +62,6 @@ export class BotResolver {
 
     @Mutation(() => BotType)
     public updateBot(@Args("botUpdatable") data: BotUpdatable, @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
-        console.log("mutation", user);
         return this.service.update(data, user);
     }
 

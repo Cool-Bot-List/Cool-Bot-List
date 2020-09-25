@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 import { Bot } from "src/bot/bot.schema";
 import { User } from "src/user/user.schema";
 import { Review } from "src/review/review.schema";
+import { Socket } from "dgram";
 
 @WebSocketGateway()
 export class EventsGateway {
@@ -41,6 +42,10 @@ export class EventsGateway {
 
     public emitUserDelete(user: User): SocketIO.Namespace {
         return this.socket.emit("user-delete", user);
+    }
+
+    public emitUserLogout(user: User): SocketIO.Namespace {
+        return this.socket.emit("user-logout", user);
     }
 
     public emitNewReview(review: Review): SocketIO.Namespace {

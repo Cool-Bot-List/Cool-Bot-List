@@ -65,6 +65,16 @@ client.on("ready", async () => {
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
     });
+    socket.on("user-logout", (user) => {
+        console.log("called");
+        const embed = new MessageEmbed()
+            .setAuthor(user.tag, user.avatarUrl)
+            .setTitle(`${user.tag} Logged Out`)
+            .setThumbnail(user.avatarUrl)
+            .setDescription(`${user.tag} logged out.`);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(user, null, 4)}\`\`\``);
+    });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;
         const query = gql`

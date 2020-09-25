@@ -72,4 +72,11 @@ export class AuthService {
         }
         return res.status(200).json({ message: "Successfully redirected." });
     }
+
+    public logout(req: Request, res: Response): void {
+        if (!req.user) return;
+        this.events.emitUserLogout(<User>req.user);
+        req.logOut();
+        res.redirect("http://localhost:3000");
+    }
 }
