@@ -7,6 +7,7 @@ import { getTag } from "src/bot/util/get-tag.util";
 import { EventsGateway } from "src/events/events.gateway";
 import { getAvatarUrl } from "src/bot/util/get-avatar-url.util";
 import { Request, Response } from "express";
+import { environment } from "src/environment/environment";
 
 @Injectable()
 export class AuthService {
@@ -61,14 +62,14 @@ export class AuthService {
     public async redirect(req: Request, res: Response): Promise<Response> {
         const user = <User>req.user;
         if (user.newUser) {
-            res.redirect("http://localhost:3000/new-user");
+            res.redirect(environment.FRONTEND.NEW_USER);
             const foundUser = await this.Users.findOne({ id: user.id });
             foundUser.newUser = false;
             await foundUser.save();
         } else if (!user.newUser) {
-            res.redirect(`http://localhost:3000/users/${user.id}`);
+            res.redirect(environment.FRONTEND.USER(user.id));
         } else {
-            res.redirect("http://localhost:3000");
+            res.redirect(environment.FRONTEND.BASE);
         }
         return res.status(200).json({ message: "Successfully redirected." });
     }
@@ -77,6 +78,6 @@ export class AuthService {
         if (!req.user) return;
         this.events.emitUserLogout(<User>req.user);
         req.logOut();
-        res.redirect("http://localhost:3000");
+        res.redirect(environment.FRONTEND.BASE);
     }
 }
