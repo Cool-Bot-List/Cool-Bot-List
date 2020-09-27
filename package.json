@@ -2,34 +2,33 @@
     "name": "cool-bot-list",
     "version": "1.0.0",
     "description": "",
-    "main": "server/app.js",
     "scripts": {
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "start": "node server/app.js",
-        "server": "nodemon server/app.js",
-        "client": "npm start --prefix client",
+        "nest": "npm run start:dev --prefix nest",
+        "build-nest": "npm run start:prod --prefix nest",
+        "start-nest": "npm start --prefix nest",
+        "frontend": "npm start --prefix frontend",
         "bot": "npm run dev --prefix discord-bot",
-        "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run bot\""
+        "dev": "concurrently \"npm run nest\" \"npm run frontend\" \"npm run bot\""
+    },
+    "dependencies": {
+        "concurrently": "^5.3.0",
+        "nodemon": "^2.0.4",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.7",
+        "@typescript-eslint/eslint-plugin": "^2.34.0",
+        "@typescript-eslint/parser": "^2.34.0",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^7.9.0",
+        "eslint-config-react-app": "^5.2.1",
+        "eslint-plugin-flowtype": "^4.7.0",
+        "eslint-plugin-import": "^2.22.0",
+        "eslint-plugin-jsx-a11y": "^6.3.1",
+        "eslint-plugin-react": "^7.20.6",
+        "eslint-plugin-react-hooks": "^2.5.1"
     },
     "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^0.20.0",
-        "cors": "^2.8.5",
-        "discord.js": "^12.3.1",
-        "dotenv": "^8.2.0",
-        "express": "^4.17.1",
-        "express-session": "^1.17.1",
-        "jsonwebtoken": "^8.5.1",
-        "mongoose": "^5.10.3",
-        "passport": "^0.4.1",
-        "passport-discord": "^0.1.4",
-        "socket.io": "^2.3.0"
-    },
-    "devDependencies": {
-        "concurrently": "^5.3.0",
-        "eslint": "^7.8.1",
-        "nodemon": "^2.0.4"
-    }
+    "license": "ISC"
 }

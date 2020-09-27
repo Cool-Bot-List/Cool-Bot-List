@@ -1,0 +1,198 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type VoteType {
+  date: DateTime
+  bot: BotType
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type NotificationType {
+  read: Boolean!
+  message: String!
+}
+
+type UserType {
+  id: ID!
+  tag: String!
+  avatarUrl: String!
+  bio: String!
+  bots: [BotType!]!
+  newUser: Boolean!
+  notifications: [NotificationType!]!
+  token: String
+  vote: VoteType
+  isAdmin: Boolean
+  bot(id: String!): BotType
+}
+
+type OwnerReplyType {
+  user: UserType!
+  review: String!
+  likes: [UserType!]!
+  dislikes: [UserType!]!
+  date: DateTime
+  edited: DateTime
+}
+
+type ReviewType {
+  _id: ID!
+  bot: BotType!
+  user: UserType!
+  review: String!
+  ownerReply: OwnerReplyType
+  likes: [UserType!]!
+  dislikes: [UserType!]!
+  rating: Float!
+  date: DateTime!
+  edited: DateTime
+}
+
+type BotType {
+  id: ID!
+  tag: String!
+  avatarUrl: String!
+  prefix: String!
+  description: String!
+  owners: [UserType!]!
+  website: String!
+  inviteLink: String
+  helpCommand: String!
+  supportServer: String
+  library: String!
+  averageRating: Float
+  isApproved: Boolean
+  reviews: [ReviewType!]!
+  votes: Float!
+  tags: [String!]!
+  servers: Float
+  users: Float
+  presence: String
+  owner(index: Float, id: String): UserType!
+  review(index: Float, mongoId: String): ReviewType
+}
+
+type Query {
+  reviews: [ReviewType!]!
+  review(mongoId: String!): ReviewType!
+  bots: [BotType!]
+  bot(id: String!): BotType
+  searchForBot(query: BotSearchable!): [BotType!]
+  users: [UserType!]
+  user(id: String!): UserType
+  admins: [UserType!]
+  me: UserType!
+}
+
+input BotSearchable {
+  tag: String
+  tags: [String!]
+  library: String
+  minServers: Float
+  minUsers: Float
+  presence: String
+}
+
+type Mutation {
+  createReview(reviewCreatable: ReviewCreatable!): ReviewType!
+  updateReview(review: String!, mongoId: String!): ReviewType!
+  likeReview(userId: String!, mongoId: String!): ReviewType!
+  dislikeReview(userId: String!, mongoId: String!): ReviewType!
+  deleteReview(mongoId: String!): ReviewType!
+  createOwnerReply(ownerReplyCreatable: OwnerReplyCreatable!): OwnerReplyType!
+  updateOwnerReply(ownerReply: String!, reviewId: String!): OwnerReplyType!
+  likeOwnerReply(userId: String!, reviewId: String!): OwnerReplyType!
+  dislikeOwnerReply(userId: String!, reviewId: String!): OwnerReplyType!
+  deleteOwnerReply(reviewId: String!): OwnerReplyType!
+  updateNotification(method: String!, indexOrMessage: String!, userId: String!): NotificationType!
+  updateAllNotifications(method: String!, userId: String!): [NotificationType!]!
+  createBot(botCreatable: BotCreatable!): BotType!
+  updateBot(botUpdatable: BotUpdatable!): BotType!
+  deleteBot(id: String!): BotType!
+  approveBot(method: String!, id: String!): BotType!
+  createToken(id: String!): String!
+  voteBot(userId: String!, botId: String!): VoteType!
+  updateUser(userUpdatable: UserUpdatable!): UserType!
+  deleteUser(id: String!): UserType!
+  makeAdmin(method: String!, id: String!): UserType!
+  updateMyBot(botUpdatable: PublicApiBotUpdatable!): String!
+}
+
+input ReviewCreatable {
+  botId: String!
+  userId: String!
+  review: String!
+  rating: Float!
+}
+
+input OwnerReplyCreatable {
+  ownerId: String!
+  reviewId: String!
+  review: String!
+}
+
+input BotCreatable {
+  id: ID!
+  prefix: String!
+  description: String!
+  owners: [String!]!
+  website: String
+  helpCommand: String!
+  supportServer: String
+  library: String!
+  inviteLink: String
+  tags: [String!]
+}
+
+input BotUpdatable {
+  id: String!
+  tag: String
+  avatarUrl: String
+  prefix: String
+  description: String
+  owners: [String!]
+  website: String
+  helpCommand: String
+  supportServer: String
+  library: String
+  averageRating: Float
+  isApproved: Boolean
+  votes: Float
+  inviteLink: String
+  tags: [String!]
+  servers: Float
+  users: Float
+  presence: String
+  reviews: [String!]
+}
+
+input UserUpdatable {
+  id: String!
+  tag: String
+  avatarUrl: String
+  bio: String
+  newUser: Boolean
+}
+
+input PublicApiBotUpdatable {
+  client: ClientType!
+  presence: PresenceType!
+  sendTotalGuilds: Boolean!
+  sendTotalUsers: Boolean!
+  sendPresence: Boolean!
+}
+
+input ClientType {
+  user: String!
+  guilds: [String!]!
+  users: [String!]!
+}
+
+input PresenceType {
+  status: String!
+}
