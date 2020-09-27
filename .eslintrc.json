@@ -1,15 +1,19 @@
 {
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es2020": true,
-    "node": true
-  },
-  "extends": "eslint:recommended",
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "react-app"
+  ],
   "parserOptions": {
+    "sourceType": "module",
     "ecmaVersion": 11
   },
   "rules": {
+    "indent": 0,
+    "@typescript-eslint/indent": [
+      "error",
+      4
+    ],
     "indent": [
       "error",
       4
@@ -18,14 +22,25 @@
       "error",
       "double"
     ],
-    "semi": [
-      "error",
-      "always"
+    "semi": "off",
+    "@typescript-eslint/semi": [
+      "error"
+    ],
+    "no-extra-semi": 0,
+    "@typescript-eslint/no-extra-semi": 0,
+    "@typescript-eslint/ban-ts-comment": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/consistent-type-assertions": 0,
+    "@typescript-eslint/no-unused-vars": [
+      "error"
     ],
     "max-len": [
       "error",
       {
-        "code": 250
+        "code": 150
       }
     ],
     "comma-dangle": [

@@ -1,1 +1,9 @@
-client
+nest/dist
+frontend/build
+
+node_modules
+discord-bot/node_modules
+nest/node_modules
+frontend/node_modules
+
+frontend/src/types/graphql.ts
