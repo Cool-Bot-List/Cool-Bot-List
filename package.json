@@ -11,7 +11,7 @@
         "frontend": "npm start --prefix frontend",
         "bot": "npm run dev --prefix discord-bot",
         "dev": "concurrently \"npm run nest\" \"npm run frontend\" \"npm run bot\"",
-        "start": "cd nest && npm i && npm run build && cd ../discord-bot && npm i && cd ../ && npm i && npm i concurrently -g && npm i @nestjs/cli && npm run prod",
+        "start": "npm i @nestjs/cli && cd nest && npm i && npm run build && cd ../discord-bot && npm i && cd ../ && npm i && npm i concurrently -g && npm run prod",
         "prod": "concurrently \"npm run start:prod --prefix nest\" \"npm run dev --prefix discord-bot\""
     },
     "dependencies": {
