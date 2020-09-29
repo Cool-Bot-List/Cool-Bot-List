@@ -42,7 +42,9 @@
         "passport-discord": "^0.1.4",
         "reflect-metadata": "^0.1.13",
         "rimraf": "^3.0.2",
-        "rxjs": "^6.5.4",
+        "rxjs": "^6.5.4"
+    },
+    "devDependencies": {
         "@nestjs/cli": "^7.0.0",
         "@nestjs/schematics": "^7.0.0",
         "@nestjs/testing": "^7.0.0",
@@ -63,9 +65,6 @@
         "ts-node": "^8.6.2",
         "tsconfig-paths": "^3.9.0",
         "typescript": "^3.7.4"
-    },
-    "devDependencies": {
-        
     },
     "jest": {
         "moduleFileExtensions": [
