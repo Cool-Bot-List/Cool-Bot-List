@@ -5,9 +5,9 @@ import * as session from "express-session";
 import * as passport from "passport";
 import { environment } from "./environment/environment";
 
+console.log(environment);
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
-    app.setGlobalPrefix("api");
     app.use(
         session({
             secret: "Testing",
