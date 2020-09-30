@@ -27,9 +27,8 @@ export class BotResolver {
     }
 
     @Query(() => [BotType], { nullable: true })
-    //@ts-ignore
-    public searchForBot(@Args("query") query: BotSearchable): Promise<Bot[]> {
-        // return this.service.searchForBot(query);
+    public searchForBot(@Args("query") query: BotSearchable): Promise<Bot[] | HttpException> {
+        return this.service.searchForBot(query);
     }
 
     @ResolveField("owners", () => [UserType])
@@ -63,7 +62,6 @@ export class BotResolver {
 
     @Mutation(() => BotType)
     public updateBot(@Args("botUpdatable") data: BotUpdatable, @Context("req") { user }: { user: User }): Promise<Bot | HttpException> {
-        console.log("mutation", user);
         return this.service.update(data, user);
     }
 

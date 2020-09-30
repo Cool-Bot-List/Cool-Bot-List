@@ -3,10 +3,11 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as session from "express-session";
 import * as passport from "passport";
+import { environment } from "./environment/environment";
 
-async function bootstrap() {
+console.log(environment);
+async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
-    app.setGlobalPrefix("api");
     app.use(
         session({
             secret: "Testing",
@@ -19,7 +20,8 @@ async function bootstrap() {
     );
     app.use(passport.initialize());
     app.use(passport.session());
+    app.enableCors();
 
-    await app.listen(5000);
+    await app.listen(environment.PORT);
 }
 bootstrap();

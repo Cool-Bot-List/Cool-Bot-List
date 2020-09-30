@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy as DiscordStrategy, Profile } from "passport-discord";
 import { AuthService } from "./auth.service";
 import { User } from "src/user/user.schema";
+import { environment } from "src/environment/environment";
 
 
 @Injectable()
@@ -11,7 +12,7 @@ export class AuthStrategy extends PassportStrategy(DiscordStrategy) {
         super({
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: "http://localhost:5000/api/login/redirect",
+            callbackURL: environment.CALLBACK_URL,
             scope: ["identify", "applications.builds.read"],
         });
     }

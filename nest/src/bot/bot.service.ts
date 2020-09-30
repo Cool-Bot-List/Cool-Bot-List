@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable indent */
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -16,6 +17,8 @@ import { BotApproveMethodResolvable } from "./interfaces/bot-approve-method-reso
 import { BotApproveMethods } from "./constants/bot-approve-methods.enum";
 import { NotificationService } from "src/notification/notification.service";
 import { BotSearchable } from "./gql-types/bot-searchable.input";
+import { BotLibraries } from "./constants/bot-libraries.enum";
+import { BotPresence } from "./constants/bot-presence.enum";
 
 @Injectable()
 export class BotService {
@@ -38,9 +41,43 @@ export class BotService {
         return this.Bots.findOne({ id });
     }
 
-    // public async searchForBot(query: BotSearchable): Promise<Bot[]> {
+    public async searchForBot(query: BotSearchable): Promise<Bot[] | HttpException> {
+        if (query.library && query.library !== BotLibraries.DISCORDJS && query.library !== BotLibraries.DISCORDPY && query.library !== BotLibraries.DISCORDNET && query.library !== BotLibraries.DSHARPPLUS && query.library !== BotLibraries.JDA && query.library !== BotLibraries.JAVACORD && query.library !== BotLibraries.ERIS)
+            return new HttpException("Library is invalid. ", HttpStatus.BAD_REQUEST);
+        if (query.presence && query.presence !== BotPresence.ONLINE && query.presence !== BotPresence.DND && query.presence !== BotPresence.AWAY && query.presence !== BotPresence.INVISIBLE && query.presence !== BotPresence.MOBILE)
+            return new HttpException("Presence is invalid.", HttpStatus.BAD_REQUEST);
+        if (query.tags)
+            for (const t of query.tags) {
+                if (
+                    t !== BOT_TAGS.MODERATION &&
+                    t !== BOT_TAGS.MUSIC &&
+                    t !== BOT_TAGS.LEVELING &&
+                    t !== BOT_TAGS.FUN &&
+                    t !== BOT_TAGS.UTILITY &&
+                    t !== BOT_TAGS.DASHBOARD &&
+                    t !== BOT_TAGS.CUSTOMIZABLE &&
+                    t !== BOT_TAGS.ECONOMY
+                )
+                    return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
+            }
 
-    // }
+        let bots = await this.Bots.find({ isApproved: true });
+        if (query.tag) bots = bots.filter(b => b.tag.toLowerCase().includes(query.tag.toLowerCase()));
+        if (query.tags) {
+            let filteredBots: Bot[];
+            for (const t of query.tags)
+                filteredBots = bots.filter(b => b.tags.includes(t));
+            bots = filteredBots;
+        }
+
+        if (query.library) bots = bots.filter(b => b.library.toLowerCase().includes(query.library.toLowerCase()));
+        if (query.minServers) bots = bots.filter(b => b.servers >= query.minServers);
+        if (query.minUsers) bots = bots.filter(b => b.users >= query.minUsers);
+        if (query.presence) bots = bots.filter(b => b.presence && b.presence.toLowerCase().includes(query.presence.toLowerCase()));
+
+        if (bots.length === 0) return new HttpException("A bot was not found.", HttpStatus.NOT_FOUND);
+        return bots;
+    }
 
     public async getOwners(bot: BotType): Promise<User[]> {
         const owners = [];
@@ -93,6 +130,9 @@ export class BotService {
             )
                 return new HttpException("One or more tags are invalid!", HttpStatus.BAD_REQUEST);
         }
+
+        if (library && library !== BotLibraries.DISCORDJS && library !== BotLibraries.DISCORDPY && library !== BotLibraries.DISCORDNET && library !== BotLibraries.DSHARPPLUS && library !== BotLibraries.JDA && library !== BotLibraries.JAVACORD && library !== BotLibraries.ERIS)
+            return new HttpException("Library is invalid. ", HttpStatus.BAD_REQUEST);
 
         const doOwnersExist = owners.some(id => this.Users.findOne({ id }));
         if (!doOwnersExist) return new HttpException("One or more of the owner's don't exist", HttpStatus.BAD_REQUEST);
@@ -219,7 +259,7 @@ export class BotService {
         return foundBot;
     }
 
-    private checkLinks(links: { website: string, supportServer: string, inviteLink: string }): boolean {
+    private checkLinks(links: { website: string; supportServer: string; inviteLink: string }): boolean {
         const validEndings = [".com", ".org", ".net", ".io"];
 
         if (links.inviteLink && !links.inviteLink.startsWith("https://discord")) return false;
@@ -229,7 +269,6 @@ export class BotService {
             if (link) {
                 if (!link.startsWith("https://")) return false;
                 for (const e of validEndings) {
-                    console.log(link);
                     if (link.includes(e)) return true;
                     else return false;
                 }

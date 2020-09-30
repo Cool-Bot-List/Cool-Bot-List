@@ -30,13 +30,13 @@ export class PublicApiService {
         const foundBot = await this.Bots.findOne({ id: client.user });
         if (!foundBot) return new HttpException("The bot was not found.", HttpStatus.NOT_FOUND);
 
-        sendTotalGuilds ? (guilds = client.guilds.length) : null;
-        sendTotalUsers ? (users = client.users.length) : null;
-        sendPresence ? (presenceString = presence.status) : null;
+        sendTotalGuilds ? guilds = client.guilds.length : guilds = null;
+        sendTotalUsers ? users = client.users.length : users = null;
+        sendPresence ? presenceString = presence.status : presenceString = null;
 
-        if (sendTotalGuilds !== false) foundBot.servers = guilds;
-        if (sendTotalUsers !== false) foundBot.users = users;
-        if (sendPresence !== false) foundBot.presence = presenceString;
+        if (sendTotalGuilds) foundBot.servers = guilds;
+        if (sendTotalUsers) foundBot.users = users;
+        if (sendPresence) foundBot.presence = presenceString;
 
         try {
             await foundBot.save();

@@ -6,14 +6,15 @@ import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { Request, Response } from "express";
 import { PublicApiModule } from "./public-api/public-api.module";
+import { AppController } from "./app.controller";
 
 
 @Module({
     imports: [
         GraphQLModule.forRoot({
             autoSchemaFile: "src/schema.gql",
-            path: "/api/graphql",
-            context: ({ req, res }: { req: Request, res: Response }) => ({ req, res }),
+            context: ({ req, res }: { req: Request; res: Response }) => ({ req, res }),
+            introspection: true,
             playground: {
                 settings: {
                     "request.credentials": "include",
@@ -26,5 +27,6 @@ import { PublicApiModule } from "./public-api/public-api.module";
         UserModule,
         PublicApiModule,
     ],
+    controllers: [AppController],
 })
 export class AppModule { }

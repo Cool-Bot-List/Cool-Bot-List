@@ -14,8 +14,13 @@ client.login(process.env.BOT_TOKEN);
 // });
 // cbl.send();
 
-const socket = io("http://localhost:5000");
-const BASE_URL = "http://localhost:5000/api/graphql";
+let socket = io("http://localhost:5000");
+let BASE_URL = "http://localhost:5000/api/graphql";
+
+if (process.env.NODE_ENV === "production") {
+    socket = io("https://coolbotlistapi.herokuapp.com/");
+    BASE_URL = "https://coolbotlistapi.herokuapp.com/graphql";
+}
 
 client.on("ready", async () => {
     console.log("Discord Bot has logged in.");
@@ -64,6 +69,16 @@ client.on("ready", async () => {
         logChannel.send(embed);
 
         logChannel.send(`\`\`\`js\n${JSON.stringify(data, null, 4)}\`\`\``);
+    });
+    socket.on("user-logout", (user) => {
+        console.log("called");
+        const embed = new MessageEmbed()
+            .setAuthor(user.tag, user.avatarUrl)
+            .setTitle(`${user.tag} Logged Out`)
+            .setThumbnail(user.avatarUrl)
+            .setDescription(`${user.tag} logged out.`);
+        logChannel.send(embed);
+        logChannel.send(`\`\`\`js\n${JSON.stringify(user, null, 4)}\`\`\``);
     });
     socket.on("new-bot", async (data) => {
         const { id, name, prefix, description, owners, website, helpCommand, supportServer, library } = data;

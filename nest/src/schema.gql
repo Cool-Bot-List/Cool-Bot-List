@@ -90,8 +90,12 @@ type Query {
 }
 
 input BotSearchable {
-  name: String
-  hasTags: [String!]
+  tag: String
+  tags: [String!]
+  library: String
+  minServers: Float
+  minUsers: Float
+  presence: String
 }
 
 type Mutation {

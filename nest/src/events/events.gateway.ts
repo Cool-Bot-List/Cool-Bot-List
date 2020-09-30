@@ -43,6 +43,10 @@ export class EventsGateway {
         return this.socket.emit("user-delete", user);
     }
 
+    public emitUserLogout(user: User): SocketIO.Namespace {
+        return this.socket.emit("user-logout", user);
+    }
+
     public emitNewReview(review: Review): SocketIO.Namespace {
         return this.socket.emit("new-review", review);
     }
