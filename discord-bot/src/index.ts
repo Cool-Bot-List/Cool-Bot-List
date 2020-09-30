@@ -14,8 +14,13 @@ client.login(process.env.BOT_TOKEN);
 // });
 // cbl.send();
 
-const socket = io("http://localhost:5000");
-const BASE_URL = "http://localhost:5000/api/graphql";
+let socket = io("http://localhost:5000");
+let BASE_URL = "http://localhost:5000/api/graphql";
+
+if (process.env.NODE_ENV === "production") {
+    socket = io("https://coolbotlistapi.herokuapp.com/");
+    BASE_URL = "https://coolbotlistapi.herokuapp.com/graphql";
+}
 
 client.on("ready", async () => {
     console.log("Discord Bot has logged in.");
