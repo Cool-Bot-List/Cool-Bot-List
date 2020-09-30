@@ -12,7 +12,7 @@ const dev = {
 
 const prod = {
     PORT: process.env.PORT,
-    CALLBACK_URL: "https://api.coolbotlist.tk/login/redirect",
+    CALLBACK_URL: "https://coolbotlistapi.herokuapp.com/login/redirect",
     FRONTEND: {
         BASE: "https://coolbotlist.tk",
         NEW_USER: "https://coolbotlist.tk/new-user",
