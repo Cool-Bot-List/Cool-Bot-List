@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Controller, Get, Req, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, HttpException, Req, Res, UseGuards } from "@nestjs/common";
 import { Request, Response } from "express";
 import { LoginAuthGuard } from "./login-auth.guard";
 import { AuthService } from "./auth.service";
@@ -20,8 +20,7 @@ export class AuthController {
     }
 
     @Get("logout")
-    public logout(@Req() req: Request, @Res() res: Response): void {
+    public logout(@Req() req: Request, @Res() res: Response): void | HttpException {
         return this.service.logout(req, res);
-
     }
 }

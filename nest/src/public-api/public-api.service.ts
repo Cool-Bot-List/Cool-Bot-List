@@ -28,6 +28,7 @@ export class PublicApiService {
             return new HttpException("You are missing properties.", HttpStatus.BAD_REQUEST);
 
         const foundBot = await this.Bots.findOne({ id: client.user });
+        const original = { ...foundBot };
         if (!foundBot) return new HttpException("The bot was not found.", HttpStatus.NOT_FOUND);
 
         sendTotalGuilds ? guilds = client.guilds.length : guilds = null;
@@ -44,8 +45,14 @@ export class PublicApiService {
             return new HttpException("Something went wrong and the bot didn't update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.events.emitBotUpdate(foundBot);
-        return "Successfully updated the bot's stats.";
+        if (foundBot === original) {
+            return "The bot is the same as before";
+        }
+
+        else {
+            this.events.emitBotUpdate(foundBot);
+            return "Successfully updated the bot's stats.";
+        }
     }
 
 
