@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
 import { HttpException, UseGuards } from "@nestjs/common";
-import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Context, Mutation, Resolver } from "@nestjs/graphql";
+import { Request } from "express";
 import { PublicApiGqlGuard } from "./public-api-gql.guard";
 import { PublicApiService } from "./public-api.service";
 import { RateLimitGqlGuard } from "./rate-limit/rate-limit-gql.guard";
@@ -11,7 +13,10 @@ export class PublicApiResolver {
 
     @Mutation(() => String)
     @UseGuards(PublicApiGqlGuard, RateLimitGqlGuard)
-    public updateMyBot(@Args("botUpdatable") botUpdatable: PublicApiBotUpdatable): Promise<string | HttpException> {
-        return this.service.update(botUpdatable);
+    public updateMyBot(
+        @Args("botUpdatable") botUpdatable: PublicApiBotUpdatable,
+        @Context("req") req: Request
+    ): Promise<{ message: string; status: number } | HttpException> {
+        return this.service.update(botUpdatable, req);
     }
 }

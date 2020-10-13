@@ -1,4 +1,6 @@
-import { Body, Controller, HttpException, Put, UseGuards } from "@nestjs/common";
+/* eslint-disable @typescript-eslint/indent */
+import { Body, Controller, HttpException, Put, Req, UseGuards } from "@nestjs/common";
+import { Request } from "express";
 import { PublicApiGuard } from "./public-api.guard";
 import { PublicApiService } from "./public-api.service";
 import { RateLimitGuard } from "./rate-limit/rate-limit.guard";
@@ -10,7 +12,10 @@ export class PublicApiController {
 
     @Put("update-my-bot")
     @UseGuards(PublicApiGuard, RateLimitGuard)
-    public updateMyBot(@Body() botUpdatable: PublicApiBotUpdatable): Promise<string | HttpException> {
-        return this.service.update(botUpdatable);
+    public updateMyBot(
+        @Body() botUpdatable: PublicApiBotUpdatable,
+        @Req() req: Request
+    ): Promise<{ message: string; status: number } | HttpException> {
+        return this.service.update(botUpdatable, req);
     }
 }

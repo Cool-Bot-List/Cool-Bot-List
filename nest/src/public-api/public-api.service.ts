@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import * as jwt from "jsonwebtoken";
 import { Request } from "express";
+import * as jwt from "jsonwebtoken";
 import { Model } from "mongoose";
 import { Bot } from "src/bot/bot.schema";
 import { EventsGateway } from "src/events/events.gateway";
-import { PublicApiBotUpdatable } from "./types/public-api-bot-updatable.input";
 import { User } from "src/user/user.schema";
+import { PublicApiBotUpdatable } from "./types/public-api-bot-updatable.input";
 
 @Injectable()
 export class PublicApiService {
@@ -18,7 +18,7 @@ export class PublicApiService {
         private events: EventsGateway
     ) { }
 
-    public async update(data: PublicApiBotUpdatable): Promise<string | HttpException> {
+    public async update(data: PublicApiBotUpdatable, req: Request): Promise<{ message: string; status: number } | HttpException> {
         const { client } = data;
         const { sendTotalGuilds, sendTotalUsers, sendPresence } = data;
         let guilds: number, users: number, presenceString: string;
@@ -31,12 +31,19 @@ export class PublicApiService {
         const original = { ...foundBot };
         if (!foundBot) return new HttpException("The bot was not found.", HttpStatus.NOT_FOUND);
 
+        const jwtHeader = req.headers.authorization;
+        const token = jwtHeader && jwtHeader.split(" ")[1];
+        const decodedData = <{ user: { id: string } }>jwt.verify(token, process.env.JWT_SECRET);
+        const foundUser = await this.Users.findOne({ id: decodedData.user.id });
+        if (!foundUser.bots.includes(client.user)) throw new HttpException("You do not have permission to do that action.", HttpStatus.UNAUTHORIZED);
+
         sendTotalGuilds ? guilds = client.guilds.length : guilds = null;
         sendTotalUsers ? users = client.users.length : users = null;
         sendPresence ? presenceString = presence.status : presenceString = null;
-        
-        if (guilds === foundBot.servers || users === foundBot.servers || presenceString === foundBot.presence) return "The bot is the same as before";
-        
+
+        if (guilds === foundBot.servers && users === foundBot.servers && presenceString === foundBot.presence)
+            return { message: "The bot is the same as before", status: 200 };
+
         if (sendTotalGuilds) foundBot.servers = guilds;
         if (sendTotalUsers) foundBot.users = users;
         if (sendPresence) foundBot.presence = presenceString;
@@ -47,13 +54,12 @@ export class PublicApiService {
             return new HttpException("Something went wrong and the bot didn't update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (foundBot === original) {
-            return "The bot is the same as before";
-        }
+        if (foundBot === original)
+            return { message: "The bot is the same as before", status: 200 };
 
         else {
             this.events.emitBotUpdate(foundBot);
-            return "Successfully updated the bot's stats.";
+            return { message: "Successfully updated the bot's stats.", status: 201 };
         }
     }
 
@@ -74,7 +80,7 @@ export class PublicApiService {
 
         const { id } = decodedData.user;
         const foundUser = await this.Users.findOne({ id });
-        if (token !== foundUser!.token) {
+        if (token !== foundUser.token) {
             throw new HttpException("The token is invalid.", HttpStatus.FORBIDDEN);
         }
         return true;
