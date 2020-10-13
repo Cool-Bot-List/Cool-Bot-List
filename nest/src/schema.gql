@@ -77,6 +77,11 @@ type BotType {
   review(index: Float, mongoId: String): ReviewType
 }
 
+type PublicApiResponse {
+  message: String!
+  status: Float!
+}
+
 type Query {
   reviews: [ReviewType!]!
   review(mongoId: String!): ReviewType!
@@ -120,7 +125,7 @@ type Mutation {
   updateUser(userUpdatable: UserUpdatable!): UserType!
   deleteUser(id: String!): UserType!
   makeAdmin(method: String!, id: String!): UserType!
-  updateMyBot(botUpdatable: PublicApiBotUpdatable!): String!
+  updateMyBot(botUpdatable: PublicApiBotUpdatable!): PublicApiResponse!
 }
 
 input ReviewCreatable {

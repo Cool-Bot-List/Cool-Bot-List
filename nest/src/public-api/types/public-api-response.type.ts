@@ -1,6 +1,6 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 
-@InputType()
+@ObjectType()
 export class PublicApiResponse {
 
     /**
