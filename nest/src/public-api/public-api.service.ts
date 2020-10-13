@@ -34,7 +34,9 @@ export class PublicApiService {
         sendTotalGuilds ? guilds = client.guilds.length : guilds = null;
         sendTotalUsers ? users = client.users.length : users = null;
         sendPresence ? presenceString = presence.status : presenceString = null;
-
+        
+        if (guilds === foundBot.servers || users === foundBot.servers || presenceString === foundBot.presence) return "The bot is the same as before";
+        
         if (sendTotalGuilds) foundBot.servers = guilds;
         if (sendTotalUsers) foundBot.users = users;
         if (sendPresence) foundBot.presence = presenceString;
