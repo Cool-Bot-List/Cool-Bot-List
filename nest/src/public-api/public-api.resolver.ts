@@ -6,12 +6,13 @@ import { PublicApiGqlGuard } from "./public-api-gql.guard";
 import { PublicApiService } from "./public-api.service";
 import { RateLimitGqlGuard } from "./rate-limit/rate-limit-gql.guard";
 import { PublicApiBotUpdatable } from "./types/public-api-bot-updatable.input";
+import { PublicApiResponse } from "./types/public-api-response.type";
 
 @Resolver()
 export class PublicApiResolver {
     constructor(private service: PublicApiService) { }
 
-    @Mutation(() => String)
+    @Mutation(() => PublicApiResponse)
     @UseGuards(PublicApiGqlGuard, RateLimitGqlGuard)
     public updateMyBot(
         @Args("botUpdatable") botUpdatable: PublicApiBotUpdatable,
