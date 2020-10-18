@@ -1,4 +1,5 @@
 nest/dist
+discord-bot/dist
 frontend/build
 
 node_modules

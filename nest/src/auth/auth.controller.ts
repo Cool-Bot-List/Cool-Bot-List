@@ -19,6 +19,7 @@ export class AuthController {
         return this.service.redirect(req, res);
     }
 
+
     @Get("logout")
     public logout(@Req() req: Request, @Res() res: Response): void {
         return this.service.logout(req, res);

@@ -43,7 +43,7 @@ export class PublicApiService {
 
         if (guilds === foundBot.servers && users === foundBot.users && presenceString === foundBot.presence)
             return { message: "The bot is the same as before", status: 200 };
-	console.log(guilds, foundBot.servers, users, foundBot.users, presenceString, foundBot.presence);
+        console.log(guilds, foundBot.servers, users, foundBot.users, presenceString, foundBot.presence);
         if (sendTotalGuilds) foundBot.servers = guilds;
         if (sendTotalUsers) foundBot.users = users;
         if (sendPresence) foundBot.presence = presenceString;

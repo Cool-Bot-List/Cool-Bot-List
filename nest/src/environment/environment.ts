@@ -2,7 +2,7 @@ import "dotenv/config";
 
 const dev = {
     PORT: 5000,
-    CALLBACK_URL: "http://localhost:5000/api/login/redirect",
+    CALLBACK_URL: "http://localhost:5000/login/redirect",
     FRONTEND: {
         BASE: "http://localhost:3000",
         NEW_USER: "http://localhost:3000/new-user",

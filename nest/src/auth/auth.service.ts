@@ -67,18 +67,18 @@ export class AuthService {
             foundUser.newUser = false;
             await foundUser.save();
         } else if (!user.newUser) {
+            console.log(req.query);
             res.redirect(environment.FRONTEND.USER(user.id));
-        } else {
-            res.redirect(environment.FRONTEND.BASE);
         }
         return res.status(200).json({ message: "Successfully redirected." });
     }
 
     public logout(req: Request, res: Response): void {
-        console.log(req.user);
         if (!req.user) throw new HttpException("Cannot logout when not logged in.", HttpStatus.BAD_REQUEST);
         this.events.emitUserLogout(<User>req.user);
         req.logOut();
-        res.redirect(environment.FRONTEND.BASE);
+
+        req.query.redirect ? res.redirect(<string>req.query.redirect)
+            : res.redirect(environment.FRONTEND.BASE);
     }
 }

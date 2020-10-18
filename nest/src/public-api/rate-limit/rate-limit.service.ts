@@ -10,11 +10,12 @@ export class RateLimitService {
 
     private get rateLimitAddedAt(): number { return this.map.get(this.ip).getTime(); }
 
-    public validate(req: Request): boolean {
-        const { ip } = req;
-        this.ip = ip;
 
-        if (!this.map.has(ip)) return this.add();
+    public validate(req: Request): boolean {
+        console.log("Rate Limit", this.map);
+        this.ip = req.headers.authorization.split(" ")[1];
+
+        if (!this.map.has(this.ip)) return this.add();
         else return this.throwError();
     }
 
