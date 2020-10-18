@@ -16,10 +16,11 @@ jobs:
           heroku_api_key: ${{secrets.SERVER_API_KEY}}
           heroku_app_name: "coolbotlistapi"
           heroku_email: ${{secrets.SERVER_EMAIL}} 
-        
-      - run: cd ../discord-bot
+          appdir: "nest"
+      
       - uses: akhileshns/heroku-deploy@v3.5.7
         with:
           heroku_api_key: ${{secrets.BOT_API_KEY}}
           heroku_app_name: "coolbotlistbot"
           heroku_email: ${{secrets.BOT_EMAIL}}
+          appdir: "discord-bot"
